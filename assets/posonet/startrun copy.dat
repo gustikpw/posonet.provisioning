@@ -1,0 +1,1467 @@
+olleh
+timestamp_write: 10:24:39 05/17/2023
+config-version 2.1
+!
+crtv disable
+!
+load-balance enable
+!
+operator-mode NORMAL
+!
+system-forwarding-mode normal-mode
+!
+set-pnp enable
+add-rack rackno 1 racktype C320Rack
+add-shelf rackno 1 shelfno 1 shelftype C320_SHELF
+add-card rackno 1 shelfno 1 slotno 1 GTGH
+add-subcard rackno 1 shelfno 1 slotno 4 subcardno 1 UCDC/1
+!
+urpf log off 
+!
+fan speed-percent-set 20 30 50 70 rackno 1 shelfno 1
+fan control temp_level 36 42 50 58 rackno 1 shelfno 1
+!
+!
+!
+!
+mac aging-time 300
+mac monitor-period 10
+mac usage-threshold 70
+!
+eth-switch max-frame-length  1600
+port diaglog status-info disable
+!
+sdisk disable
+!
+auto-update backup disable
+auto-update activate disable
+!
+!
+!
+!
+!
+gpon
+!
+!
+gpon
+  onu profile ip static1 gateway 192.168.10.1 primary-dns 8.8.8.8
+  onu profile vlan netmedia143 tag-mode tag cvlan 143 pri 7
+!
+!
+epon
+!
+!
+pon
+  onu-type ALL gpon
+  onu-type ZTE gpon
+  onu-type ZTE gpon max-tcont 7
+  onu-type ZTE gpon max-gemport 32
+  onu-type ZTE gpon max-switch-perslot 1
+  onu-type ZTE gpon max-flow-perswitch 8
+  onu-type ZTE-F609 gpon description 4ETH,2POTS,WIFI
+  onu-type ZTE-F609 gpon max-tcont 7
+  onu-type ZTE-F609 gpon max-gemport 32
+  onu-type ZTE-F609 gpon max-switch-perslot 1
+  onu-type ZTE-F609 gpon max-flow-perswitch 32
+  onu-type ZTE-F660 gpon description 4GE,2POTS,WIFI,1USB
+  onu-type ZTE-F660 gpon max-tcont 7
+  onu-type ZTE-F660 gpon max-gemport 32
+  onu-type ZTE-F660 gpon max-switch-perslot 1
+  onu-type ZTE-F660 gpon max-flow-perswitch 32
+  onu-type FIBERHOME gpon
+  onu-type FIBERHOME gpon max-tcont 7
+  onu-type FIBERHOME gpon max-gemport 32
+  onu-type FIBERHOME gpon max-switch-perslot 1
+  onu-type FIBERHOME gpon max-flow-perswitch 8
+  onu-type FBH-HG6243C gpon description 4GE,2POTS,WIFI
+  onu-type FBH-HG6243C gpon max-tcont 7
+  onu-type FBH-HG6243C gpon max-gemport 32
+  onu-type FBH-HG6243C gpon max-switch-perslot 1
+  onu-type FBH-HG6243C gpon max-flow-perswitch 32
+  onu-type-if ALL eth_0/1
+  onu-type-if ALL eth_0/2
+  onu-type-if ALL eth_0/3
+  onu-type-if ALL eth_0/4
+  onu-type-if ALL wifi_0/1
+  onu-type-if ALL wifi_0/2
+  onu-type-if ALL wifi_0/3
+  onu-type-if ALL wifi_0/4
+  onu-type-if ZTE eth_0/1
+  onu-type-if ZTE eth_0/2
+  onu-type-if ZTE eth_0/3
+  onu-type-if ZTE eth_0/4
+  onu-type-if ZTE pots_0/1
+  onu-type-if ZTE pots_0/2
+  onu-type-if ZTE wifi_0/1
+  onu-type-if ZTE wifi_0/2
+  onu-type-if ZTE wifi_0/3
+  onu-type-if ZTE wifi_0/4
+  onu-type-if ZTE-F609 eth_0/1
+  onu-type-if ZTE-F609 eth_0/2
+  onu-type-if ZTE-F609 eth_0/3
+  onu-type-if ZTE-F609 eth_0/4
+  onu-type-if ZTE-F609 pots_0/1
+  onu-type-if ZTE-F609 pots_0/2
+  onu-type-if ZTE-F609 wifi_0/1
+  onu-type-if ZTE-F609 wifi_0/2
+  onu-type-if ZTE-F609 wifi_0/3
+  onu-type-if ZTE-F609 wifi_0/4
+  onu-type-if ZTE-F660 eth_0/1
+  onu-type-if ZTE-F660 eth_0/2
+  onu-type-if ZTE-F660 eth_0/3
+  onu-type-if ZTE-F660 eth_0/4
+  onu-type-if ZTE-F660 pots_0/1
+  onu-type-if ZTE-F660 pots_0/2
+  onu-type-if FIBERHOME eth_0/1
+  onu-type-if FIBERHOME eth_0/2
+  onu-type-if FIBERHOME eth_0/3
+  onu-type-if FIBERHOME eth_0/4
+  onu-type-if FIBERHOME pots_0/1
+  onu-type-if FIBERHOME pots_0/2
+  onu-type-if FIBERHOME wifi_0/1
+  onu-type-if FIBERHOME wifi_0/2
+  onu-type-if FIBERHOME wifi_0/3
+  onu-type-if FIBERHOME wifi_0/4
+  onu-type-if FBH-HG6243C eth_0/1
+  onu-type-if FBH-HG6243C eth_0/2
+  onu-type-if FBH-HG6243C eth_0/3
+  onu-type-if FBH-HG6243C eth_0/4
+  onu-type-if FBH-HG6243C pots_0/1
+  onu-type-if FBH-HG6243C pots_0/2
+  uncfg-onu-display-info model sn 
+!
+!
+onu-pnp
+!
+no vlan-reserve 4091 out-voip
+no vlan-reserve 4092 in-voip
+no vlan-reserve 4094 gpon
+!
+vlan database
+  vlan 1,101,141-145
+!
+vlan 145
+  multicast-packet drop-unknown
+!
+!
+!
+his-performance sample enable
+his-performance alarm enable
+his-performance auto-upload disable
+!
+!
+clock
+!
+!
+
+!
+clock
+!
+!
+
+!
+ptp
+!
+!
+ip dhcp snooping control-port enable
+port-identification access-node-id-type inband-mac
+port-identification rackno 1 frameno 1
+!
+igmp enable
+igmp prejoin-interval 100
+igmp general-leave enable
+igmp mvlan 145
+igmp mvlan 145 work-mode snooping
+igmp mvlan 145 version-mode v1 accept
+igmp mvlan 145 version-mode v2 accept
+igmp mvlan 145 version-mode v3 accept
+igmp mvlan 145 group-filter disable
+mld disable
+  mib-compatibility iftable v1
+!
+ip-source-guard disable
+ipv6 nd snooping disable
+!
+
+security port-protect enable
+!
+!
+!
+virtual-mac flexible-syntax-profile MT
+add Ctrl-Byte 0 width 6 index 6
+exit
+virtual-mac access-node-id 0
+!
+epm
+ mode passthrough
+
+
+
+
+
+!
+!
+!
+interface mng1
+  ip address 192.168.220.22 255.255.255.0
+  config-filename startrun.dat
+  negotiation auto
+  tag-mode untag
+!
+interface vlan 101
+  ip address 10.10.10.2 255.255.255.0
+!
+interface null1
+!
+interface gpon-olt_1/1/1
+  no shutdown
+  linktrap disable
+  onu 1 type ALL sn ZTEGC91CF46E
+  onu 2 type ALL sn ZTEGC91C3A7F
+  onu 3 type ALL sn ZTEGC91C715E
+  onu 4 type ALL sn ZTEGC86A0FDD
+  onu 5 type ALL sn ZTEGC0B043DF
+  onu 6 type ALL sn ZTEGC0F89D13
+  onu 7 type ALL sn ZTEGC0CB1802
+  onu 8 type ALL sn ZTEGC51BDD8A
+  onu 9 type ALL sn ZTEGC0876376
+  onu 10 type ALL sn ZTEGC91C38DD
+  onu 11 type ALL sn ZTEGC51CE76F
+  onu 12 type ALL sn ZTEGC91CBDAB
+  onu 13 type ALL sn ZTEGC071C865
+  onu 14 type ALL sn ZTEGC0C14C3B
+  onu 15 type ALL sn ZTEGC0C2ABB0
+  onu 16 type ALL sn ZTEGC0C164B5
+  onu 17 type ALL sn ZTEGC0A2DE34
+  onu 18 type FIBERHOME sn FHTT91901C38
+  onu 19 type ZTE sn ZTEGC91C48BF
+  onu 20 type ZTE sn ZTEGC082B7FC
+  onu 21 type ZTE-F660 sn ZTEGC096214C
+  onu 22 type ZTE-F660 sn ZTEGC0C08E38
+!
+interface gpon-onu_1/1/1:1
+  name 501. GREIS RAMPALINO
+  description p=UPTO-15M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:2
+  name 512. KANTOR DESA MAYASARI
+  description p=DESA-20M &e=13/04/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:3
+  name APIN
+  description p=1M-PROFILE &e=20/02/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:4
+  name 502. IRMA LEBU
+  description p=UPTO-15M &e=20/05/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:5
+  name 505. ARUDA OMEGA
+  description p=UPTO-20M &e=20/05/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:6
+  name 504. UPPKB MAYOA
+  description p=UPTO-30M &e=24/05/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:7
+  name 506. RUDI M
+  description p=UPTO-15M &e=20/06/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:8
+  name 507. SAMSURIARI
+  description p=UPTO-20M &e=20/04/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:9
+  name 508. IRMA LIANTI MAYAI
+  description p=UPTO-15M &e=20/08/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:10
+  name 509. SILFA ISMAIL KARIM
+  description p=UPTO-15M &e=20/10/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:11
+  name 510. OBET KURNIAWAN
+  description p=UPTO-15M &e=20/11/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:12
+  name 511. RUMAH BELAJAR DIGITAL
+  description p=UPTO-15M &e=20/11/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:13
+  name 513. KAMARUDDIN
+  description p=UPTO-15M &e=20/02/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:14
+  name 514. SINAR RAHMAT01
+  description p=UPTO-20M &e=20/01/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:15
+  name 515. AMINIYAH 02
+  description p=UPTO-20M &e=20/02/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:16
+  name 516. AMINIYAH03
+  description p=UPTO-20M &e=20/02/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:17
+  name 517. KEDAI KARISSA
+  description p=UPTO-20M &e=20/02/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:18
+  name 518. NUR INTAN
+  description p=UPTO-20M &e=20/04/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:19
+  name 503. HASAN LAIBE
+  description p=UPTO-15M &e=20/05/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:20
+  name 519. SUTRA WINDA
+  description p=UPTO-15M &e=20/05/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:21
+  name 520. JHONLY FERDINAND BAWIAS
+  description p=UPTO-15M &e=20/05/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/1:22
+  name 521. SOFIAN
+  description p=UPTO-15M &e=20/05/2023 &h=0 &a=pppoe
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-olt_1/1/2
+  no shutdown
+  linktrap disable
+!
+interface gpon-olt_1/1/3
+  no shutdown
+  linktrap disable
+  description ini deskripsi
+  onu 1 type ALL sn ZTEGC759D6D7
+  onu 2 type ALL sn ZTEGC91C27BD
+  onu 3 type ALL sn ZTEGC6310E30
+  onu 4 type ALL sn ZTEGCC431AD7
+  onu 5 type ZTE-F609 sn ZTEGC91CFF04
+  onu 6 type ALL sn ZTEGC0CEBC9B
+  onu 7 type ALL sn ZTEGC88AE1C9
+  onu 9 type ALL sn ZTEGC71F9E2F
+!
+interface gpon-onu_1/1/3:1
+  name 313. KASIH
+  description p=UPTO-10M &e=20/02/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/3:2
+  name PAPA ENJEL
+  description p=1M-PROFILE &e=13/05/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/3:3
+  name 301. KEZIA CHARIN
+  description p=3M-PROFILE &e=20/10/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/3:4
+  name 315. FITRI (PUTRI SELATAN)
+  description p=UPTO-20M &e=20/03/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/3:5
+  name ETO
+  description p=1M-PROFILE &e=20/02/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/3:6
+  name 316. RAHTUT
+  description p=UPTO-10M &e=14/03/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/3:7
+  name S. MOSUA
+  description p=2M &e=20/08/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/3:9
+  name 310. KANTOR PENGAMAT SAROSO
+  description p=UPTO-20M &e=20/09/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-olt_1/1/4
+  no shutdown
+  linktrap disable
+!
+interface gpon-olt_1/1/5
+  no shutdown
+  linktrap disable
+  onu 2 type ALL sn ZTEGC8A9FAF2
+  onu 3 type ALL sn ZTEGC836AC7C
+  onu 4 type ZTE-F609 sn ZTEGCB06D7CB
+  onu 5 type ALL sn ZTEGC0A225FB
+  onu 6 type ALL sn ZTEGC86A750B
+  onu 7 type ZTE sn ZTEGC91CFF70
+  onu 8 type ALL sn ZTEGC864E074
+  onu 9 type ALL sn ZTEGC85EDBED
+  onu 11 type ALL sn ZTEGC860BD52
+  onu 12 type ALL sn ZTEGC1DEA00F
+  onu 13 type ALL sn ZTEGCC4C7645
+!
+interface gpon-onu_1/1/5:2
+  name 101. H. TAHIR
+  description p=1M-PROFILE &e=20/05/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:3
+  name 109. SUGIANTO
+  description p=UPTO-15M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:4
+  name 201. RUSTAN EFENDI
+  description p=UPTO-10M &e=20/03/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:5
+  name 113. NURHAEDAH
+  description p=UPTO-20M &e=20/01/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:6
+  name 204. RAHMANUDDIN M
+  description p=4M-PROFILE &e=20/06/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:7
+  name 226. SARVIANA
+  description p=UPTO-20M &e=20/03/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:8
+  name 209. MAPATO TANI
+  description p=UPTO-15M &e=20/04/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:9
+  name 110. H. RAMLI
+  description p=2M &e=20/06/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:11
+  name 210. ENDANG JAYA
+  description p=3M-PROFILE &e=20/07/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:12
+  name 211. MAMA EKA
+  description p=3M-PROFILE &e=20/07/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/5:13
+  name 213. TURANGAN
+  description p=2M &e=20/08/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-olt_1/1/6
+  no shutdown
+  linktrap disable
+  onu 1 type ALL sn ZTEGC85A33F2
+  onu 2 type ALL sn ZTEGC86A10E6
+  onu 3 type ALL sn ZTEGC836C6B6
+  onu 4 type ALL sn ZTEGC86A77F1
+  onu 5 type ALL sn ZTEGC671B25E
+!
+interface gpon-onu_1/1/6:1
+  name 105. HARI SUMITO
+  description p=2M &e=20/06/2021 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/6:2
+  name 106. JOKO TRI CAHYONO
+  description p=UPTO-15M &e=20/01/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/6:3
+  name 112. DIDIK SETYADI
+  description p=UPTO-15M &e=20/04/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/6:4
+  name 108. SAHIMUDDIN
+  description p=UPTO-15M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/6:5
+  name 111. HAWARITA USU
+  description p=UPTO-10M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-olt_1/1/7
+  no shutdown
+  linktrap disable
+  onu 1 type ALL sn ZTEGC6302836
+  onu 2 type ALL sn ZTEGC91C254E
+  onu 3 type ALL sn ZTEGC872AF29
+  onu 4 type ALL sn ZTEGC0CE2462
+  onu 5 type ALL sn ZTEGCD0F4799
+!
+interface gpon-onu_1/1/7:1
+  name 304. SDN 1 PENDOLO
+  description p=UPTO-15M &e=20/12/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/7:2
+  name 305. DINDA
+  description p=UPTO-10M &e=20/12/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/7:3
+  name 302. M. NANI
+  description p=UPTO-15M &e=20/12/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/7:4
+  name 311. APOLIN MODJUNDJU
+  description p=UPTO-15M &e=20/03/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/7:5
+  name 314. AMBO DALLE
+  description p=UPTO-10M &e=20/02/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-olt_1/1/8
+  no shutdown
+  linktrap disable
+!
+interface gpon-olt_1/1/9
+  no shutdown
+  linktrap disable
+  onu 1 type ZTE sn ZTEGC6317923
+  onu 2 type ZTE-F660 sn ZTEGC91CC378
+  onu 3 type ALL sn ZTEGC0A203E6
+  onu 4 type ZTE-F660 sn ZTEGC8269A22
+  onu 5 type FIBERHOME sn FHTT91B52E90
+!
+interface gpon-onu_1/1/9:1
+  name 306. AL-FATIH
+  description p=UPTO-15M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/9:2
+  name 309. FARMAN
+  description p=UPTO-15M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/9:3
+  name 312. ONTIS
+  description p=UPTO-10M &e=20/01/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/9:4
+  name 308. YULI SAMADI
+  description p=UPTO-10M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/9:5
+  name 316. PADA IDI
+  description p=UPTO-20M &e=20/04/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-olt_1/1/10
+  no shutdown
+  linktrap disable
+!
+interface gpon-olt_1/1/11
+  no shutdown
+  linktrap disable
+!
+interface gpon-olt_1/1/12
+  no shutdown
+  linktrap disable
+!
+interface gpon-olt_1/1/13
+  no shutdown
+  linktrap disable
+!
+interface gpon-olt_1/1/14
+  no shutdown
+  linktrap disable
+!
+interface gpon-olt_1/1/15
+  no shutdown
+  linktrap disable
+  onu 1 type ALL sn ZTEGC91C0C23
+  onu 2 type ALL sn ZTEGC836B2B7
+  onu 3 type ALL sn ZTEGC881B163
+  onu 4 type ALL sn ZTEGC5385E4A
+  onu 5 type ALL sn ZTEGC088E1AA
+  onu 6 type ALL sn ZTEGC8626C13
+  onu 7 type ALL sn ZTEGC542922F
+  onu 8 type ALL sn ZTEGC63179A2
+  onu 9 type ALL sn ZTEGC86AC832
+  onu 10 type ALL sn ZTEGC0876910
+  onu 11 type ALL sn ZTEGC52E2581
+  onu 12 type ALL sn ZTEGC0F881A0
+  onu 13 type ALL sn ZTEGC86ADC15
+  onu 14 type ZTE-F609 sn ZTEGC531EA90
+  onu 15 type ALL sn ZTEGC5445792
+  onu 16 type ALL sn ZTEGCB06D57B
+  onu 17 type ALL sn ZTEGC0C2ACAD
+  onu 18 type ZTE-F609 sn ZTEGC8A9F888
+  onu 19 type FIBERHOME sn FHTT91BBD008
+  onu 20 type ZTE sn ZTEGC535CB6E
+!
+interface gpon-onu_1/1/15:1
+  name 202. SUDIATI
+  description p=UPTO-10M &e=20/05/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:2
+  name 207. WIJI ASTUTIK
+  description p=UPTO-10M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:3
+  name 208. BUDIMAN
+  description p=UPTO-15M &e=20/02/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:4
+  name 219. HENDRIK
+  description p=UPTO-10M &e=20/05/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:5
+  name 215. ARDILA
+  description p=UPTO-10M &e=20/04/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:6
+  name 206. JANINA
+  description p=UPTO-15M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:7
+  name 224. SINAR 77
+  description p=UPTO-20M &e=20/01/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:8
+  name 203. MULI ATI
+  description p=UPTO-10M &e=20/03/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:9
+  name 212. ELIS DAYANTI
+  description p=UPTO-15M &e=20/04/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:10
+  name 216. NABILA
+  description p=UPTO-10M &e=20/05/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:11
+  name 217. RAFLI
+  description p=UPTO-10M &e=20/07/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:12
+  name 218. HANAN
+  description p=UPTO-20M &e=20/07/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:13
+  name 205. NIA SATRIANA
+  description p=UPTO-20M &e=20/05/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:14
+  name 220. PAK IZIN
+  description p=UPTO-20M &e=20/10/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:15
+  name 221. BAHAR
+  description p=UPTO-15M &e=20/11/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:16
+  name 222. ABDUL JALIL
+  description p=UPTO-15M &e=20/12/2022 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:17
+  name 223. HARTONO
+  description p=UPTO-10M &e=20/02/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:18
+  name 225. RM PARE-PARE
+  description p=UPTO-20M &e=20/02/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:19
+  name 214. MUHSAN
+  description p=UPTO-20M &e=20/05/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-onu_1/1/15:20
+  name 227. ANNAS
+  description p=UPTO-15M &e=20/05/2023 &h=0 &a=pppoe
+  disable-first-online-alarm
+  tcont 1 profile default
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 143 vlan 143 
+!
+interface gpon-olt_1/1/16
+  no shutdown
+  linktrap disable
+!
+interface gei_1/4/1
+  no shutdown
+  hybrid-attribute fiber
+  negotiation auto
+  flowcontrol disable
+  linktrap enable
+  switchport mode trunk
+  switchport vlan 1 tag
+  port-protect disable
+  uplink-isolate disable
+!
+interface gei_1/4/2
+  no shutdown
+  hybrid-attribute fiber
+  negotiation auto
+  flowcontrol disable
+  linktrap enable
+  switchport mode trunk
+  switchport vlan 1 tag
+  port-protect disable
+  uplink-isolate disable
+!
+interface gei_1/4/3
+  no shutdown
+  hybrid-attribute copper
+  negotiation auto
+  flowcontrol disable
+  linktrap enable
+  switchport mode hybrid
+  switchport vlan 101,143-145 tag
+  port-protect disable
+  uplink-isolate disable
+!
+!
+!
+mpls ldp dynamic-capability
+!
+!
+!
+!
+!
+!
+!
+ip route 192.168.220.115 255.255.255.255 192.168.220.1 5
+ip route 0.0.0.0 0.0.0.0 10.10.10.1
+!
+ipoa inatmarp-interval 10
+ipoa gateway-arp-interval 10
+!
+mpnat trans-table aging-time 60
+mpnat onu-telnet idle-time 3
+mpnat onu-ftp aging-time 5
+mpnat onu-snmp aging-time 30
+mpnat onu-ftp-data aging-time 5
+mpnat onu-mng-port auto-alloc disable
+mpnat modem-telnet idle-time 3
+!
+pon
+!
+!
+pon-onu-mng gpon-onu_1/1/1:1
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 501.-GREIS-RAMPC91CF46E password .C91CF46E! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:2
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 512.-KANTOR-DESC91C3A7F password .C91C3A7F! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:3
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username APINC91C715E password .C91C715E! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:4
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 502.-IRMA-LEBUC86A0FDD password .C86A0FDD! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:5
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 505.-ARUDA-OMEGC0B043DF password .C0B043DF! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:6
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 504.-UPPKB-MAYOC0F89D13 password .C0F89D13! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:7
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 506.-RUDI-MC0CB1802 password .C0CB1802! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:8
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 507.-SAMSURIARIC51BDD8A password .C51BDD8A! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:9
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 508.-IRMA-LIANTC0876376 password .C0876376! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:10
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 509.-SILFA-ISMAC91C38DD password .C91C38DD! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:11
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 510.-OBET-KURNIC51CE76F password .C51CE76F! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:12
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 511.-RUMAH-BELAC91CBDAB password .C91CBDAB! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:13
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 513.-KAMARUDDINC071C865 password .C071C865! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:14
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 514.-SINAR-RAHMC0C14C3B password .C0C14C3B! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:15
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 515.-AMINIYAH-0C0C2ABB0 password .C0C2ABB0! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:16
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 516.-AMINIYAH03C0C164B5 password .C0C164B5! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:17
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 517.-KEDAI-KARIC0A2DE34 password .C0A2DE34! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:18
+  service 1 gemport 1 vlan 143
+  vlan port veip_1 mode hybrid
+!
+pon-onu-mng gpon-onu_1/1/1:19
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 503.-HASAN-LAIBC91C48BF password .C91C48BF! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:20
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 519.-SUTRA-WINDC082B7FC password .C082B7FC! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:21
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 520.-JHONLY-FERC096214C password .C096214C! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/1:22
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 521.-SOFIANC0C08E38 password .C0C08E38! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/3:1
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 313.-KASIHC759D6D7 password .C759D6D7! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/3:2
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username PAPA-ENJELC91C27BD password .C91C27BD! vlan-profile netmedia143 host 1
+  security-mgmt 212 state enable mode forward protocol web 
+!
+pon-onu-mng gpon-onu_1/1/3:3
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 301.-KEZIA-CHARC6310E30 password .C6310E30! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/3:4
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 315.-FITRI-(PUTCC431AD7 password .CC431AD7! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/3:5
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username ETOC91CFF04 password .C91CFF04! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/3:6
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 316.-RAHTUTC0CEBC9B password .C0CEBC9B! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/3:7
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username S.-MOSUAC88AE1C9 password .C88AE1C9! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/3:9
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 310.-KANTOR-PENC71F9E2F password .C71F9E2F! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:2
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 101.-H.-TAHIRC8A9FAF2 password .C8A9FAF2! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:3
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 109.-SUGIANTOC836AC7C password .C836AC7C! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:4
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 201.-RUSTAN-EFECB06D7CB password .CB06D7CB! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:5
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 113.-NURHAEDAHC0A225FB password .C0A225FB! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:6
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 204.-RAHMANUDDIC86A750B password .C86A750B! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:7
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 226.-SARVIANAC91CFF70 password .C91CFF70! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:8
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 209.-MAPATO-TANC864E074 password .C864E074! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:9
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 110.-H.-RAMLIC85EDBED password .C85EDBED! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:11
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 210.-ENDANG-JAYC860BD52 password .C860BD52! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:12
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 211.-MAMA-EKAC1DEA00F password .C1DEA00F! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/5:13
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 213.-TURANGANCC4C7645 password .CC4C7645! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/6:1
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 105.-HARI-SUMITC85A33F2 password .C85A33F2! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/6:2
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 106.-JOKO-TRI-CC86A10E6 password .C86A10E6! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/6:3
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 112.-DIDIK-SETYC836C6B6 password .C836C6B6! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/6:4
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 108.-SAHIMUDDINC86A77F1 password .C86A77F1! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/6:5
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 111.-HAWARITA-UC671B25E password .C671B25E! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/7:1
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 304.-SDN-1-PENDC6302836 password .C6302836! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/7:2
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 305.-DINDAC91C254E password .C91C254E! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/7:3
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 302.-M.-NANIC872AF29 password .C872AF29! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/7:4
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 311.-APOLIN-MODC0CE2462 password .C0CE2462! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/7:5
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 314.-AMBO-DALLECD0F4799 password .CD0F4799! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/9:1
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 306.-AL-FATIHC6317923 password .C6317923! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/9:2
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 309.-FARMANC91CC378 password .C91CC378! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/9:3
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 312.-ONTISC0A203E6 password .C0A203E6! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/9:4
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 308.-YULI-SAMADC8269A22 password .C8269A22! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/9:5
+  service 1 gemport 1 vlan 143
+  vlan port veip_1 mode hybrid
+!
+pon-onu-mng gpon-onu_1/1/15:1
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 202.-SUDIATIC91C0C23 password .C91C0C23! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:2
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 207.-WIJI-ASTUTC836B2B7 password .C836B2B7! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:3
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 208.-BUDIMANC881B163 password .C881B163! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:4
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 219.-HENDRIKC5385E4A password .C5385E4A! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:5
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 215.-ARDILAC088E1AA password .C088E1AA! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:6
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 206.-JANINAC8626C13 password .C8626C13! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:7
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 224.-SINAR-77C542922F password .C542922F! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:8
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 203.-MULI-ATIC63179A2 password .C63179A2! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:9
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 212.-ELIS-DAYANC86AC832 password .C86AC832! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:10
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 216.-NABILAC0876910 password .C0876910! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:11
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 217.-RAFLIC52E2581 password .C52E2581! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:12
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 218.-HANANC0F881A0 password .C0F881A0! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:13
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 205.-NIA-SATRIAC86ADC15 password .C86ADC15! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:14
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 220.-PAK-IZINC531EA90 password .C531EA90! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:15
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 221.-BAHARC5445792 password .C5445792! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:16
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 222.-ABDUL-JALICB06D57B password .CB06D57B! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:17
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 223.-HARTONOC0C2ACAD password .C0C2ACAD! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:18
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 225.-RM-PARE-PAC8A9F888 password .C8A9F888! vlan-profile netmedia143 host 1
+!
+pon-onu-mng gpon-onu_1/1/15:19
+  service 1 gemport 1 vlan 143
+  vlan port veip_1 mode hybrid
+!
+pon-onu-mng gpon-onu_1/1/15:20
+  service 1 gemport 1 vlan 143
+  wan-ip 1 mode pppoe username 227.-ANNASC535CB6E password .C535CB6E! vlan-profile netmedia143 host 1
+!
+!
+pon
+!
+!
+igmp mvlan 145 source-port gei_1/4/3
+mac vpn ec1d.7f0b.8f72
+!
+!
+!
+auto-write enable 
+auto-write 00:00:00 Jan 1  2001
+!
+inband-management enable
+!
+username user-suspend mode none 
+!
+username high-level-security disable
+username inactivity-day 120
+username pwd-expire-day 90
+!
+hostname ZXAN
+!
+service password-encryption
+!
+!
+username zte password  7 dnXspUMqxfJOgln2Hm7Olw== privilege 15 first-login true
+username zte password  7 dnXspUMqxfJOgln2Hm7Olw== max-sessions 16
+username zte enable
+username login-range name zte login-begin 00:00:00  login-end 23:59:59
+username expire-date name zte datetime 12-31-2099 23:59:59
+username password-changed name zte is-changed false
+
+!
+!
+!
+user-authentication-type local
+user-authorization-type local
+!
+help message full
+!
+banner incoming @
+*************************************************
+mediakios mediakios mediakios mediakios mediakios
+Welcome to  ZXAN product C320 of ZTE  Corporation
+*************************************************
+@
+!
+message-of-day @
+@
+!
+!
+service timestamps log datetime localtime
+service timestamps debug datetime localtime
+!
+!
+!
+!
+snmp-server location Palu - Sulawesi Tengah
+snmp-server contact HP/WA +6285241479825
+snmp-server packetsize 8192
+snmp-server engine-id mode mac
+snmp-server group GroupPriv15 v3 priv read AllView write AllView
+snmp-server group GroupPriv10 v3 priv read AllView write ViewPriv10
+snmp-server group GroupPriv5 v3 priv read AllView write ViewPriv5
+snmp-server group GroupPriv0 v3 priv read AllView
+snmp-server community mediakiosro view AllView ro
+snmp-server community mediakiosrw view AllView rw
+snmp-server view AllView 1.2 included 
+snmp-server view AllView 1.3 included 
+snmp-server view ViewPriv5 1.2 included 
+snmp-server view ViewPriv5 1.3 included 
+snmp-server view ViewPriv5 1.3.6.1.4.1.3902.1082.10.1 excluded 
+snmp-server view ViewPriv5 1.3.6.1.4.1.3902.1082.10.10 excluded 
+snmp-server view ViewPriv5 1.3.6.1.4.1.3902.1082.20.1 excluded 
+snmp-server view ViewPriv5 1.3.6.1.4.1.3902.1082.20.10 excluded 
+snmp-server view ViewPriv10 1.2 included 
+snmp-server view ViewPriv10 1.3 included 
+snmp-server view ViewPriv10 1.3.6.1.4.1.3902.1082.20.10 excluded 
+!
+!
+ntp server 162.159.200.123 priority 1
+ntp server 162.159.200.1 priority 2
+ntp poll-interval 10
+ntp source-ip 162.159.200.123
+ntp enable
+ntp client
+!
+logging alarmlog enable
+logging exc-event auto-write enable
+logging level notification
+logging cmdlog enable
+logging snmplog disable
+logging igmplog disable
+syslog facility local0
+syslog severity 6
+syslog hostname-field hostname
+syslog-server host enable 192.168.50.2 fport 516 lport 516 alarmlog level notification facility local0  
+line console idle-timeout 500 
+line console absolute-timeout 1440 
+line telnet idle-timeout 1000 
+line telnet absolute-timeout 1440 
+line telnet users 16 
+line cli detail-info-show disable
+
+no hotkey ctrl_g 
+no hotkey ctrl_l 
+no hotkey ctrl_o 
+no hotkey ctrl_r 
+no hotkey ctrl_s 
+no hotkey ctrl_t 
+!
+ssh server enable
+ssh server authentication mode local
+ssh server authentication type chap
+no ssh server only
+ssh server version 2
+!
+!
+radius attribute vendor-specific vendor-id 3902
+!
+!
+!
+radius server-port-check on
+!
+!
+tacacs disable 
+tacacs-server timeout 5
+tacacs-server deadtime 5
+tacacs-server packet 1024
+!
+!
+alarm enable
+alarm confirm
+alarm trap-confirm retry 3 timeout 20 
+nms-hello-trap disable
+alarm report-speed 0
+alarm anti-jitter 0 
+!
+12DFD0512DFD0512DFD05
