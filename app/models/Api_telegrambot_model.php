@@ -1,0 +1,106 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+require 'vendor/autoload.php';
+
+use Telegram\Bot\Api as Bot;
+
+class Api_telegrambot_model extends CI_Model
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->database();
+
+        $this->bot = $this->config->item('telegram_bot');
+
+        $this->url = $this->bot['BASE_URL']. $this->bot['TOKEN'];
+        
+
+        $this->telegram = new Bot($this->bot['TOKEN']);
+
+    }
+
+    public function getUpdates(){
+        $response = $this->telegram->getUpdate();
+
+        // $botId = $response->getId();
+        // $firstName = $response->getFirstName();
+        // $username = $response->getUsername();
+
+        return $response;
+    }
+
+
+    public function sendMessages(){
+        $keyboard = [
+            ['7', '8', '9'],
+            ['4', '5', '6'],
+            ['1', '2', '3'],
+                ['0']
+        ];
+
+        $reply_markup = $this->telegram->replyKeyboardMarkup([
+            'keyboard' => $keyboard, 
+            'resize_keyboard' => true, 
+            'one_time_keyboard' => true
+        ]);
+
+        $response = $this->telegram->sendMessage([
+            'chat_id' => $this->bot['CHAT_ID_ADMIN'], 
+            'text' => 'Hello World', 
+            'reply_markup' => $reply_markup
+        ]);
+
+        $messageId = $response->getMessageId();
+    }
+    
+    public function sendMessage(){
+
+        $message = "\xF0\x9F\x9A\xA8 *LOS*\nName : %s\nLocation : %s\n\nHP : %s\nONT Phase : LOS/DyingGasp";
+        $dt = sprintf($message,'Agus', 'https://maps.app.goo.gl/bYdqxJmzGSJzz12h6', '085320435480');
+        $data = [
+            'chat_id'       => $this->bot['CHAT_ID_GROUP'],
+            'text'          => $dt,
+            'parse_mode'    => 'markdown'
+        ];
+
+        $response = $this->telegram->sendMessage($data);
+
+
+        // $response = file_get_contents(
+        //     $this->url."/sendMessage?" .
+        //     http_build_query($data)
+        // );
+
+        return $response;
+    }
+
+
+    public function sendToGroup($ticket){
+        $data = [
+            'chat_id'       => $this->bot['CHAT_ID_GROUP'],
+            'text'          => $ticket,
+            'parse_mode'    => 'markdown'
+        ];
+
+        return $this->telegram->sendMessage($data);
+    }
+
+    public function sendToAdmin($msg){
+        $data = [
+            'chat_id'       => $this->bot['CHAT_ID_ADMIN'],
+            'text'          => $msg,
+            'parse_mode'    => 'markdown'
+        ];
+
+        return $this->telegram->sendMessage($data);
+    }
+
+    public function templateMessages($mode){
+        $extend = "\xF0\x9F\x95\x93 *Extend Paket*\nName : {}\nExpired at: {}\nProfile : {}";
+        $los = "\xF0\x9F\x94\xB4 \xF0\x9F\x86\x98 *LOS*\nName : {}\nLocation : {}\nHP : {}";
+    }
+    
+
+}

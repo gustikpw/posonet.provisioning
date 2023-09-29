@@ -456,7 +456,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" onclick="copyText()">Copy Scripts</button> 
-                    <button type="button" class="btn btn-primary" id="btnSaveTickets" onclick="getTickets()"><span class="fa fa-clock"></span> Make Ticket</button>
+                    <!-- <button type="button" class="btn btn-primary" id="btnSaveTickets" onclick="getTickets()"><span class="fa fa-clock"></span> Send to Teknisi</button> -->
+                    <button type="button" class="btn btn-primary" id="btnSendTicketGroup" onclick="sendTicket('group')"><span class="fa fa-send"></span> Send to Group</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

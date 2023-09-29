@@ -27,6 +27,7 @@ class Api_rest_client extends CI_Controller
 		$this->load->model('api_rest_client_model', 'api');
 		$this->load->model('api_mikrotik_model', 'routermodel');
 		$this->load->model('api_kirimwaid_model', 'kirimwa');
+		$this->load->model('api_telegrambot_model', 'telegrambot');
 		$this->load->helper(array('MY_ribuan', 'MY_bulan'));
 	}
 
@@ -932,9 +933,6 @@ class Api_rest_client extends CI_Controller
 		];
 	}
 
-	// public function sandi(){
-	// 	echo json_encode($this->_make_ppp_secret('601','TES', 'ZTEGC0876376'));
-	// }
 
 	public function tickets(){
 		$gpon_onu = html_escape($this->input->post('tic_gpon_onu'));
@@ -958,20 +956,34 @@ class Api_rest_client extends CI_Controller
 		]);
 
 	}
+
 	public function getTicketsD(){
 		$gpon_onu = $this->input->post('gpon_onu');
 		// $keluhan = html_escape($this->input->post('tic_keluhan'));
 
-		$plgn = $this->db->query("SELECT no_pelanggan, nama_pelanggan, lokasi_map, wilayah, telp 
+		$plgn = $this->db->query("SELECT no_pelanggan, nama_pelanggan, lokasi_map, wilayah, telp, ont_phase_state 
 		FROM v_pelanggan 
 		WHERE gpon_onu='$gpon_onu'")->row();
 
-		$text = "*GANGGUAN*
-Maps: ".urldecode($plgn->lokasi_map)."
-Nama: *$plgn->no_pelanggan. $plgn->nama_pelanggan*
-Kontak: $plgn->telp
-Wilayah: $plgn->wilayah
-Keluhan: ";
+		$icon = ($plgn->ont_phase_state == 'LOS') ? "\xF0\x9F\x9A\xA8" : "\xF0\x9F\x9A\xA8";
+
+		$template = "%s *TICKET*
+Lokasi		: %s
+Nama		: *%s*
+HP			: %s
+Wilayah		: %s
+Ont Phase 	: %s
+Keluhan		: ";
+
+		$text = sprintf(
+			$template,
+			$icon,
+			urldecode($plgn->lokasi_map),
+			$plgn->no_pelanggan .'. '. $plgn->nama_pelanggan,
+			$plgn->telp,
+			$plgn->wilayah,
+			$plgn->ont_phase_state
+		);
 
 		echo json_encode([
 			'status' => true,
@@ -979,6 +991,21 @@ Keluhan: ";
 			'teks' => $text,
 		]);
 
+	}
+
+	/***
+	 * SEND TICKET TO TELEGRAM GROUP
+	 */
+
+	public function sendTicket(){
+		$ticket = $this->input->post('tic_scripts');
+
+		$response = $this->telegrambot->sendToGroup($ticket);
+
+		echo json_encode([
+			'status' => true,
+			'data' => $response,
+		]);
 	}
 
 	/*
@@ -990,7 +1017,7 @@ Keluhan: ";
 	{
 		$file = FCPATH . 'assets/posonet/startrun.dat';
 		// Membaca isi file
-		$data = file_get_contents($file);
+		$data = file_get_contents($file); 
 
 		// Menggunakan regular expression untuk mengambil data
 		preg_match_all('/interface gpon-onu_(.*?)\n\s+name (.*?)\n\s+description (.*?)\n/s', $data, $matches, PREG_SET_ORDER);
@@ -1178,5 +1205,14 @@ Keluhan: ";
 	public function reconnectwa(){
 		// echo json_encode($this->kirimwa->get_device());
 		echo json_encode($this->kirimwa->reconnectwa());
+	}
+
+	public function pesan(){
+		$this->load->model('api_telegrambot_model','telegrambot');
+
+		// $res = $this->telegrambot->getUpdates();
+		$res = $this->telegrambot->sendMessage();
+		// $res = $this->telegrambot->sendMessages();
+		echo $res;
 	}
 }

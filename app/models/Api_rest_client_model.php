@@ -14,6 +14,9 @@ class Api_rest_client_model extends CI_Model
     parent::__construct();
     $this->load->database();
 
+    $this->load->model('api_kirimwaid_model','kirimwa');
+    $this->load->model('api_telegrambot_model','telegram');
+
     $this->olt = $this->config->item('olt');
 
     $this->_client = new Client([
@@ -360,7 +363,7 @@ class Api_rest_client_model extends CI_Model
     return $this->extendThisPaket($qry->gpon_onu, $expired, $wamode);
   }
 
-  public function extendThisPaket($gpon_onu, $expired, $wamode=true) {
+  public function extendThisPaket($gpon_onu, $expired, $wamode=false) {
     if ($wamode == true) {
       /**
        * API Kirimwa.id membatasi pengiriman diatas jam 21.00
@@ -395,18 +398,30 @@ class Api_rest_client_model extends CI_Model
         $this->routermodel->close_connection_ppp($cust->username);
       }
 
+      /**
+       * KIRIM PESAN KE TELEGRAM
+       */
+      $template = "\xE2\x8F\xB0 *Perubahan Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s";
+      $teletext = sprintf($template, $cust->no_pelanggan .". ". $cust->nama_pelanggan, $cust->mikrotik_profile, $expired, date('Y-m-d H:i:s'));
+      
+      $sendToTelegram = $this->telegram->sendToAdmin($teletext);
+
       // kirim pesan ke wa
       $data = [
         'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($expired) . ".\n$cust->no_pelanggan",
         'phone_number' => $cust->telp,
       ];
 
-      if ($modewa == true) $send = $this->kirimwa->post_messages($data);
-      else $send = "Kirimwa melewati jam 21:00:00 atau disabled";
+      if ($modewa == true) {
+        $send = $this->kirimwa->post_messages($data);
+      }
+      else {
+        $send = "Kirimwa melewati jam 21:00:00 atau disabled";
+      }
 
       return [
         'message' => "Paket berhasil diperpanjang ke $expired. ONT pelanggan auto restart!",
-        'kirimwa' => $send,
+        'kirimwa' => $sendToTelegram,
         'status' => true,
       ];
     }
@@ -422,21 +437,34 @@ class Api_rest_client_model extends CI_Model
         $modewa = false;
       }
       // kirim pesan ke wa
-      $phone = $this->db->query("SELECT telp,no_pelanggan FROM pelanggan WHERE gpon_onu = '$gpon_onu'")->row();
+      $plgn = $this->db->query("SELECT telp,no_pelanggan,name,mikrotik_profile FROM v_pelanggan WHERE gpon_onu = '$gpon_onu'")->row();
+
+
+      /**
+       * KIRIM PESAN KE TELEGRAM
+       */
+      $template = "\xE2\x8F\xB0 *Perubahan Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s";
+      $teletext = sprintf($template, $plgn->name, $plgn->mikrotik_profile, $expired, date('Y-m-d H:i:s'));
+
+      $sendToTelegram = $this->telegram->sendToAdmin($teletext);
+
 
       $data = [
-        'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($expired) . ". \n$phone->no_pelanggan",
-        'phone_number' => ($phone->telp == '') ? '081340310250' : $phone->telp,
+        'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($expired) . ". \n$plgn->no_pelanggan",
+        'phone_number' => ($plgn->telp == '') ? '081340310250' : $plgn->telp,
       ];
 
-      if ($modewa == true) $send = $this->kirimwa->post_messages($data);
-      else $send = "Kirimwa melewati jam 21:00:00 atau disabled";
-
+      if ($modewa == true) {
+        $send = $this->kirimwa->post_messages($data);
+      }
+      else {
+        $send = "Kirimwa melewati jam 21:00:00 atau disabled";
+      }
 
       $updateExp = $this->db->query("UPDATE pelanggan SET expired='$expired' WHERE gpon_onu='$gpon_onu'");
       return [
         'message' => $msg, 
-        'kirimwa' => $send, 
+        'kirimwa' => $sendToTelegram, 
         'status' => true, 
         'data' => $data
       ];

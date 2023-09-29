@@ -8,6 +8,16 @@ $config['kirimwa_id'] = [
 	'URL_DEVICE' => 'https://api.kirimwa.id/v1/devices',
 ];
 
+$config['telegram_bot'] = [
+	'TOKEN' 			=> '5657520282:AAEM8VglypDXYgx6FN5wkijmgl7zVfbpbnM',
+	'USERNAME' 			=> 'posonetbot',
+	'CHAT_ID_ADMIN' 	=> '2092734947',
+	'CHAT_ID_TEKNISI' 	=> '795842822',
+	'CHAT_ID_GROUP' 	=> '-4077065482',
+	'CHAT_ID_CLIENT'	=> '',
+	'BASE_URL' 			=> 'https://api.telegram.org/',
+];
+
 $config['olt'] = [
 	'IP' => '10.10.10.2',
 	'PORT' => '23',
@@ -22,6 +32,7 @@ $config['mikrotik'] = [
 	'USERNAME' => 'flaskendpoint',
 	'PASSWORD' => '.flask!',
 ];
+
 
 /*
 |--------------------------------------------------------------------------

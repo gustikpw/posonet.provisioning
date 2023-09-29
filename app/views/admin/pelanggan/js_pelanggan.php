@@ -390,7 +390,7 @@
             $('.uncfg').text(d.message);
             $('#unconfig').show()
             //setelah data uncfg ditampilkan, kirim perintah utk proses reconfig/pindah port jika ada
-            if(d.reconfig > 0 || d.pindah_port > 0){
+            if (d.reconfig > 0 || d.pindah_port > 0) {
               reconfig();
             }
           }
@@ -775,6 +775,24 @@
           // notif(data.message, 'Tickets successfull', 'success');
           $("#btnSaveTickets").text('Make Ticket');
           $('#btnSaveTickets').attr('disabled', false);
+        }
+      },
+      'json')
+  }
+
+
+  function sendTicket(to) {
+    $.post(
+      "<?= site_url('api_rest_client/sendTicket') ?>", {
+        gpon_onu: $('[name="tic_gpon_onu"]').val(),
+        tic_scripts: $('[name="tic_scripts"]').val(),
+      },
+      function(data, status) {
+        console.log(data.data.chat.title);
+        if (status) {
+          notif(data.data.chat.title + 'Telegram', 'Tickets successfull', 'success');
+          // $("#btnSaveTickets").text('Make Ticket');
+          // $('#btnSaveTickets').attr('disabled', false);
         }
       },
       'json')
