@@ -2,7 +2,7 @@
 
 require 'vendor/autoload.php';
 
-use GuzzleHttp\Client as GClient;
+// use GuzzleHttp\Client as GClient;
 
 
 class Api_kirimwaid_model extends CI_Model

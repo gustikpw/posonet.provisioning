@@ -11,6 +11,8 @@ class Api_telegrambot_model extends CI_Model
     {
         parent::__construct();
         $this->load->database();
+		$this->load->helper(array('MY_ribuan', 'MY_bulan'));
+
 
         $this->bot = $this->config->item('telegram_bot');
 
@@ -88,6 +90,44 @@ class Api_telegrambot_model extends CI_Model
     }
 
     public function sendToAdmin($msg){
+        $data = [
+            'chat_id'       => $this->bot['CHAT_ID_ADMIN'],
+            'text'          => $msg,
+            'parse_mode'    => 'markdown'
+        ];
+
+        return $this->telegram->sendMessage($data);
+    }
+
+    public function sendNewClientToAdmin($data){
+
+        $tmp = "*Terima kasih telah berlangganan POSONET*.\n
+Berikut data registrasi Anda.
+
+Nomor Pelanggan : *%s*
+Nama Pelanggan : *%s*
+HP/WA : *%s*
+Tgl Instalasi : %s
+Paket Aktif : %s
+Harga Paket : %s/bulan
+Masa berakhir paket : %s
+
+Pembayaran berikutnya jika melalui transfer = %s";
+
+        $query = "SELECT nama_paket,tarif FROM paket WHERE id_paket=".$data['id_paket'];
+        $paket = $this->db->query($query)->row();
+
+        $msg = sprintf($tmp, 
+            $data['no_pelanggan'], 
+            $data['nama_pelanggan'], 
+            $data['telp'],
+            $data['tgl_instalasi'],
+            $paket->nama_paket,
+            ribuan($paket->tarif),
+            tgl_lokal($data['expired']),
+            ribuan($paket->tarif + $data['no_pelanggan']),
+        );
+
         $data = [
             'chat_id'       => $this->bot['CHAT_ID_ADMIN'],
             'text'          => $msg,

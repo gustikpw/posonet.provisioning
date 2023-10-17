@@ -8,6 +8,12 @@ $config['kirimwa_id'] = [
 	'URL_DEVICE' => 'https://api.kirimwa.id/v1/devices',
 ];
 
+$config['node_whatsappapi'] = [
+	'URL' => 'http://192.168.92.100:9988',
+	'ADMIN_NUMBER' => '6285298470228',
+	'SECRET_APP' => 'MySecret1234',
+];
+
 $config['telegram_bot'] = [
 	'TOKEN' 			=> '5657520282:AAEM8VglypDXYgx6FN5wkijmgl7zVfbpbnM',
 	'USERNAME' 			=> 'posonetbot',

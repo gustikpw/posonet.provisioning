@@ -67,7 +67,6 @@ class Api_rest_client_model extends CI_Model
       ]
     ]);
 
-
     return json_decode($response->getBody());
     // return $response->getBody();
   }
@@ -401,7 +400,7 @@ class Api_rest_client_model extends CI_Model
       /**
        * KIRIM PESAN KE TELEGRAM
        */
-      $template = "\xE2\x8F\xB0 *Perubahan Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s";
+      $template = "\xE2\x8F\xB0 *Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s";
       $teletext = sprintf($template, $cust->no_pelanggan .". ". $cust->nama_pelanggan, $cust->mikrotik_profile, $expired, date('Y-m-d H:i:s'));
       
       $sendToTelegram = $this->telegram->sendToAdmin($teletext);
@@ -443,7 +442,7 @@ class Api_rest_client_model extends CI_Model
       /**
        * KIRIM PESAN KE TELEGRAM
        */
-      $template = "\xE2\x8F\xB0 *Perubahan Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s";
+      $template = "\xE2\x8F\xB0 *Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s";
       $teletext = sprintf($template, $plgn->name, $plgn->mikrotik_profile, $expired, date('Y-m-d H:i:s'));
 
       $sendToTelegram = $this->telegram->sendToAdmin($teletext);

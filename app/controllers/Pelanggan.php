@@ -173,6 +173,7 @@ class Pelanggan extends CI_Controller
 		}
 		// sebelum insert ke database, create dulu di olt
 		$onu = $this->olt->create_onu($data);
+
 		if ($onu->status == '200') {
 			$data['name'] = $onu->data->name;
 			$data['username'] = $onu->data->username;
@@ -182,11 +183,16 @@ class Pelanggan extends CI_Controller
 			$data['description'] = $onu->data->description;
 
 			$insert = $this->pelanggan->save($data);
+
+			//send new client data to Admin telegram
+			$this->load->model('Api_telegrambot_model','telegramModel');
+			$telegram = $this->telegramModel->sendNewClientToAdmin($data);
 		}
 		echo json_encode(
 			array(
 				"status" => TRUE,
-				"callback" => $onu
+				"callback" => $onu,
+				"telegram" => ($telegram == null) ? [] : $telegram,
 			),
 		);
 	}
@@ -316,17 +322,20 @@ class Pelanggan extends CI_Controller
 
 
 	public function getcodenew($id_wilayah){
-		$data = $this->db->query("SELECT kode_wilayah, GROUP_CONCAT(no_pelanggan) AS no_pelanggan FROM v_pelanggan
+		$query = $this->db->query("SELECT kode_wilayah, GROUP_CONCAT(no_pelanggan) AS no_pelanggan FROM v_pelanggan
 			WHERE id_wilayah = $id_wilayah
 			ORDER BY no_pelanggan ASC");
-		$row = $data->row();
+		$row = $query->row();
 
-		if ($row->no_pelanggan == '') {
+		if ($row->no_pelanggan == null) {
 			$data = [(int) $row->kode_wilayah . '01'];
-			$max = $data;
+			$max = max($data);
 		}
-		else {
+		elseif(str_contains($row->no_pelanggan,',')) {
 			$data = explode(",", $row->no_pelanggan);
+			$max = max($data);
+		} else {
+			$data = [$row->no_pelanggan];
 			$max = max($data);
 		}
 		
@@ -340,8 +349,11 @@ class Pelanggan extends CI_Controller
 		if (max($data) == (int) $row->kode_wilayah . '99') {
 			echo json_encode(['newCode' => 'full']);
 		} else {
+			if(count($data) == 1) {
+				echo json_encode(['newCode' => $row->no_pelanggan + 1]);
+			}
 
-			if (count($data) > 1) {
+			elseif (count($data) > 1) {
 	
 				for ($i=$mulai; $i <= $max; $i++) { 
 					
@@ -358,7 +370,7 @@ class Pelanggan extends CI_Controller
 				}
 			
 			} else {
-				echo json_encode(['newCode' => $mulai ]);
+				echo json_encode(['newCode' => "$mulai" ]);
 			}
 		}
 	}

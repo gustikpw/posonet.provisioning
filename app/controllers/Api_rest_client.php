@@ -867,10 +867,10 @@ class Api_rest_client extends CI_Controller
 			'onu_type' => $onu_type,
 			'sn' => $new_sn,
 			'gpon_onu' => $gpon_onu,
-			'name' => $new_secret['name'],
+			'name' => $new_secret->name,
 			'description' => $old_secret->description,
-			'username' => $new_secret['username'],
-			'password' => $new_secret['password'],
+			'username' => $new_secret->username,
+			'password' => $new_secret->password,
 			'mikrotik_profile' => $old_secret->mikrotik_profile,
 		);
 
@@ -879,11 +879,13 @@ class Api_rest_client extends CI_Controller
 		$remove_old_onu = $this->api->remove_onu($data['gpon_olt'], $data['onu_index']);
 
 		
-		if ($remove_old_onu['status'] == true) {
+		if ($remove_old_onu->status) {
 			$remove_old_secret = $this->routermodel->remove_secret("$old_secret->username");
 			$create_new_secret = $this->routermodel->create_ppp_secret($data['username'], $data['password'], 'pppoe', $data['mikrotik_profile']);
+			
 			// reconfig onu will delete old onu first, after that will config onu with different sn but same gpon_onu
 			$reconfig_onu = $this->api->reconfig_onu($data);
+			
 			//update database to new configuratin
 			$query = "UPDATE pelanggan SET 
 				serial_number='" . $data['sn'] . "', 
@@ -892,10 +894,10 @@ class Api_rest_client extends CI_Controller
 				name='" . $data['name'] . "', 
 				username='" . $data['username'] . "', 
 				password='" . $data['password'] . "',
-				ppp_profile='" . $data['mikrotik_profile'] . "',
+				ppp_profile='" . $data['mikrotik_profile'] . "'
 			WHERE gpon_onu='$gpon_onu'";
 
-			$this->db->query($query)->affected_rows();
+			$this->db->query($query);
 
 			echo json_encode($reconfig_onu);
 		} else {
@@ -1214,5 +1216,11 @@ Keluhan		: ";
 		$res = $this->telegrambot->sendMessage();
 		// $res = $this->telegrambot->sendMessages();
 		echo $res;
+	}
+
+	public function nodewa(){
+		$this->load->model('Api_whatsapp_model','nodewa');
+		
+		echo json_encode($this->nodewa->sendWa());
 	}
 }
