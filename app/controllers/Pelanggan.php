@@ -326,12 +326,16 @@ class Pelanggan extends CI_Controller
 			WHERE id_wilayah = $id_wilayah
 			ORDER BY no_pelanggan ASC");
 		$row = $query->row();
+		
+		$mulai = (int) $row->kode_wilayah."01";
 
-		if ($row->no_pelanggan == null) {
-			$data = [(int) $row->kode_wilayah . '01'];
-			$max = max($data);
+		if ($row->no_pelanggan == '') {
+			$data = $mulai;
+			echo json_encode(['newCode' => $data]);
+			return;
 		}
-		elseif(str_contains($row->no_pelanggan,',')) {
+
+		if(str_contains($row->no_pelanggan,',')) {
 			$data = explode(",", $row->no_pelanggan);
 			$max = max($data);
 		} else {
@@ -339,20 +343,13 @@ class Pelanggan extends CI_Controller
 			$max = max($data);
 		}
 		
-		// $data = [(int) $row->kode_wilayah .'99'];
-
-		$mulai = (int) $row->kode_wilayah."01";
 
 		$terlewati = false;
 		$last = 0;
 
-		if (max($data) == (int) $row->kode_wilayah . '99') {
-			echo json_encode(['newCode' => 'full']);
-		} else {
 			if(count($data) == 1) {
 				echo json_encode(['newCode' => $row->no_pelanggan + 1]);
 			}
-
 			elseif (count($data) > 1) {
 	
 				for ($i=$mulai; $i <= $max; $i++) { 
@@ -366,13 +363,22 @@ class Pelanggan extends CI_Controller
 				}
 				
 				if ($terlewati == false) {
-					echo json_encode(['newCode' => $last + 1]);
+
+					//jika tidak ada yg terlewati
+					$fullKode = (int) $row->kode_wilayah.'99';
+					//cek apakah slot no pelanggan full?
+					if(($last + 1) >= $fullKode) {
+						echo json_encode(['newCode' => 'full']);
+						return;
+					} else {
+						echo json_encode(['newCode' => $last + 1]);
+					}
 				}
 			
 			} else {
 				echo json_encode(['newCode' => "$mulai" ]);
 			}
-		}
+		// }
 	}
 
 
