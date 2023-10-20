@@ -176,7 +176,12 @@
       type: "GET",
       dataType: "JSON",
       success: function(data) {
-        $('[name="no_pelanggan"]').val(data.newCode).attr("readonly", "true");
+        if(data.newCode == 'full'){
+          $("#btnSave").text('Slot NoPel FULL');
+          $("#btnSave").attr('disabled', true);
+        }
+        $('[name="no_pelanggan"]').val(data.newCode);
+        // $('[name="no_pelanggan"]').val(data.newCode).attr("readonly", "false");
       },
       error: function(jqXHR, textStatus, errorThrown) {
         notif('Gagal mengambil Kode Pelanggan Baru! \n' + errorThrown, 'Error', 'error');

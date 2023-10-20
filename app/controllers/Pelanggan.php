@@ -167,10 +167,10 @@ class Pelanggan extends CI_Controller
 		);
 
 
-		if (strlen($data['no_pelanggan']) >= 4) {
-			echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
-			exit();
-		}
+		// if (strlen($data['no_pelanggan']) >=5) {
+		// 	echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
+		// 	exit();
+		// }
 		// sebelum insert ke database, create dulu di olt
 		$onu = $this->olt->create_onu($data);
 
@@ -226,10 +226,10 @@ class Pelanggan extends CI_Controller
 			'no_ktp' => $this->input->post('no_ktp'),
 			'ktp_filename' => $ktp_filename,
 		);
-		if (strlen($data['no_pelanggan']) >= 4) {
-			echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
-			exit();
-		}
+		// if (strlen($data['no_pelanggan']) >= 4) {
+		// 	echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
+		// 	exit();
+		// }
 		$this->pelanggan->update(array('id_pelanggan' => $this->input->post('id_pelanggan')), $data);
 		echo json_encode(array("status" => TRUE));
 	}

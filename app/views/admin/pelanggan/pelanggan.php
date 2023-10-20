@@ -212,7 +212,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group"><label class="col-md-3 control-label ">No Pelanggan</label>
-                                        <div class="col-md-9"><input type="text" name="no_pelanggan" class="form-control" readonly> <span class="help-block m-b-none"></span>
+                                        <div class="col-md-9"><input type="text" name="no_pelanggan" class="form-control" xreadonly> <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
                                     <div class="form-group"><label class="col-md-3 control-label">Nama Pelanggan</label>
