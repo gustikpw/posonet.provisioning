@@ -30,7 +30,7 @@ class Api_whatsapp_model extends CI_Model
       'json' => [
         'secretApp' => $this->wa['SECRET_APP'],
         'phoneNumber' => '6281340310250',
-        'message' => 'From Model'
+        'message' => $data
     ]
     ]);
 

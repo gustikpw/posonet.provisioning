@@ -294,6 +294,7 @@
         $('[name="interface"]').val(data.gpon_olt);
         $('[name="onutype"]').val(data.onu_type);
         $('[name="service_mode"]').val(data.access_mode);
+        $('[name="vlan_profile"]').val(data.vlan_profile);
         $('[name="serial_number"]').val(data.serial_number);
         $('[name="expired"]').val(data.expired);
 
@@ -454,7 +455,7 @@
     if (permanent == 'yes') {
       msg = 'Data pelanggan di Database & OLT akan dihapus secara permanent! Yakin?';
     } else {
-      msg = 'Data pelanggan di OLT akan dihapus dan akan dikonfigurasi secara otomatis!';
+      msg = 'Data pelanggan di OLT akan dihapus dan akan dikonfigurasi ulang secara otomatis!';
     }
     // if (confirm('Yakin menghapus pelanggan ini?\nSebaiknya data ini diedit, buat Nama Pelanggan KOSONG & status NONAKTIF! Agar nomor pelanggan ini dapat digunakan kembali.')) {
     if (confirm('Perhatian! ' + msg)) {
@@ -818,6 +819,19 @@
     // alert("Copied the text: " + copyText.value);
   }
 
+  function setVlanProfile(){
+    vlanp = $('#cvlan option:selected').text();
+    $('#vlan_profile').val(vlanp);
+    // $('[name="keterangan"]').val(vlanp);
+  }
+
+  function getVlanProfile(){
+    $.get("<?= site_url('api_rest_client/get_profile_vlan') ?>",
+      function(data, status) {
+        $("#cvlan").html(data.select_option);
+      }, 'json');
+  }
+
 
 
   let wamode = false;
@@ -828,6 +842,7 @@
   }
 
   $(document).ready(function() {
+    getVlanProfile();
     connection_status();
     setExpired();
     onustate();

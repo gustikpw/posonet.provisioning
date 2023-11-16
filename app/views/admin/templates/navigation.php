@@ -48,7 +48,7 @@
                                 </ul>
                             </li>
                             <li class="">
-                                <a aria-expanded="false" role="button" href="<?= site_url('dashboard/pengeluaran') ?>"><span class="fa fa-area-chart"></span> Pengeluaran <span class="badge badge-info">New (1)</a>
+                                <a aria-expanded="false" role="button" href="<?= site_url('dashboard/pengeluaran') ?>"><span class="fa fa-area-chart"></span> Pengeluaran <!--span class="badge badge-info">New (1)--></a>
                             </li>
                             <li <?= ($active == "laporan") ? 'active' : '' ?>">
                                 <a aria-expanded="false" role="button" href="<?= site_url('dashboard/laporan') ?>">
@@ -67,22 +67,22 @@
                             <li><a href="">Menu item</a></li> -->
                                 </ul>
                             </li>
-                            <li class="dropdown">
+                            <!-- <li class="dropdown">
                                 <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="fa fa-cogs"></span> CRM
-                                    <!-- <span class="badge badge-info">New (1) -->
+                                    <span class="badge badge-info">New (1)
                                     </span>
                                     <span class="caret"></span>
                                 </a>
                                 <ul role="menu" class="dropdown-menu">
-                                    <!-- <li><a href="">Profil Perusahaan</a></li> -->
-                                    <li><a href="<?= site_url('dashboard/wa_notif') ?>">Set Notif <span class="badge badge-info">1</span></a></li>
-                                    <li><a href="<?= site_url('wa_notif/get_qr') ?>">Link Device <span class="badge badge-danger">Unlinked</span><span class="badge badge-info">Linked</span></a></li>
-                                    <li><a href="<?= site_url('dashboard/set_wa_template') ?>">WhatsApp Template</a></li>
-                                    <!-- <li><a href="">Menu item</a></li>
-                            <li><a href="">Menu item</a></li> -->
+                                    <li><a href="">Profil Perusahaan</a></li>
+                                    <li><a href="<\?= site_url('dashboard/wa_notif') ?>">Set Notif <span class="badge badge-info">1</span></a></li>
+                                    <li><a href="<\?= site_url('wa_notif/get_qr') ?>">Link Device <span class="badge badge-danger">Unlinked</span><span class="badge badge-info">Linked</span></a></li>
+                                    <li><a href="<\?= site_url('dashboard/set_wa_template') ?>">WhatsApp Template</a></li> 
+                                    <li><a href="">Menu item</a></li>
+                            <li><a href="">Menu item</a></li> 
                                 </ul>
-                            </li>
+                            </li> -->
 
                         </ul>
                         <ul class="nav navbar-top-links navbar-right">

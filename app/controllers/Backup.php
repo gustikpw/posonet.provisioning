@@ -244,4 +244,108 @@ class Backup extends CI_Controller
 			}
 		}
 	}
+
+
+	public function tes(){
+		$file = FCPATH . 'assets/posonet/startrun_backup_olt1.dat';
+		// Membaca isi file
+		$data = file_get_contents($file);
+		// Pisahkan data menjadi bagian gpon-olt dan gpon-onu
+		$olt_data = preg_split('/^(interface gpon-olt_.+)$/m', $data, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$onu_data = preg_split('/^(interface gpon-onu_.+)$/m', $data, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+		// Hapus elemen pertama yang kosong
+		array_shift($olt_data);
+		array_shift($onu_data);
+
+		// echo json_encode($olt_data);
+		// return;
+		// Buat struktur data untuk menyimpan informasi
+		$gpon_info = [];
+
+		// Iterasi melalui data gpon-olt
+		foreach ($olt_data as $olt_block) {
+			preg_match('/interface gpon-olt_(\d+\/\d+\/\d+)\s+onu (\d+) type ([^\s]+) sn ([^\s]+)/', $olt_block, $olt_matches);
+			// $olt_key = "interface gpon-onu_{$olt_matches[2]}";
+			// $gpon_info[$olt_key] = [
+			// 	'onu' => $olt_matches[2],
+			// 	'type' => $olt_matches[3],
+			// 	'sn' => $olt_matches[4],
+			// ];
+		}
+
+		echo json_encode($olt_matches);
+		return;
+
+		// Iterasi melalui data gpon-onu
+		foreach ($onu_data as $onu_block) {
+			preg_match('/interface gpon-onu_(\d+\/\d+\/\d+:\d+)\s+name (.+)\s+description (.+)\s+user-vlan (\d+) vlan (\d+)/', $onu_block, $onu_matches);
+			$onu_key = "interface gpon-onu_{$onu_matches[1]}";
+			if (array_key_exists($onu_key, $gpon_info)) {
+				$gpon_info[$onu_key]['name'] = $onu_matches[2];
+				$gpon_info[$onu_key]['description'] = $onu_matches[3];
+				$gpon_info[$onu_key]['user-vlan'] = $onu_matches[4];
+				$gpon_info[$onu_key]['vlan'] = $onu_matches[5];
+			}
+		}
+
+		// Hasilnya adalah $gpon_info yang berisi informasi yang digabungkan
+		// print_r($gpon_info);
+
+		// Struktur data JSON yang akan dihasilkan
+		$json_data = [
+			"data" => []
+		];
+
+		// Iterasi melalui struktur data yang telah diproses
+		foreach ($gpon_info as $key => $info) {
+			$json_data["data"][] = [
+				"name" => $info['name'],
+				"description" => $info['description'],
+				"user-vlan" => $info['user-vlan'],
+				"vlan" => $info['vlan'],
+				"gpon_onu" => str_replace("interface gpon-onu_", "", $key),
+				"onu" => $info['onu'],
+				"type" => $info['type'],
+				"sn" => $info['sn'],
+			];
+		}
+
+		echo json_encode($json_output);
+		// Konversi data ke JSON
+		// $json_output = json_encode($json_data, JSON_PRETTY_PRINT);
+
+		// data": [
+		// 		{
+		// 			"name": "028. Brayen T",
+		// 			"description ": "p=UP-10MB &e=20/03/2023 &h=0 &a=pppoe",
+		// 			"user-vlan ": "101",
+		// 			"vlan": 101,
+		// 			"gpon_onu": "1/1/1:1",
+		// 			"onu": "1",
+		// 			"type": "ZTE-F609",
+		// 			"sn": "ZTEGC82699D1",
+		// 		},
+		// 		{
+		// 			"name": "010. Ici Wengku",
+		// 			"description ": "p=2M &e=20/03/2023 &h=0 &a=pppoe",
+		// 			"user-vlan ": "101",
+		// 			"vlan": 101,
+		// 			"gpon_onu": "1/1/1:3",
+		// 			"onu": "3",
+		// 			"type": "ZTE-F609",
+		// 			"sn": "ZTEGC8988EEE",
+		// 		},
+		// 		{
+		// 			"name": "155. Exel aditya Baru",
+		// 			"description ": "p=UP-15MB &e=20/03/2023 &h=0 &a=pppoe",
+		// 			"user-vlan ": "101",
+		// 			"vlan": 101,
+		// 			"gpon_onu": "1/1/1:5",
+		// 			"onu": "5",
+		// 			"type": "ZTE-F609",
+		// 			"sn": "ZTEGCB064018",
+		// 		},
+		// 	]
+		}
 }

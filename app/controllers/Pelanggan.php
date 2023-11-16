@@ -44,7 +44,7 @@ class Pelanggan extends CI_Controller
 								<li><a href=\"javascript:void(0)\" onclick=\"show_raw_content('attenuation','$br->gpon_onu')\">Show Attenuation</a></li>
 								<li><a href=\"javascript:void(0)\" onclick=\"show_raw_content('detail-info','$br->gpon_onu')\">Show Detail Information</a></li>
 								<li><a href=\"javascript:void(0)\" onclick=\"show_raw_content('iphost','$br->gpon_onu')\">Show IP Host</a></li>
-								<li><a href=\"javascript:void(0)\" onclick=\"show_raw_content('onu-run','$br->gpon_onu')\">Show Run</a></li>
+								<li><a href=\"javascript:void(0)\" onclick=\"show_raw_content('onu-run','$br->gpon_onu')\">Show Running Config</a></li>
 							</ul>
 						</div>
 						<div class=\"btn-group\">
@@ -150,6 +150,8 @@ class Pelanggan extends CI_Controller
 			'onu_type' => $this->input->post('onutype'),
 			'access_mode' => $this->input->post('service_mode'),
 			'serial_number' => $this->input->post('serial_number'),
+			'vlan_profile' => $this->input->post('vlan_profile'),
+			'cvlan' => $this->input->post('cvlan'),
 
 			'no_pelanggan' => $this->input->post('no_pelanggan'),
 			'nama_pelanggan' => $this->input->post('nama_pelanggan'),
@@ -166,7 +168,8 @@ class Pelanggan extends CI_Controller
 			'ktp_filename' => $ktp_filename,
 		);
 
-
+		// echo json_encode($data);
+		// return;
 		// if (strlen($data['no_pelanggan']) >=5) {
 		// 	echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
 		// 	exit();
@@ -181,13 +184,14 @@ class Pelanggan extends CI_Controller
 			$data['gpon_onu'] = $onu->data->gpon_onu;
 			$data['ppp_profile'] = $onu->data->ppp_profile;
 			$data['description'] = $onu->data->description;
-
-			$insert = $this->pelanggan->save($data);
-
-			//send new client data to Admin telegram
-			$this->load->model('Api_telegrambot_model','telegramModel');
-			$telegram = $this->telegramModel->sendNewClientToAdmin($data);
 		}
+
+		$insert = $this->pelanggan->save($data);
+
+		//send new client data to Admin telegram
+		$this->load->model('Api_telegrambot_model','telegramModel');
+		$telegram = $this->telegramModel->sendNewClientToAdmin($data);
+		// }
 		echo json_encode(
 			array(
 				"status" => TRUE,

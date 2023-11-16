@@ -150,67 +150,7 @@ class Api_rest_client extends CI_Controller
 
 
 
-	// public function unconfig()
-	// {
-	// 	$body = $this->api->pon_onu_uncfg();
-		
-		
-	// 	$data = array();
-	// 	foreach ($body->data as $d) {
-	// 		$interface_baru = $d->interface;
-	// 		//check sn arleady exist in database
-	// 		$cekdb = $this->db->query("SELECT serial_number, name, gpon_olt as interface_lama, onu_type, nama_paket
-	// 			FROM v_pelanggan
-	// 			WHERE serial_number = '$d->sn'");
-	// 		/**
-	// 		 * jika data unconfig ditemukan dengan SN yang sama didalam database, 
-	// 		 * maka lakukan konfigurasi ulang dengan mendaftarkan SN di interface baru, 
-	// 		 * kemudian hapus konfig di interface lama jika port berbeda
-	// 		 */ 
-	// 		if ($cekdb->num_rows() > 0) {
-	// 			$dt = $cekdb->row();
-	// 			$onutype = $dt->onu_type;
-	// 			$name = $dt->name;
-	// 			$paket = $dt->nama_paket;
-	// 			$disable = 'disabled';
-				
-	// 			if ($dt->interface_lama == $interface_baru) {
-	// 				$caption = "Configuring..";
-	// 				$mode = 'reconfig';
-	// 			} else {
-	// 				$caption = "Pindah Port $dt->interface_lama >> $interface_baru ...";
-	// 				$mode = 'pindahpon';
-	// 			}
-
-	// 			//pindah port atau config ulang di port yang sama
-	// 			$this->api->reconfig($dt->serial_number, $dt->interface_lama, $interface_baru, $onutype, $mode);
-	// 		} else {
-	// 			// kondisi untuk onu baru unconfig
-	// 			$onutype = $name = $paket = "-";
-	// 			$disable = '';
-	// 			$caption = 'config';
-	// 		}
-	// 		$row = array();
-
-	// 		$row[] = "<button type=\"button\" class=\"btn btn-primary btn-xs\" onclick=\"regis('$interface_baru','$d->model','$d->sn')\" $disable>$caption</button>";
-	// 		$row[] = $d->interface;
-	// 		$row[] = $d->model;
-	// 		$row[] = $d->sn;
-	// 		$row[] = $name;
-	// 		$row[] = $onutype;
-	// 		$row[] = $paket;
-
-	// 		$data[] = $row;
-	// 	}
-
-	// 	$output = array(
-	// 		"data" => $data,
-	// 		"message" => $body->message,
-	// 		"status" => $body->status,
-	// 	);
-
-	// 	echo json_encode($output);
-	// }
+	
 
 	/**
 	 * FUNGSI UNCONFIG DAN RECONFIG
@@ -259,7 +199,7 @@ class Api_rest_client extends CI_Controller
 	}
 
 	public function check_onu($gpon_olt_baru, $sn){
-		$cekdb = $this->db->query("SELECT no_pelanggan, nama_pelanggan, serial_number, name, gpon_onu, onu_type, description, username, password, mikrotik_profile, nama_paket
+		$cekdb = $this->db->query("SELECT no_pelanggan, nama_pelanggan, serial_number, name, gpon_onu, onu_type, description, username, password, mikrotik_profile, nama_paket, vlan_profile, cvlan
 				FROM v_pelanggan
 				WHERE serial_number = '$sn'");
 
@@ -327,6 +267,8 @@ class Api_rest_client extends CI_Controller
 					'description' 	=> $data->description,
 					'username' 		=> $secret->username,
 					'password' 		=> $secret->password,
+					'vlan_profile' 	=> $data->vlan_profile,
+					'cvlan' 		=> $data->cvlan,
 					'mode_config'	=> $cek->mode,
 				);
 
@@ -335,9 +277,12 @@ class Api_rest_client extends CI_Controller
 					// $remove_old_secret = $this->routermodel->remove_secret("$data->username");
 					$create_new_secret = $this->routermodel->create_ppp_secret($secret->username, $secret->password, 'pppoe', $data->mikrotik_profile);
 					//update gpon_onu di database
+					// $query 	= "UPDATE pelanggan 
+					// 	SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password' 
+					// 	WHERE gpon_onu='$data->gpon_onu'";
 					$query 	= "UPDATE pelanggan 
 						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password' 
-						WHERE gpon_onu='$data->gpon_onu'";
+						WHERE serial_number='$key->sn'";
 					$update = $this->db->query($query);
 
 					$countReconfig++;
@@ -360,6 +305,8 @@ class Api_rest_client extends CI_Controller
 					'description' 	=> $data->description,
 					'username' 		=> $data->username,
 					'password' 		=> $data->password,
+					'vlan_profile' 	=> $data->vlan_profile,
+					'cvlan' 		=> $data->cvlan,
 					'mode_config'	=> $cek->mode,
 				);
 				//reconfig first
@@ -514,10 +461,11 @@ class Api_rest_client extends CI_Controller
 	public function raw_onu_runcfg()
 	{
 		$gpon_onu = $this->input->post('data');
-		$request = $this->api->raw_onu_run_cfg($gpon_onu);
+		$request1 = $this->api->raw_onu_run_conf_interface($gpon_onu);
+		$request2 = $this->api->raw_onu_run_cfg($gpon_onu);
 
 		echo json_encode([
-			"data" => "<pre>$request</pre>",
+			"data" => "<pre>$request1 \n\n$request2</pre>",
 			"header" => "ONU Running Config gpon-onu_" . $gpon_onu,
 			"status" => true,
 		]);
@@ -613,6 +561,39 @@ class Api_rest_client extends CI_Controller
 			"status" => true,
 		]);
 	}
+
+	public function get_profile_vlan()
+	{
+		$data = $this->api->raw_show_gpon_onu_profile_vlan();
+
+		// $data = "\r\nProfile name:  netmedia143\r\nTag mode:      tag\r\nCVLAN:         143\r\nCVLAN priority:7\r\n\r\nProfile name:  netmedia142\r\nTag mode:      tag\r\nCVLAN:         142\r\nCVLAN priority:7\r\n\r\nZXAN#";
+
+		$matches = array();
+		preg_match_all('/Profile name:\s+(\S+)\s+Tag mode:\s+(\S+)\s+CVLAN:\s+(\d+)\s+CVLAN priority:(\d+)/', $data, $matches, PREG_SET_ORDER);
+
+		$profiles = array();
+		$options = "<option>select VLAN</option>";
+
+		foreach ($matches as $match) {
+			$profile = new stdClass();
+			$profile->profile_name = $match[1];
+			$profile->tag_mode = $match[2];
+			$profile->cvlan = (int)$match[3];
+			$profile->cvlan_priority = (int)$match[4];
+			$profiles[] = $profile;
+			$options .= "<option value='".(int)$match[3]."'>".$match[1]."</option>";
+		}
+
+
+
+		echo json_encode([
+			"data" => $profiles,
+			"select_option" => $options,
+			"header" => "Showing GPON ONU VLAN Profile",
+			"status" => true,
+		]);
+	}
+
 	public function raw_gpon_profile_tcont()
 	{
 		$request = $this->api->raw_show_gpon_profile_tcont();
@@ -708,7 +689,7 @@ class Api_rest_client extends CI_Controller
 	public function restore_config_ont($sn_uncfg)
 	{
 		//check SN ont Uncfg apakah sama dengan yang ada di database
-		$checkSN = $this->db->query("SELECT id_pelanggan, nama_pelanggan, serial_number,gpon_olt, nama_paket, id_paket
+		$checkSN = $this->db->query("SELECT id_pelanggan, nama_pelanggan, serial_number,gpon_olt, nama_paket, id_paket, vlan_profile, cvlan
 				FROM v_pelanggan
 				WHERE serial_number = '$sn_uncfg'");
 		// jika ditemukan, ambil data lama dari database kemudian konfig ulang di olt
@@ -722,6 +703,8 @@ class Api_rest_client extends CI_Controller
 				'description' => $dt->description, 
 				'ppp_profile' => $dt->ppp_profile, 
 				'access_mode' => $dt->access_mode, 
+				'vlan_profile' => $dt->vlan_profile, 
+				'cvlan' => $dt->cvlan, 
 			);
 
 			return $data;
@@ -857,7 +840,7 @@ class Api_rest_client extends CI_Controller
 		$onu_type = html_escape($this->input->post('rep_onutype'));
 		$new_sn = html_escape($this->input->post('rep_new_sn'));
 
-		$old_secret = $this->db->query("SELECT no_pelanggan, nama_pelanggan, username, mikrotik_profile, description FROM v_pelanggan WHERE gpon_onu='$gpon_onu'")->row();
+		$old_secret = $this->db->query("SELECT no_pelanggan, nama_pelanggan, username, mikrotik_profile, description, vlan_profile, cvlan FROM v_pelanggan WHERE gpon_onu='$gpon_onu'")->row();
 		
 		$new_secret = $this->_make_ppp_secret($old_secret->no_pelanggan, $old_secret->nama_pelanggan, $new_sn);
 
@@ -872,6 +855,8 @@ class Api_rest_client extends CI_Controller
 			'username' => $new_secret->username,
 			'password' => $new_secret->password,
 			'mikrotik_profile' => $old_secret->mikrotik_profile,
+			'vlan_profile' => $old_secret->vlan_profile,
+			'cvlan' => $old_secret->cvlan,
 		);
 
 		// sebelum replace ont, onu lama akan dihapus di olt
@@ -918,8 +903,8 @@ class Api_rest_client extends CI_Controller
 		//buat username dengan kombinasi NOPEL+NAME+NEW-SN
 		$name = $no_pelanggan.'. '.$nama_pelanggan;
 		// Ambil 10 karakter pertama dari $name dan ganti spasi dengan '-'
-		$nameSubstring = str_replace(' ', '-', substr($name, 0, 10));
-
+		$nameSubstring = str_replace(' ', '-', $name);
+		$nameSubstring = substr($nameSubstring, 0, 15);
 		// Ambil substring dari $sn mulai dari karakter ke-4
 		$snSubstring = substr($sn, 4);
 
@@ -1220,7 +1205,22 @@ Keluhan		: ";
 
 	public function nodewa(){
 		$this->load->model('Api_whatsapp_model','nodewa');
-		
-		echo json_encode($this->nodewa->sendWa());
+		$data = "⏰ Perubahan Masa aktif Paket
+Name : 112. DIDIK SETYADI
+Profile : UPTO-15M
+Expired to : 2023-11-20
+Tgl Input : 2023-10-19 08:49:08";
+		echo json_encode($this->nodewa->sendWa($data));
 	}
+
+	public function baseinfo(){
+		// $data = $this->api->raw_gpon_onu_baseinfo("1/1/5");
+		// echo json_encode("<pre>$data</pre>");
+		// echo json_encode($data);
+
+		echo json_encode(
+			$this->_make_ppp_secret('504','STEVEN RAMPALINO','ZTEGC0FAD589')
+		);
+	}
+
 }

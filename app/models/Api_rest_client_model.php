@@ -64,6 +64,8 @@ class Api_rest_client_model extends CI_Model
         'description' => 'p=' . $profile->mikrotik_profile . ' &e=' . date('d/m/Y', strtotime($data['expired'])) . ' &h=0' . ' &a=' . $data['access_mode'],
         'ppp_profile' => $profile->mikrotik_profile,
         'access_mode' => $data['access_mode'],
+        'vlan_profile' => $data['vlan_profile'],
+        'cvlan' => $data['cvlan'],
       ]
     ]);
 
@@ -85,6 +87,8 @@ class Api_rest_client_model extends CI_Model
           'description' => $data['description'],
           'username' => $data['username'],
           'password' => $data['password'],
+          'vlan_profile' => $data['vlan_profile'],
+          'cvlan' => $data['cvlan'],
         ]
       ]);
 
@@ -135,6 +139,57 @@ class Api_rest_client_model extends CI_Model
     return $response->getBody();
   }
 
+  public function raw_gpon_onu_baseinfo($gpon_olt)
+  {
+
+    $response = $this->_client->request('GET', 'getrawgponbaseinfo', [
+      'form_params' => [
+        'interface' => $gpon_olt,
+      ]
+    ]);
+
+    // $data = json_decode($response->getBody());
+    $data = $response->getBody();
+
+    // $lines = explode("\r\n", $data);
+
+    // return $data;
+
+    // Pisahkan baris-baris teks menjadi array
+    $lines = explode("\r\n", $data);
+
+    $lines = array_slice($lines, 3, count($lines) - 4);
+    // Inisialisasi array untuk menyimpan data
+    $onuData = [];
+
+    // Loop melalui setiap baris, mengambil data yang diperlukan
+    foreach ($lines as $line) {
+        // Hilangkan spasi ganda dan pecah baris menjadi kolom
+        $columns = preg_split('/\s+/', trim($line));
+
+        // Pastikan baris memiliki cukup kolom (minimal 5)
+        if (count($columns) >= 5) {
+            // Ambil data yang diperlukan
+            $onuIndex = $columns[0];
+            $type = $columns[1];
+            $mode = $columns[2];
+            $authInfo = $columns[3];
+            $state = $columns[4];
+
+            // Tambahkan data ke array
+            $onuData[] = [
+                'onu_ndex' => explode(":",$onuIndex)[1],
+                'gpon_onu' => str_replace("gpon-onu_","",$onuIndex),
+                'type' => $type,
+                'mode' => $mode,
+                'auth_info' => str_replace("SN:","",$authInfo),
+                'state' => $state,
+            ];
+        }
+    }
+    return $onuData;
+  }
+
   public function pon_power_onurx($gpon_olt)
   {
 
@@ -168,6 +223,18 @@ class Api_rest_client_model extends CI_Model
   {
 
     $response = $this->_client->request('GET', 'rawonurun', [
+      'form_params' => [
+        'gpon_onu' => $gpon_onu,
+      ]
+    ]);
+
+    return $response->getBody();
+  }
+
+  public function raw_onu_run_conf_interface($gpon_onu)
+  {
+
+    $response = $this->_client->request('GET', 'rawonurunconfinterface', [
       'form_params' => [
         'gpon_onu' => $gpon_onu,
       ]

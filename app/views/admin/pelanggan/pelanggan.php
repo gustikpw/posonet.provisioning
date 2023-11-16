@@ -28,7 +28,7 @@
                                     <li><a href="javascript:void(0)" onclick="show_raw_content('detail-info','')">Backup Config</a></li>
                                 </ul>
                             </div>
-                            <div class="btn-group">
+                            <!-- <div class="btn-group">
                                 <button type="button" class="btn btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     WhatsApp<span class="fa fa-info"> <span class="caret"></span>
                                 </button>
@@ -37,7 +37,7 @@
                                     <li><a href="javascript:void(0)" onclick="whatsapp('card','')">Reconnect</a></li>
 
                                 </ul>
-                            </div>
+                            </div> -->
                             <div class="btn-group">
                                 <button type="button" class="btn btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Manual<span class="fa fa-info"> <span class="caret"></span>
@@ -185,7 +185,7 @@
                                 <input type="text" name="id_pelanggan" hidden>
                                 <div class="col-md-6 b-r">
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label text-danger">Interface /OnuType</label>
+                                        <label class="col-md-3 control-label text-danger">PON & OnuType</label>
                                         <div class="col-md-9">
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -199,14 +199,32 @@
                                             <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
-                                    <div class="form-group"><label class="col-md-3 control-label  text-danger">Service Mode</label>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label text-danger">Mode & VLAN</label>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <select name="service_mode" class="form-control">
+                                                        <option value="pppoe">PPPoE</option>
+                                                    </select> <span class="help-block m-b-none"></span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select name="cvlan" id="cvlan" class="form-control" onchange="setVlanProfile()">
+                                                        
+                                                    </select> <span class="help-block m-b-none"></span>
+                                                </div>
+                                                <input type="text" id="vlan_profile" name="vlan_profile" hidden>
+                                            </div>
+                                            <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="form-group"><label class="col-md-3 control-label  text-danger">Service Mode</label>
                                         <div class="col-md-9">
                                             <select name="service_mode" class="form-control">
                                                 <option value="pppoe">PPPoE</option>
-                                                <option value="bridge">Bridge</option>
                                             </select> <span class="help-block m-b-none"></span>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="form-group"><label class="col-md-3 control-label ">Wilayah</label>
                                         <div class="col-md-9"><select name="id_wilayah" class="form-control fokus"></select> <span class="help-block m-b-none"></span>
                                         </div>
