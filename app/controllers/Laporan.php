@@ -302,7 +302,7 @@ class Laporan extends CI_Controller
 			$worksheet->setCellValue("G$startFill", "$plgn->expired");
 			$worksheet->setCellValue("H$startFill", "$plgn->telp");
 			$worksheet->setCellValue("I$startFill", "$plgn->serial_number");
-			$worksheet->setCellValue("J$startFill", "$plgn->no_ktp");
+			$worksheet->setCellValue("J$startFill", " $plgn->no_ktp");
 			$worksheet->setCellValue("K$startFill", urldecode("$plgn->lokasi_map"));
 			$startFill++;
 		}
