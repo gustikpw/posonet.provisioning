@@ -16,7 +16,7 @@ ADD stb_username VARCHAR(50);
 ADD stb_password VARCHAR(50);
 
 # Edit view pelanggan add
-- v_pelanggan = add p.vlan_profile, p.cvlan
+- v_pelanggan = add p.vlan_profile, p.cvlan, p.no_ktp,
 
 # please run query to set default vlan-profile and cvlan. may different in your olt
 - UPDATE pelanggan SET vlan_profile='netmedia143', cvlan='143'

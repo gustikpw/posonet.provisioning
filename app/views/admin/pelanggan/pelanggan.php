@@ -257,14 +257,30 @@
                                 </div>
 
                                 <div class="col-md-6 b-r">
-                                    <div class="form-group"><label class="col-md-3 control-label">Paket Berlangganan</label>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label text-danger">Paket & Status</label>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <select name="id_paket" class="form-control"></select>
+                                                    <span class="help-block m-b-none"></span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select name="status" class="form-control"></select> <span class="help-block m-b-none"></span>
+                                                </div>
+                                            </div>
+                                            <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="form-group"><label class="col-md-3 control-label">Paket Berlangganan</label>
                                         <div class="col-md-9"><select name="id_paket" class="form-control"></select> <span class="help-block m-b-none"></span>
                                         </div>
-                                    </div>
-                                    <div class="form-group"><label class="col-md-3 control-label">Status</label>
+                                    </div> -->
+                                    <!-- <div class="form-group"><label class="col-md-3 control-label">Status</label>
                                         <div class="col-md-9"><select name="status" class="form-control"></select> <span class="help-block m-b-none"></span>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="form-group">
                                         <label class="col-md-3 control-label text-danger">S/N (ONT/STB)</label>
                                         <div class="col-md-9">
@@ -274,6 +290,20 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <input type="text" name="sn_stb" placeholder="S/N STB" class="form-control">
+                                                </div>
+                                            </div>
+                                            <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label text-danger">STB Username & Password</label>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="text" name="stb_username" placeholder="STB Username" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text" name="stb_password" placeholder="STB Password" class="form-control">
                                                 </div>
                                             </div>
                                             <span class="help-block m-b-none"></span>

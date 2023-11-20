@@ -166,6 +166,10 @@ class Pelanggan extends CI_Controller
 			'keterangan' => $this->input->post('keterangan'),
 			'no_ktp' => $this->input->post('no_ktp'),
 			'ktp_filename' => $ktp_filename,
+			
+			'sn_stb' => $this->input->post('sn_stb'),
+			'stb_username' => $this->input->post('no_pelanggan'),
+			'stb_password' => rand(111111,999999),
 		);
 
 		// echo json_encode($data);

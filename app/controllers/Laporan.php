@@ -272,7 +272,7 @@ class Laporan extends CI_Controller
 		// Get target setoran by id_wilayah
 		$qt = $this->db->query("SELECT SUM(t.tarif) AS target	FROM v_pelanggan t WHERE id_wilayah = '$id_wilayah' ")->row();
 		// Result pelanggan by id_wilayah
-		$qp = $this->db->query("SELECT * FROM v_pelanggan WHERE id_wilayah = $id_wilayah ORDER BY no_pelanggan ASC")->result();
+		$qp = $this->db->query("SELECT no_pelanggan,nama_pelanggan,nama_paket,tarif,status,tgl_instalasi,expired,telp,serial_number,no_ktp,lokasi_map FROM v_pelanggan WHERE id_wilayah = $id_wilayah ORDER BY no_pelanggan ASC")->result();
 
 		$startFill = 6;
 
@@ -302,7 +302,8 @@ class Laporan extends CI_Controller
 			$worksheet->setCellValue("G$startFill", "$plgn->expired");
 			$worksheet->setCellValue("H$startFill", "$plgn->telp");
 			$worksheet->setCellValue("I$startFill", "$plgn->serial_number");
-			$worksheet->setCellValue("J$startFill", urldecode("$plgn->lokasi_map"));
+			$worksheet->setCellValue("J$startFill", "$plgn->no_ktp");
+			$worksheet->setCellValue("K$startFill", urldecode("$plgn->lokasi_map"));
 			$startFill++;
 		}
 
