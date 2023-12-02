@@ -208,8 +208,8 @@
 
   function save() {
     var url;
-    if ($('[name="id_paket"]').val() == null || $('[name="status"]').val() == '') {
-      alert('Isi kolom yang kosong! (PAKET & STATUS wajib diisi)');
+    if ($('[name="id_paket"]').val() == null || $('[name="status"]').val() == '' || $('[name="vlan_profile"]').val() == '') {
+      alert('Isi kolom yang kosong! (select VLAN  or PAKET or STATUS wajib diisi)');
       return;
     }
 
