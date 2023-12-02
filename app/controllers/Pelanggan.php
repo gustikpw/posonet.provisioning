@@ -356,7 +356,16 @@ class Pelanggan extends CI_Controller
 		$last = 0;
 
 			if(count($data) == 1) {
-				echo json_encode(['newCode' => $row->no_pelanggan + 1]);
+				$hasil = $row->no_pelanggan + 1;
+				if(strlen((string) $hasil) == 1) {
+					$hasil = "00$hasil";
+				} else if(strlen((string) $hasil) == 2) {
+					$hasil = "0$hasil";
+				}
+
+				echo json_encode(
+					['newCode' => $hasil, 'kondisi' => 'a']
+				);
 			}
 			elseif (count($data) > 1) {
 	
@@ -364,7 +373,7 @@ class Pelanggan extends CI_Controller
 					
 					if (!in_array($i, $data)){
 						$terlewati = true;
-						echo json_encode(['newCode' => $i]);
+						echo json_encode(['newCode' => $i, 'kondisi' => 'b']);
 						break;
 					}
 					$last = $i;
@@ -376,15 +385,17 @@ class Pelanggan extends CI_Controller
 					$fullKode = (int) $row->kode_wilayah.'99';
 					//cek apakah slot no pelanggan full?
 					if(($last + 1) >= $fullKode) {
-						echo json_encode(['newCode' => 'full']);
+						echo json_encode(['newCode' => 'full', 'kondisi' => 'c']);
 						return;
 					} else {
-						echo json_encode(['newCode' => $last + 1]);
+						$hasil = $last + 1;
+						
+						echo json_encode(['newCode' => "$hasil", 'kondisi' => 'd']);
 					}
 				}
 			
 			} else {
-				echo json_encode(['newCode' => "$mulai" ]);
+				echo json_encode(['newCode' => "$mulai" , 'kondisi' => 'e']);
 			}
 		// }
 	}
