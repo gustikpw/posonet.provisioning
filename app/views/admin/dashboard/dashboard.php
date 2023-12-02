@@ -25,11 +25,11 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-3 border-right">
-                                <small class="stats-label cdet15">Target Rp</small>
+                                <small class="stats-label cdet15x">Target Rp</small>
                                 <h2 class="no-margins"><span class="font-bold det15" style="display: none;">0</span></h2>
                             </div>
                             <div class="col-xs-3 border-right">
-                                <small class="stats-label cdet16">Tercapai Rp</small>
+                                <small class="stats-label cdet16x">Tercapai Rp</small>
                                 <h2 class="no-margins"><span class="font-bold det16" style="display: none;">0</span></h2>
                                 <span class="no-margins text-info" style="font-size: 12pt;"><span class="det18"></span></span>
                             </div>
@@ -81,12 +81,12 @@
 
                 <div class="row m-t-xs">
                     <div class="col-xs-6">
-                        <h5 class="m-b-xs cdet1">Total Customers</h5>
+                        <h5 class="m-b-xs cdet1x">Total Customers</h5>
                         <h1 class="no-margins"><span class="det1" style="display: none;">0</span></h1>
                         <!-- <div class="font-bold text-navy">98% <i class="fa fa-bolt"></i></div> -->
                     </div>
                     <div class="col-xs-6">
-                        <h5 class="m-b-xs cdet7">Inactive</h5>
+                        <h5 class="m-b-xs cdet7x">Inactive</h5>
                         <h1 class="no-margins"><span class="det7" style="display: none;">0</span></h1>
                         <!-- <div class="font-bold text-navy">98% <i class="fa fa-bolt"></i></div> -->
                     </div>

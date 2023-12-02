@@ -5,7 +5,7 @@
                         <strong><?= ucwords(str_replace('_', ' ', $active)) ?></strong>.
                     </div>
                     <div>
-                        <strong>Copyright</strong> <?= $profilP->nama_perusahaan; ?> &copy; 2020-<?= date('Y') ?>
+                        <strong>Copyright</strong> <span class="cdet15"><?= $profilP->nama_perusahaan; ?> &copy; 2020-<?= date('Y') ?> </span>
                     </div>
                 </div>
 
