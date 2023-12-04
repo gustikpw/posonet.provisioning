@@ -110,8 +110,8 @@ class Api_mikrotik_model extends CI_Model
     $secretMtik = $this->get_ppp_secret();
 
     foreach ($secretMtik as $d) {
-      $name = mysql_escape_string($d['name']);
-      $cekdb = $this->db->query("SELECT id_pelanggan, username, mikrotik_profile, status_berlangganan FROM v_pelanggan WHERE username='$name'");
+      $name = $this->db->escape($d['name']);
+      $cekdb = $this->db->query("SELECT id_pelanggan, username, mikrotik_profile, status_berlangganan FROM v_pelanggan WHERE username=$name");
       
       // jika name sama maka cek profile
       if ($cekdb->num_rows() > 0 ){

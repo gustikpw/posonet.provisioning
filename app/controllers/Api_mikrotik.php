@@ -61,9 +61,9 @@ class Api_mikrotik extends CI_Controller
 		// buat client dengan status default disconnected
 		$this->db->query("UPDATE pelanggan SET active_connection='disconnected'");
 		// update ke connected berdasarkan user yang terkoneksi di mikrotik
-		$escstring = mysql_escape_string($val[name]);
 		foreach ($secrets as $val) {
-			$this->db->query("UPDATE pelanggan SET ip_address='$val[address]', active_connection='connected' WHERE username='$escstring'");
+			$escstring = $this->db->escape($val['name']);
+			$this->db->query("UPDATE pelanggan SET ip_address='$val[address]', active_connection='connected' WHERE username=$escstring");
 		}
 		// echo json_encode($secrets);
 		echo json_encode(['status' => true, 'message' => 'Active connection updated!']);
