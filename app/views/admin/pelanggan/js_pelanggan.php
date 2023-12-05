@@ -291,17 +291,26 @@
         $('[name="no_ktp"]').val(data.no_ktp);
 
         //OLT
-        $('[name="interface"]').val(data.gpon_olt);
+        if(data.gpon_olt == '') {
+          $('[name="interface"]').val(data.gpon_onu.split(':')[0]);
+        } else {
+          $('[name="interface"]').val(data.gpon_olt);
+        }
         $('[name="onutype"]').val(data.onu_type);
         $('[name="service_mode"]').val(data.access_mode);
         $('[name="vlan_profile"]').val(data.vlan_profile);
+        $('[name="cvlan"]').val(data.cvlan);
         $('[name="serial_number"]').val(data.serial_number);
         $('[name="expired"]').val(data.expired);
+        $('[name="odp_number"]').val(data.odp_number);
+        $('[name="stb_username"]').val(data.stb_username);
+        $('[name="stb_password"]').val(data.stb_password);
 
 
         $('.ktpfilename').text(data.ktp_filename);
         $('#myModal').modal('show');
         $('.modal-title').text('Edit <?= ucwords(str_replace('_', ' ', $active)); ?>');
+        $('#btnSave').text('Update');
       },
       error: function(jqXHR, textStatus, errorThrown) {
         notif('Gagal mengambil data! \n' + errorThrown, 'Error', 'error');
@@ -707,6 +716,17 @@
       function(data, status) {
         notif(data.message, 'Updating power ONU Rx', 'success');
         console.log("Message: " + data.message + "\nStatus: " + status);
+        reload_table();
+      }, 'json');
+  }
+
+  function unsaved_onu() {
+    notif('Detect onu', 'Checking on progress', 'warning');
+    $.get("<?= site_url('api_rest_client/getUnsyncOnu') ?>",
+      function(data, status) {
+        notif(data.message, 'Detect UNSYNC ONU success', 'success');
+        console.log("Message: " + data.founds + "\nStatus: " + status);
+        reload_table();
       }, 'json');
   }
 

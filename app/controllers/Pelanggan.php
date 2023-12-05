@@ -83,8 +83,10 @@ class Pelanggan extends CI_Controller
 				$phase = '<span class="label">' . $br->ont_phase_state . '</span> ';
 			} else if ($br->ont_phase_state == 'LOS') {
 				$phase = '<span class="label label-danger">' . $br->ont_phase_state . '</span> ';
+			} else if ($br->ont_phase_state == 'Unconfigured'){
+				$phase = '<span class="label"> Unconfigured </span>';
 			} else {
-				$phase = '<span class="label"> UNCONFIGURED </span>';
+				$phase = '<span class="label label-info"> Registering </span>';
 			}
 			$row[] = $phase;
 			
@@ -167,6 +169,7 @@ class Pelanggan extends CI_Controller
 			'no_ktp' => $this->input->post('no_ktp'),
 			'ktp_filename' => $ktp_filename,
 			
+			'odp_number' => $this->input->post('odp_number'),
 			'sn_stb' => $this->input->post('sn_stb'),
 			'stb_username' => $this->input->post('no_pelanggan'),
 			'stb_password' => rand(111111,999999),
@@ -178,19 +181,22 @@ class Pelanggan extends CI_Controller
 		// 	echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
 		// 	exit();
 		// }
-		// sebelum insert ke database, create dulu di olt
-		$onu = $this->olt->create_onu($data);
-
-		if ($onu->status == '200') {
-			$data['name'] = $onu->data->name;
-			$data['username'] = $onu->data->username;
-			$data['password'] = $onu->data->password;
-			$data['gpon_onu'] = $onu->data->gpon_onu;
-			$data['ppp_profile'] = $onu->data->ppp_profile;
-			$data['description'] = $onu->data->description;
-		}
 
 		$insert = $this->pelanggan->save($data);
+		$onu = $this->olt->create_onu($data);
+		
+		if ($onu->status == '200') {
+			$data1 = array();
+			$data1['name'] = $onu->data->name;
+			$data1['username'] = $onu->data->username;
+			$data1['password'] = $onu->data->password;
+			$data1['gpon_onu'] = $onu->data->gpon_onu;
+			$data1['ppp_profile'] = $onu->data->ppp_profile;
+			$data1['description'] = $onu->data->description;
+
+			$update = $this->pelanggan->update(array('no_pelanggan' => $this->input->post('no_pelanggan')), $data1);
+		}
+
 
 		//send new client data to Admin telegram
 		$this->load->model('Api_telegrambot_model','telegramModel');
@@ -219,9 +225,7 @@ class Pelanggan extends CI_Controller
 		$tgl_pasang = $this->input->post('tgl_instalasi');
 		$tgl_pasang = ($tgl_pasang == null || $tgl_pasang == '') ? NULL : $tgl_pasang;
 		$data = array(
-			// 'no_pelanggan' => $this->input->post('no_pelanggan'),
 			'nama_pelanggan' => $this->input->post('nama_pelanggan'),
-			// 'id_wilayah' => $this->input->post('id_wilayah'),
 			'id_paket' => $this->input->post('id_paket'),
 			// 'tgl_instalasi' => $tgl_pasang,
 			'expired' => $this->input->post('expired'),
@@ -233,6 +237,14 @@ class Pelanggan extends CI_Controller
 			'keterangan' => $this->input->post('keterangan'),
 			'no_ktp' => $this->input->post('no_ktp'),
 			'ktp_filename' => $ktp_filename,
+			
+			'odp_number' => $this->input->post('odp_number'),
+			'onu_type' => $this->input->post('onutype'),
+			'access_mode' => $this->input->post('service_mode'),
+			'vlan_profile' => $this->input->post('vlan_profile'),
+			'cvlan' => $this->input->post('cvlan'),
+			'id_wilayah' => $this->input->post('id_wilayah'),
+			'no_pelanggan' => $this->input->post('no_pelanggan'),
 		);
 		// if (strlen($data['no_pelanggan']) >= 4) {
 		// 	echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));

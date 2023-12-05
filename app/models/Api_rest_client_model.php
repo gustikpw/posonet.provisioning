@@ -151,16 +151,12 @@ class Api_rest_client_model extends CI_Model
     // $data = json_decode($response->getBody());
     $data = $response->getBody();
 
-    // $lines = explode("\r\n", $data);
-
-    // return $data;
-
     // Pisahkan baris-baris teks menjadi array
     $lines = explode("\r\n", $data);
 
     $lines = array_slice($lines, 3, count($lines) - 4);
     // Inisialisasi array untuk menyimpan data
-    $onuData = [];
+    $onuData = array();
 
     // Loop melalui setiap baris, mengambil data yang diperlukan
     foreach ($lines as $line) {
@@ -177,8 +173,8 @@ class Api_rest_client_model extends CI_Model
             $state = $columns[4];
 
             // Tambahkan data ke array
-            $onuData[] = [
-                'onu_ndex' => explode(":",$onuIndex)[1],
+            $onuData[] = (object) [
+                'onu_index' => explode(":",$onuIndex)[1],
                 'gpon_onu' => str_replace("gpon-onu_","",$onuIndex),
                 'type' => $type,
                 'mode' => $mode,

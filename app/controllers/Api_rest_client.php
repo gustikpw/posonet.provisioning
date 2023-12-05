@@ -721,8 +721,15 @@ class Api_rest_client extends CI_Controller
 		$request = $this->api->gpon_onu_state($gpon_olt='');
 
 		$los = $offline = $online = array();
+		$interfaces = array();
 
 		foreach ($request->data as $row) {
+			$interface = explode(":",$row->onu_index)[0];
+
+			if (!in_array($interface,$interfaces)){
+				array_push($interfaces, $interface);
+			}
+
 			if ($row->phase_state === "LOS") {
 				$los[] = $row->onu_index;
 			} 
@@ -735,14 +742,73 @@ class Api_rest_client extends CI_Controller
 			$this->api->update_pelanggan(array('gpon_onu' => $row->onu_index), array('ont_phase_state' => $row->phase_state));
 		}
 
+		
+		//kosongkan tabel
+		$this->db->truncate("olt_interfaces");
+		foreach ($interfaces as $gpon_olt) {
+			$this->db->insert('olt_interfaces',['gpon_olt' => $gpon_olt]);
+			$this->db->insert_id();
+		}
+
 		echo json_encode([
 			"offline" => "offline ".count($offline),
 			"online" => "online " . count($online),
 			"los" => "LOS " . count($los),
 			"total" => "ont " . $request->onu_number,
-			"status" => "true"
+			"status" => "true",
+			"interfaces" => $interfaces,
+			// "baseinfo" => $onuBaseInfos,
 		]);
 
+	}
+
+	/**
+	 * get baseinfo untuk mengetahui sn mana yang tdk ada didalam database aplikasi tapi sudah di regis pada olt
+	 * 
+	 * */ 
+
+	public function getUnsyncOnu(){
+		//get all active interfaces
+		$interfaces = $this->db->query("SELECT gpon_olt FROM olt_interfaces")->result();
+		$snDatabase = $this->getSnFromDB();
+		$founds = array();
+
+		foreach ($interfaces as $gpon_olt) {
+			$baseInfo = $this->baseinfo($gpon_olt->gpon_olt);
+			foreach ($baseInfo as $sn) {
+				if (!in_array($sn->auth_info,$snDatabase)) {
+					$data = array(
+						'serial_number' => $sn->auth_info,
+						'gpon_onu' => $sn->gpon_onu,
+						'onu_type' => $sn->type,
+						'ont_phase_state' => 'Unconfigured',
+					);
+					//insert to pelanggan
+					$this->db->insert('pelanggan',$data);
+					$founds[] = $data;
+					// echo $sn->auth_info.' | '.$sn->gpon_onu.' | '.$sn->type.' | '.$sn->mode;
+				// 	// array_push($founds,$sn->auth_info);
+				}
+			}
+		}
+
+		echo json_encode([
+			'founds' => $founds,
+			'status' => true
+		]);
+
+	}
+
+	public function baseinfo($gpon_olt){
+		return $this->api->raw_gpon_onu_baseinfo($gpon_olt);
+		// echo json_encode($data);
+	}
+
+	public function getSnFromDB(){
+		$snDatabase = $this->db->query("SELECT GROUP_CONCAT(serial_number) as sn FROM pelanggan")->row()->sn;
+		$sn = explode(',',$snDatabase);
+		return $sn;
+		// echo json_encode($sn);
 	}
 
 	/* 
@@ -1213,14 +1279,6 @@ Tgl Input : 2023-10-19 08:49:08";
 		echo json_encode($this->nodewa->sendWa($data));
 	}
 
-	public function baseinfo(){
-		// $data = $this->api->raw_gpon_onu_baseinfo("1/1/5");
-		// echo json_encode("<pre>$data</pre>");
-		// echo json_encode($data);
-
-		echo json_encode(
-			$this->_make_ppp_secret('504','STEVEN RAMPALINO','ZTEGC0FAD589')
-		);
-	}
+	
 
 }

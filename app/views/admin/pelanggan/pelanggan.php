@@ -44,6 +44,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a href="javascript:void(0)" onclick="update_onurx()">Update OnuRx dBm</a></li>
+                                    <li><a href="javascript:void(0)" onclick="unsaved_onu()">Detect Unsaved ONU</a></li>
                                     <li><a href="javascript:void(0)" onclick="reconfig()">Proses Pindah Port / Reconfig</a></li>
                                     <li><a href="javascript:void(0)" onclick="onustate()">ONU State</a></li>
 
@@ -309,9 +310,14 @@
                                             <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
+
+                                    <!-- <div class="form-group"><label class="col-md-3 control-label">ODP Name</label>
+                                        <div class="col-md-9"><input type="text" name="odp_number" placeholder="Nama ODP" class="form-control"> <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div> -->
                                     <div class="form-group"><label class="col-md-3 control-label">Lokasi Map</label>
                                         <div class="col-md-9">
-                                            <textarea name="lokasi_map" rows="3" placeholder="Lokasi Map" class="form-control"></textarea>
+                                            <textarea name="lokasi_map" rows="2" placeholder="Lokasi Map" class="form-control"></textarea>
                                             <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
