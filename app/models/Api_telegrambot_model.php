@@ -112,7 +112,13 @@ Paket Aktif : %s
 Harga Paket : %s/bulan
 Masa berakhir paket : %s
 
-Pembayaran berikutnya jika melalui transfer = %s";
+Pembayaran berikutnya jika melalui transfer
+Bank BRI:
+An. PT. Poso Media Vision:
+Rek: 0072 01 000 3235 68
+
+Jumlah Transfer = %s
+(Transfer pas hingga digit terakhir)";
 
         $query = "SELECT nama_paket,tarif FROM paket WHERE id_paket=".$data['id_paket'];
         $paket = $this->db->query($query)->row();
