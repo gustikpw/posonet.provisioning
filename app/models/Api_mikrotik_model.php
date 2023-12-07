@@ -23,7 +23,7 @@ class Api_mikrotik_model extends CI_Model
       'base_uri' => 'http://127.0.0.1:5000/v1/'
     ]);
 
-// MIKROTIK
+    // MIKROTIK
     $this->mikrotik = $this->config->item('mikrotik');
 
     $this->_mikrotik = new \RouterOS\Config([
@@ -39,19 +39,23 @@ class Api_mikrotik_model extends CI_Model
 
   public function close_connection_ppp($username = false)
   {
-    // $client = new RClient($this->_mikrotik);
     //get by name for return .id
     $query = (new Query('/ppp/active/print',))
             ->where('name', $username);
-    $res = $this->_clientMtik->query($query)->read();
+    $connections = $this->_clientMtik->query($query)->read();
     
-    if ($res != null) {
-      $query2 = (new Query('/ppp/active/remove',))
-      ->equal('.id', $res[0]['.id']);
-      $result = $this->_clientMtik->query($query2)->read();
+    if ($connections != null) {
+
+      foreach ($connections as $active) {
+        $query2 = (new Query('/ppp/active/remove',))
+        ->equal('.id', $active['.id']);
+        
+        $this->_clientMtik->query($query2)->read();
+      }
+
     }
     // /ppp active remove numbers=[/ppp active find where name=PAPA-ENJELC91C27BD]
-    return $res;
+    return $connections;
   }
 
   public function change_ppp_secret_profile($username = false, $paket)
@@ -59,14 +63,29 @@ class Api_mikrotik_model extends CI_Model
     //get by name for return .id
     $query = (new Query('/ppp/secret/print',))
     ->where('name', $username);
-    $res = $this->_clientMtik->query($query)->read();
-    //
-    $query2 = (new Query('/ppp/secret/set',))
-    ->equal('.id', $res[0]['.id'])
-    ->equal('profile', $paket);
-    $this->_clientMtik->query($query2)->read();
+    
+    $secrets = $this->_clientMtik->query($query)->read();
 
-    return $res;
+    foreach ($secrets as $secret) {
+      
+      $query2 = (new Query('/ppp/secret/set',))
+      ->equal('.id', $secret['.id'])
+      ->equal('profile', $paket);
+      
+      $this->_clientMtik->query($query2)->read();
+      
+    }
+    
+    return $secrets;
+  }
+
+  public function change_ppp_secret_profile_by_id($id, $paket)
+  {
+    $query = (new Query('/ppp/secret/set',))
+      ->equal('.id', $id)
+      ->equal('profile', $paket);
+      
+    $this->_clientMtik->query($query)->read();
   }
 
 
@@ -90,11 +109,15 @@ class Api_mikrotik_model extends CI_Model
     //get by name for return .id
     $query = (new Query('/ppp/secret/print',))
       ->where('name', $username);
-    $res = $this->_clientMtik->query($query)->read();
+    $secrets = $this->_clientMtik->query($query)->read();
 
-    $remove = (new Query('/ppp/secret/remove',))
-      ->equal('.id', $res[0]['.id']);
-    $rem = $this->_clientMtik->query($remove)->read();
+    foreach ($secrets as $secret) {
+
+      $remove = (new Query('/ppp/secret/remove',))
+      ->equal('.id', $secret['.id']);
+      $rem = $this->_clientMtik->query($remove)->read();
+
+    }
 
     return $rem;
   }
@@ -119,14 +142,15 @@ class Api_mikrotik_model extends CI_Model
 
         if ($data->status_berlangganan == 'Expired' && $d['profile'] != 'Expired') {
           // set to Expired
-          $this->change_ppp_secret_profile($name, 'Expired');
+          $this->change_ppp_secret_profile_by_id($d['.id'], 'Expired');
           // close connection ppp
-          $this->close_connection_ppp($name);
+          $this->close_connection_ppp($d['name']);
           
           $changedProfile .= "$name, ";
           $no++;
         } elseif ($data->status_berlangganan == 'Active' && $d['profile'] != $data->mikrotik_profile) {
-          $this->change_ppp_secret_profile($name, $data->mikrotik_profile);
+          $this->change_ppp_secret_profile_by_id($d['.id'], $data->mikrotik_profile);
+          $this->close_connection_ppp($d['name']);
           
           $changedProfile .= "$name, ";
           $no++;

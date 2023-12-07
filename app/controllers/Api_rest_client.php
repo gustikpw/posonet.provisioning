@@ -222,7 +222,7 @@ class Api_rest_client extends CI_Controller
 				'mode' 		=> $mode,
 				'onutype' 	=> $data->onu_type,
 				'paket' 	=> $data->nama_paket,
-				'name' 		=> $data->name,
+				'name' 		=> $data->no_pelanggan.'. '.$data->nama_pelanggan,
 				'button' 	=> 'disabled',
 				'db_data'	=> $data
 			];
@@ -274,12 +274,9 @@ class Api_rest_client extends CI_Controller
 
 				if ($this->api->reconfig_onu($configData)) {
 					// make secret mikrotik
-					// $remove_old_secret = $this->routermodel->remove_secret("$data->username");
+					$remove_old_secret = $this->routermodel->remove_secret("$data->username");
 					$create_new_secret = $this->routermodel->create_ppp_secret($secret->username, $secret->password, 'pppoe', $data->mikrotik_profile);
 					//update gpon_onu di database
-					// $query 	= "UPDATE pelanggan 
-					// 	SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password' 
-					// 	WHERE gpon_onu='$data->gpon_onu'";
 					$query 	= "UPDATE pelanggan 
 						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password' 
 						WHERE serial_number='$key->sn'";
@@ -290,10 +287,11 @@ class Api_rest_client extends CI_Controller
 
 			}
 
-			if ($cek->mode == 'pindah-port') {
+			elseif ($cek->mode == 'pindah-port') {
 				$data = $cek->db_data;
 				//pindah port
 				$newGponOnu = $this->getNewOnuIndex($key->interface);
+				$secret 	= $this->_make_ppp_secret($data->no_pelanggan, $data->nama_pelanggan, $data->serial_number);
 
 				$configData = array(
 					'gpon_olt' 		=> $key->interface,
@@ -301,26 +299,27 @@ class Api_rest_client extends CI_Controller
 					'onu_type' 		=> $data->onu_type,
 					'sn' 			=> $key->sn,
 					'gpon_onu' 		=> $newGponOnu->registration_onu,
-					'name' 			=> $data->name,
+					'name' 			=> $secret->name,
 					'description' 	=> $data->description,
-					'username' 		=> $data->username,
-					'password' 		=> $data->password,
+					'username' 		=> $secret->username,
+					'password' 		=> $secret->password,
 					'vlan_profile' 	=> $data->vlan_profile,
 					'cvlan' 		=> $data->cvlan,
 					'mode_config'	=> $cek->mode,
 				);
 				//reconfig first
 				if($this->api->reconfig_onu($configData)){
-					//remove old config second
+					//remove old config
 					$gpon_olt_old = preg_split('/:/', $data->gpon_onu)[0];
 					$onu_index_old = preg_split('/:/', $data->gpon_onu)[1];
+
 					$remove_old_onu = $this->api->remove_onu($gpon_olt_old, $onu_index_old);
 					$remove_old_secret = $this->routermodel->remove_secret("$data->username");
 
 					//update gpon_onu di database
 					$this->db->query("UPDATE pelanggan 
 						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password' 
-						WHERE gpon_onu='$data->gpon_onu'");
+						WHERE serial_number='$key->sn'");
 					
 					$countPindahPort++;
 				}
@@ -818,6 +817,7 @@ class Api_rest_client extends CI_Controller
 	public function setToExpire(){
 		// echo json_encode($this->routermodel->setProfileExpire());
 		echo json_encode($this->routermodel->match_paket());
+		// echo json_encode($this->routermodel->sesuaikan_paket());
 
 	}
 	/* 
@@ -967,7 +967,7 @@ class Api_rest_client extends CI_Controller
 
 	private function _make_ppp_secret($no_pelanggan, $nama_pelanggan, $sn){
 		//buat username dengan kombinasi NOPEL+NAME+NEW-SN
-		$name = $no_pelanggan.'. '.$nama_pelanggan;
+		$name = $no_pelanggan.'-'.$nama_pelanggan;
 		// Ambil 10 karakter pertama dari $name dan ganti spasi dengan '-'
 		$nameSubstring = str_replace(' ', '-', $name);
 		$nameSubstring = substr($nameSubstring, 0, 15);
@@ -1277,6 +1277,11 @@ Profile : UPTO-15M
 Expired to : 2023-11-20
 Tgl Input : 2023-10-19 08:49:08";
 		echo json_encode($this->nodewa->sendWa($data));
+	}
+
+	public function getsecrets(){
+		// echo json_encode($this->routermodel->get_ppp_secret());
+		$this->routermodel->change_ppp_secret_profile_by_id('*F8','Expired');
 	}
 
 	

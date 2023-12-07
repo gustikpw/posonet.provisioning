@@ -429,6 +429,12 @@
       dataType: "JSON",
       success: function(data) {
         notif(data.message, 'Reconfig success', 'success');
+        reload_table();
+        setTimeout(function() {
+          // Code to be executed after the delay
+          tbl_unconfig.destroy().clear();
+          uncfg()
+        }, 5000);
       },
       error: function(jqXHR, textStatus, errorThrown) {
         notif('Gagal Reconfig!', 'Error', 'error');
@@ -479,7 +485,7 @@
             // Code to be executed after the delay
             tbl_unconfig.destroy().clear();
             uncfg()
-          }, 2000);
+          }, 5000);
         },
         'json'
       );
