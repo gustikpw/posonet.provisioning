@@ -25,7 +25,7 @@
                                     <li><a href="javascript:void(0)" onclick="show_raw_content('gpon-profile-traffic','')">Show Profile Traffic</a></li>
                                     <li><a href="javascript:void(0)" onclick="show_raw_content('onu-type','')">Show ONU Type</a></li>
                                     <li><a href="javascript:void(0)" onclick="show_raw_content('ip-route','')">Show IP Route</a></li>
-                                    <li><a href="javascript:void(0)" onclick="show_raw_content('detail-info','')">Backup Config</a></li>
+                                    <!-- <li><a href="javascript:void(0)" onclick="show_raw_content('detail-info','')">Backup Config</a></li> -->
                                 </ul>
                             </div>
                             <!-- <div class="btn-group">
@@ -157,6 +157,7 @@
                                         <th>Interface</th>
                                         <th>Name</th>
                                         <th>Cause</th>
+                                        <th>Expired</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -401,8 +402,8 @@
                                         $tanggalSatuBulanKedepan = date('Y-m-d', strtotime($tanggalSaatIni . ' +1 month'));
                                         ?>
                                         <br>
-                                        <!-- <button class="btn btn-xs btn-default" onclick="setTgl('<?= $tanggalSatuBulanKedepan ?>')"><?= $tanggalSatuBulanKedepan ?></button> -->
-                                        <a href="javascript:void(0)" class="label text-danger text-bold" onclick="setTgl('<?= $tanggalSatuBulanKedepan ?>')"><?= $tanggalSatuBulanKedepan ?></a>
+                                        <!-- <button class="btn btn-xs btn-default" onclick="setTgl('</?= $tanggalSatuBulanKedepan ?>')"></?= $tanggalSatuBulanKedepan ?></button> -->
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-default text-danger text-bold" onclick="setTgl('<?= $tanggalSatuBulanKedepan ?>')"><?= $tanggalSatuBulanKedepan ?></a>
                                     </div>
                                 </div>
                             </div>

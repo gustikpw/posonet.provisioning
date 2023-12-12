@@ -618,9 +618,9 @@
           }
         }
       },
-      searching: true,
+      searching: false,
       paging: true,
-      info: false
+      info: true
     });
   }
 
