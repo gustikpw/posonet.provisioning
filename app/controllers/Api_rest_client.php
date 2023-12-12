@@ -67,6 +67,18 @@ class Api_rest_client extends CI_Controller
 			$row[] = $br->no_pelanggan.". ". $br->nama_pelanggan;
 			$row[] = $br->ont_phase_state;
 
+			if ($br->expired < date('Y-m-d')) {
+				$warna = 'text-danger';
+			}
+			elseif ($br->expired == date('Y-m-d')) {
+				$warna = 'text-warning';
+			}
+			elseif ($br->expired > date('Y-m-d')) {
+				$warna = 'text-default';
+			}
+
+			$row[] = "<strong><span class='$warna'>$br->expired</span></strong>";
+
 			$data[] = $row;
 		}
 
@@ -1282,6 +1294,16 @@ Tgl Input : 2023-10-19 08:49:08";
 	public function getsecrets(){
 		// echo json_encode($this->routermodel->get_ppp_secret());
 		$this->routermodel->change_ppp_secret_profile_by_id('*F8','Expired');
+	}
+
+	public function testnodewa(){
+		// $this->load->model('Api_whatsapp_model','nodewa');
+		$data = "⏰ Perubahan Masa aktif Paket
+Name : 112. DIDIK SETYADI
+Profile : UPTO-15M
+Expired to : 2023-11-20
+Tgl Input : 2023-10-19 08:49:08";
+		echo json_encode($data);
 	}
 
 	
