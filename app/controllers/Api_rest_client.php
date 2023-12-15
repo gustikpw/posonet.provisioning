@@ -4,7 +4,6 @@ date_default_timezone_set("Asia/Makassar");
 require 'vendor/autoload.php';
 
 use GuzzleHttp\Client;
-use phpDocumentor\Reflection\Types\This;
 
 class Api_rest_client extends CI_Controller
 {

@@ -50,4 +50,7 @@ left join `wilayah` `w`
 ON `p`.`id_wilayah` = `w`.`id_wilayah` 
 ORDER BY `p`.`id_pelanggan` DESC 
 
+# update v_expired
+add v.expired AFTER v.ont_phase_state
+
 
