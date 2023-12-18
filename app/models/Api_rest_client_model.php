@@ -136,7 +136,23 @@ class Api_rest_client_model extends CI_Model
       ]
     ]);
 
-    return $response->getBody();
+    $request = $response->getBody();
+
+    $pattern = "/OLT/";
+
+    if (preg_match($pattern, $request)) {
+			$rxOnu = $rxOlt = 'N/A';
+			if (preg_match("/Rx:([-\d.]+)/", $request, $matches)) {
+				$rxOnu = trim($matches[1]);
+			}
+			if (preg_match("/Rx :([-\d.]+)/", $request, $matches)) {
+				$rxOlt = trim($matches[1]);
+			}
+			$update = $this->update_pelanggan(array('gpon_onu' => $gpon_onu), array('onu_db' => $rxOnu));
+			
+		}
+
+    return ['raw' => $response->getBody(), 'rx_onu' => $rxOnu, 'rx_olt' => $rxOlt];
   }
 
   public function raw_gpon_onu_baseinfo($gpon_olt)
@@ -248,7 +264,28 @@ class Api_rest_client_model extends CI_Model
       ]
     ]);
 
-    return $response->getBody();
+    $request = $response->getBody();
+
+    $pattern = "/WAN index/";
+    $username = $password = $currentIP = '';
+
+		if (preg_match($pattern, $request)) {
+			if (preg_match("/Username:\s+([\w.-]+)/", $request, $matches)) {
+				$username = $matches[1];
+			}
+
+			if (preg_match("/Password:\s+([\w.!]+)/", $request, $matches)) {
+				$password = $matches[1];
+			}
+
+			if (preg_match("/Current IP:\s+([\d.]+)/", $request, $matches)) {
+				$currentIP = $matches[1];
+			}
+
+			$update = $this->update_pelanggan(array('gpon_onu' => $gpon_onu), array('username' => $username, 'password' => $password, 'ip_address' => $currentIP));
+		}
+
+    return ['raw' => $response->getBody(),'username' => $username,'password' => $password,'current_ip' => $currentIP];
   }
 
   public function raw_detailinfo($gpon_onu)
@@ -277,7 +314,13 @@ class Api_rest_client_model extends CI_Model
       } elseif (strpos($line, 'Description:') === 0) {
         $result['Description'] = trim(substr($line, 12));
       } elseif (strpos($line, 'ONU Distance:') === 0) {
-        $result['ONUDistance'] = trim(substr($line, 14));
+        $result['ONUDistance'] = trim(substr($line, 13));
+      } elseif (strpos($line, 'Phase state:') === 0) {
+        $result['phase_state'] = trim(substr($line, 12));
+      } elseif (strpos($line, 'Online Duration:') === 0) {
+        $result['online_duration'] = trim(substr($line, 16));
+      } elseif (strpos($line, 'ONU interface:') === 0) {
+        $result['onu_interface'] = trim(substr($line, 14));
       }
     }
 

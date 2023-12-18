@@ -45,6 +45,53 @@ class Api_whatsapp extends CI_Controller
 		echo json_encode("dari server web $nopel dan $sn");
 	}
 
+	public function info()
+	{
+		// $data = (object) ['no_pelanggan' => '250'];
+		$data = json_decode(file_get_contents('php://input'));
+
+		//cek db by no pelanggan
+		$res = $this->db->query("SELECT * FROM v_pelanggan WHERE no_pelanggan='$data->no_pelanggan'");
+		$d = $res->row();
+
+		if ($res->num_rows() > 0) {
+			//cek gpon_onu_detail
+			$detail = $this->api->raw_detailinfo($d->gpon_onu)['results'];
+			$att = $this->api->raw_attenuation($d->gpon_onu);
+			$wanip = $this->api->raw_wanip($d->gpon_onu);
+
+	
+			$phase = array('DyingGasp','working','LOS','logging','syncMib','offline');
+			$icon = array('🆙','⏰','❌','✔️','📌');
+
+			if ($detail['phase_state'] == 'LOS' || $detail['phase_state'] == 'logging' || $detail['phase_state'] == 'syncMib') {
+				$state = "*$detail[phase_state]* ❌";
+			} else {
+				$state = "*$detail[phase_state]*";
+			}
+
+			$reply = "📋 *ONU Information*
+	
+Interface	: $detail[onu_interface]
+Name		: *$detail[Name]*
+Type		: $detail[Type]
+SN			: $detail[SerialNumber]
+Distance	: $detail[ONUDistance]
+Phase State	: $state
+Online Duration: $detail[online_duration]
+
+OLT Rx		: $att[rx_olt] dBm
+ONU Rx		: *$att[rx_onu] dBm*
+WAN IP		: *$wanip[current_ip]*
+";
+	
+			echo json_encode($reply);
+			
+		} else {
+			
+		}
+	}
+
 
 
 	public function nodewa(){

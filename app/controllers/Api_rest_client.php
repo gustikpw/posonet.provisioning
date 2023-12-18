@@ -450,19 +450,8 @@ class Api_rest_client extends CI_Controller
 		$gpon_onu = $this->input->post('data');
 		$request = $this->api->raw_attenuation($gpon_onu);
 
-		$pattern = "/OLT/";
-
-		if (preg_match($pattern, $request)) {
-			$rxValue = '0';
-			if (preg_match("/Rx:([-\d.]+)/", $request, $matches)) {
-				$rxValue = trim($matches[1]);
-			}
-			$update = $this->api->update_pelanggan(array('gpon_onu' => $gpon_onu), array('onu_db' => $rxValue));
-			
-		}
-
 		echo json_encode([
-			"data" => "<pre>$request</pre>",
+			"data" => "<pre>$request[raw]</pre>",
 			"header" => "Attenuation gpon-onu_" . $gpon_onu,
 			"status" => true,
 		]);
@@ -498,31 +487,10 @@ class Api_rest_client extends CI_Controller
 		$gpon_onu = $this->input->post('data');
 		$request = $this->api->raw_wanip($gpon_onu);
 
-		$pattern = "/WAN index/";
 
-		if (preg_match($pattern, $request)) {
-			$username = '';
-			if (preg_match("/Username:\s+([\w.-]+)/", $request, $matches)) {
-				$username = $matches[1];
-			}
-
-			// Extract Password
-			$password = '';
-			if (preg_match("/Password:\s+([\w.!]+)/", $request, $matches)) {
-				$password = $matches[1];
-			}
-
-			// Extract Current IP
-			$currentIP = '';
-			if (preg_match("/Current IP:\s+([\d.]+)/", $request, $matches)) {
-				$currentIP = $matches[1];
-			}
-
-			$update = $this->api->update_pelanggan(array('gpon_onu' => $gpon_onu), array('username' => $username, 'password' => $password, 'ip_address' => $currentIP));
-		}
 
 		echo json_encode([
-			"data" => "<pre>$request</pre>",
+			"data" => "<pre>$request[raw]</pre>",
 			"header" => "WAN IP gpon-onu_" . $gpon_onu,
 			"status" => true,
 		]);
