@@ -62,7 +62,7 @@ class Api_whatsapp extends CI_Controller
 
 	
 			$phase = array('DyingGasp','working','LOS','logging','syncMib','offline');
-			$icon = array('🆙','⏰','❌','✔️','📌');
+			$icon = array('🆙','⏰','❌','✔️','📌','🚨','🎫','📢','📝','⚠','🔄','🔁','✔','🆕','🆘','🆙');
 
 			if ($detail['phase_state'] == 'LOS' || $detail['phase_state'] == 'logging' || $detail['phase_state'] == 'syncMib') {
 				$state = "*$detail[phase_state]* ❌";
@@ -87,31 +87,98 @@ WAN IP		: *$wanip[current_ip]*
 	
 			echo json_encode($reply);
 			
-		} else {
-			
 		}
 	}
 
 
+	public function expired()
+	{
+		// $data = (object) [
+		// 	'no_pelanggan' => '607',
+		// 	'expired' => '2024-01-20',
+		// ]; // studio
 
-	public function nodewa(){
-		$this->load->model('Api_whatsapp_model','nodewa');
-		$data = "⏰ Perubahan Masa aktif Paket
-Name : 112. DIDIK SETYADI
-Profile : UPTO-15M
-Expired to : 2023-11-20
-Tgl Input : 2023-10-19 08:49:08";
-		echo json_encode($this->nodewa->sendWa($data));
+		$data = json_decode(file_get_contents('php://input'));
+
+		//cek db by no pelanggan
+		$res = $this->db->query("SELECT * FROM v_pelanggan WHERE no_pelanggan='$data->no_pelanggan'");
+		$d = $res->row();
+
+		if ($res->num_rows() > 0) {
+			//cek gpon_onu_detail
+			$gpon_onu = $d->gpon_onu;
+			$expired = $data->expired;
+		
+			$extend = $this->api->extendThisPaket($gpon_onu, $expired);
+		
+
+			$reply = "⏰ *Perpanjang Paket Berhasil*
+
+Name	: $d->name
+Expired : $expired
+Tgl Input : " . date('Y-m-d H:i:s') . "
+			
+_Note by system : $extend[message]_";
+
+			echo json_encode($reply);
+			
+		}
 	}
 
-	public function testnodewa(){
-		// $this->load->model('Api_whatsapp_model','nodewa');
-		$data = "⏰ Perubahan Masa aktif Paket
-Name : 112. DIDIK SETYADI
-Profile : UPTO-15M
-Expired to : 2023-11-20
-Tgl Input : 2023-10-19 08:49:08";
-		echo json_encode($data);
+	public function reboot()
+	{
+		$data = (object) [
+			'no_pelanggan' => '607'
+		]; // studio
+
+		// $data = json_decode(file_get_contents('php://input'));
+
+		//cek db by no pelanggan
+		$res = $this->db->query("SELECT * FROM v_pelanggan WHERE no_pelanggan='$data->no_pelanggan'");
+		$d = $res->row();
+
+		if ($res->num_rows() > 0) {
+			//cek gpon_onu_detail
+			$reboot = $this->api->reboot($d->gpon_onu);
+		
+
+			$reply = "🔁 *Restart ONT Berhasil*
+
+Name	: $d->name
+			
+_Note by system : " . $reboot->message ."_";
+
+			echo json_encode($reply);
+			
+		}
+	}
+
+	public function reset()
+	{
+		// $data = (object) [
+		// 	'no_pelanggan' => '607'
+		// ]; // studio
+
+		$data = json_decode(file_get_contents('php://input'));
+
+		//cek db by no pelanggan
+		$res = $this->db->query("SELECT * FROM v_pelanggan WHERE no_pelanggan='$data->no_pelanggan'");
+		$d = $res->row();
+
+		if ($res->num_rows() > 0) {
+			//cek gpon_onu_detail
+			$extend = $this->api->restore_factory($d->gpon_onu);
+		
+
+			$reply = "↩ *Restore Factory ONT Berhasil*
+
+Name	: $d->name
+			
+_Note by system : $extend[message]_";
+
+			echo json_encode($reply);
+			
+		}
 	}
 
 	

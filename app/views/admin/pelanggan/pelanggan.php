@@ -12,7 +12,7 @@
                             <!-- <button class="btn btn-xs btn-primary v_online">online -</button> -->
                             <a href="#divoffline" class="btn btn-xs v_offline">offline -</a>
                             <button class="btn btn-xs btn-danger v_los">LOS -</button>
-                            <button class="btn btn-xs btn-info v_ont">total -</button>
+                            <button class="btn btn-xs btn-info v_ont" style="display:none">total -</button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     OLT Info<span class="fa fa-info"> <span class="caret"></span>
