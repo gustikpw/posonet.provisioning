@@ -66,6 +66,7 @@
           pdf_data = d;
         }
       },
+      info: false,
       // scrollY:        "500px",
       // scrollX:        true,
       // scrollCollapse: true,
