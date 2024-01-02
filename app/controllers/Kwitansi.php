@@ -84,7 +84,7 @@ class Kwitansi extends CI_Controller
 									'no_pelanggan' => $kode->no_pelanggan,
 									'bulan_penagihan' => $bulanPenagihan,
 									'expired' => date('Y-m', strtotime('+1 months', strtotime($bulanPenagihan))) . '-' . $dateExp->option_value,
-									'kode_wilayah' => $idWil->kode_wilayah,
+									'kode_wilayah' => $kode_wilayah,
 									'tarif' => $kode->tarif,
 								);
 								$this->db->insert('temp_invoice', $data);
@@ -107,7 +107,7 @@ class Kwitansi extends CI_Controller
 								'pesan' => 'System Error, terjadi kesalahan dalam pembuatan kwitansi! Hubungi developer!',
 								'title' => 'Gagal!',
 								'msgtype' => 'error',
-								'exception' => $e->getMessage() . '<br>' . $pathf['message']
+								'exception' => $e->getMessage()
 							);
 							$this->db->trans_rollback();
 							$this->hapusTempAll();
