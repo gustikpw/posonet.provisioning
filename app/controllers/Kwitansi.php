@@ -88,6 +88,7 @@ class Kwitansi extends CI_Controller
 									'tarif' => $kode->tarif,
 								);
 								$this->db->insert('temp_invoice', $data);
+								echo $cekinv.',';
 							}
 
 							// setelah data invoice dimasukan pada database, generateInvoice membuat file PDF dan menyimpannya pada server
@@ -141,7 +142,7 @@ class Kwitansi extends CI_Controller
 	{
 		// Buat QR Code PNG
 		ini_set('max_execution_time', 1200); // terjadi error ketika generate kwitansi > 30 detik. ini untuk mengaturnya
-		$query = $this->db->query("SELECT kode_invoice FROM temp_invoice WHERE no_pelanggan LIKE '%$kode_wilayah%' AND bulan_penagihan LIKE '%$bulanPenagihan%' ");
+		$query = $this->db->query("SELECT kode_invoice FROM temp_invoice WHERE kode_wilayah = '$kode_wilayah' AND bulan_penagihan LIKE '$bulanPenagihan%' ");
 		$jumlah = 0;
 		foreach ($query->result() as $qr) {
 			$this->_generateQr($qr->kode_invoice);
