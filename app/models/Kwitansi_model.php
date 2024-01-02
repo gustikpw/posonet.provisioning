@@ -128,6 +128,6 @@ class kwitansi_model extends CI_Model
 
   public function getKolektorIdBy($id_wilayah)
   {
-    return $this->db->query("SELECT * FROM kolektor WHERE wilayah = '$id_wilayah'")->row();
+    return $this->db->query("SELECT * FROM kolektor WHERE wilayah LIKE '%$id_wilayah%'")->row();
   }
 }
