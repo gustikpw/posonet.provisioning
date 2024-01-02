@@ -88,7 +88,6 @@ class Kwitansi extends CI_Controller
 									'tarif' => $kode->tarif,
 								);
 								$this->db->insert('temp_invoice', $data);
-								echo $cekinv.',';
 							}
 
 							// setelah data invoice dimasukan pada database, generateInvoice membuat file PDF dan menyimpannya pada server
