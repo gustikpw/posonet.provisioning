@@ -85,7 +85,7 @@ class kwitansi_model extends CI_Model
   {
     return $this->db->query("SELECT t.kode_invoice,t.bulan_penagihan
       FROM temp_invoice t
-      WHERE t.kode_invoice LIKE '$kode_wilayah%' AND t.bulan_penagihan LIKE '$bulan_penagihan%'");
+      WHERE t.kode_wilayah='$kode_wilayah' AND t.bulan_penagihan LIKE '$bulan_penagihan%'");
   }
 
   public function getSettings($option_name, $option_value)
