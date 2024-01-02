@@ -112,7 +112,7 @@ class kwitansi_model extends CI_Model
 
   public function cek_temp_invoice($no_pelanggan, $bulanPenagihan)
   {
-    return $query = $this->db->query("SELECT * FROM temp_invoice WHERE no_pelanggan LIKE '%$no_pelanggan%' AND bulan_penagihan LIKE '%$bulanPenagihan%' ")->row();
+    return $query = $this->db->query("SELECT * FROM temp_invoice WHERE no_pelanggan ='$no_pelanggan' AND bulan_penagihan LIKE '$bulanPenagihan%' ")->row();
   }
 
   public function getDetailTagihan($scanedQR)
@@ -128,6 +128,6 @@ class kwitansi_model extends CI_Model
 
   public function getKolektorIdBy($id_wilayah)
   {
-    return $this->db->query("SELECT * FROM kolektor WHERE wilayah LIKE '%$id_wilayah%'")->row();
+    return $this->db->query("SELECT * FROM kolektor WHERE wilayah = '$id_wilayah'")->row();
   }
 }
