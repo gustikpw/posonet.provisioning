@@ -244,10 +244,10 @@
                                         <div class="col-md-9"><input type="text" name="telp" placeholder="Telepon/HP" class="form-control"> <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
-                                    <div class="form-group"><label class="col-md-3 control-label">Email</label>
+                                    <!-- <div class="form-group"><label class="col-md-3 control-label">Email</label>
                                         <div class="col-md-9"><input type="text" name="email" placeholder="Email" class="form-control"> <span class="help-block m-b-none"></span>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="form-group"><label class="col-md-3 control-label">Tanggal Instalasi</label>
                                         <div class="col-md-9"><input type="text" name="tgl_instalasi" placeholder="Tanggal Instalasi" class="form-control date"> <span class="help-block m-b-none"></span>
                                         </div>
@@ -328,10 +328,10 @@
                                             <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
-                                    <div class="form-group"><label class="col-md-3 control-label">No KTP</label>
+                                    <!-- <div class="form-group"><label class="col-md-3 control-label">No KTP</label>
                                         <div class="col-md-9"><input type="text" name="no_ktp" placeholder="Nomor KTP" class="form-control"> <span class="help-block m-b-none"></span>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="form-group"><label class="col-md-3 control-label">Foto KTP</label>
                                         <div class="col-md-9">
                                             <div class="input-group">
