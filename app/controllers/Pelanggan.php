@@ -346,6 +346,12 @@ class Pelanggan extends CI_Controller
 			WHERE id_wilayah = $id_wilayah
 			ORDER BY no_pelanggan ASC");
 		$row = $query->row();
+
+		if ($row->kode_wilayah === null) {
+			$getcode = $this->db->query("SELECT * FROM wilayah WHERE id_wilayah=$id_wilayah")->row(); 
+			echo json_encode(['newCode' => $getcode->kode_wilayah . '01']);
+			exit();
+		}
 		
 		$mulai = (int) $row->kode_wilayah."01";
 

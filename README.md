@@ -53,4 +53,9 @@ ORDER BY `p`.`id_pelanggan` DESC
 # update v_expired
 add v.expired AFTER v.ont_phase_state
 
+# add data in table settings
+- option_id = 20, option_name = bri_bank, option_value = BRI
+- option_id = 21, option_name = bri_no_rekening, option_value = 
+- option_id = 22, option_name = bri_nama_pemilik_rekening, option_value = 
+
 

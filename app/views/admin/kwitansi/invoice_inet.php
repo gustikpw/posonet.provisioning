@@ -119,7 +119,7 @@ class PDF extends FPDF
   }
 
 
-  function Kop($cust, $company, $terms)
+  function Kop($cust, $company, $terms, $rekening)
   {
     $a = 0;
     $i = 0;
@@ -427,9 +427,10 @@ class PDF extends FPDF
       $tgl_instalasi = ($plgn['tgl_instalasi'] == '0000-00-00') ? '' : $plgn['tgl_instalasi'];
       $this->cell($xkiri, 4, 'Tanggal Instalasi : ' . $tgl_instalasi, 0, 0, 'L', 0);
 
-      $this->setFont('Arial', '', 9);
+      $this->setFont('Arial', 'B', 9);
       $this->setX($xkanan);
-      $this->cell($xkiri, 4, "- TRANSFER ke BRI : 0072-010-32185-504 a/n I GUSTI KETUT P. WIJAYA", 0, 1, 'L', 0);
+      // $this->cell($xkiri, 4, "- TRANSFER ke BRI : 0072-010-32185-504 a/n I GUSTI KETUT P. WIJAYA", 0, 1, 'L', 0);
+      $this->cell($xkiri, 4, "- Transfer ke Rekening ".$rekening['nama_bank']." a/n ". $rekening['pemilik_rekening'], 0, 1, 'L', 0);
 
       // $this->setFont('Arial','',7);
       // $this->setFillColor(255,255,255);
@@ -459,11 +460,12 @@ class PDF extends FPDF
       // }
 
 
-      $this->setFont('Arial', '', 9);
+      $this->setFont('Arial', 'B', 9);
       $this->setFillColor(255, 255, 255);
       $this->setY($korY);
       $this->setX($xkanan);
-      $this->cell(45, 4, '  Ganti 3 DIGIT ANGKA dibelakang jumlah pembayaran dengan nomor pelanggan,', 0, 1, 'L', 0); // Robekan Bagian Kanan1
+      // $this->cell(45, 4, '  Ganti 3 DIGIT ANGKA dibelakang jumlah pembayaran dengan nomor pelanggan,', 0, 1, 'L', 0); // Robekan Bagian Kanan1
+      $this->cell(45, 4, '  No Rekening         : '. $rekening['no_rekening'], 0, 1, 'L', 0); // Robekan Bagian Kanan1
 
       // $this->setFont('Arial','B',7);
       // $this->setFillColor(255,255,255);
@@ -475,14 +477,15 @@ class PDF extends FPDF
       // $this->setX($xkanan);
       // $this->cell(45, 4, 'Contoh : ' . $plgn['tarif_rp_trx'], 0, 1, 'L', 1); // Robekan Bagian Kanan1
 
-      $this->setFont('Arial', '', 9);
+      $this->setFont('Arial', 'B', 9);
       // $this->setFillColor(197, 217, 241);
       $this->setX($xkanan);
-      $this->cell(45, 4, '  untuk mempermudah pengecekan pada sistem kami.', 0, 1, 'L', 1); // Robekan Bagian Kanan1
+      $this->cell(45, 4, "  Jumlah Transfer   : " . $plgn['tarif_rp_trx'], 0, 0, 'L', 1); // Robekan Bagian Kanan1
 
-      // $this->setFont('Arial','B',8);
+      $this->setFont('Arial','I',8);
       // $this->setFillColor(255,255,255);
-      // $this->setX($xkanan+57+30);  $this->cell(45,3,$plgn['order'],0,0,'R',0); // Robekan Bagian Kanan
+      $this->cell(45,4,"               *Jumlah transfer harus sesuai",0,1,'L',0); // Robekan Bagian Kanan
+
 
       $this->setFont('Arial', '', 9);
       $this->setFillColor(255, 255, 255);
@@ -527,7 +530,7 @@ $pdf->SetCreator('POSO TV App');
 $pdf->SetAuthor('Rahtut Aza');
 // $pdf->SetAutoPageBreak(true,3);
 $pdf->AddPage();
-$pdf->Kop($cust, $company, $terms);
+$pdf->Kop($cust, $company, $terms, $rekening);
 // $path = $GLOBALS['namafile'];
 $path = $namafile;
 if ($outputMode == 'FILE') {

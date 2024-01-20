@@ -20,12 +20,13 @@
 
                             <div class="tabs-left">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a data-toggle="tab" href="#tab-6"><span class="fa fa-wrench"></span> Profil</a></li>
-                                    <li class=""><a data-toggle="tab" href="#tab-7"><span class="fa fa-warning"></span> Keamanan</a></li>
-                                    <li class=""><a data-toggle="tab" href="#tab-8"><span class="fa fa-database"></span> Backup Database</a></li>
+                                    <!-- <li class="active"><a data-toggle="tab" href="#tab-6"><span class="fa fa-wrench"></span> Profil</a></li> -->
+                                    <!-- <li class=""><a data-toggle="tab" href="#tab-7"><span class="fa fa-warning"></span> Keamanan</a></li> -->
+                                    <li class="active"><a data-toggle="tab" href="#tab-7"><span class="fa fa-ticket"></span> Rekening</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-8"><span class="fa fa-database"></span> Users Access</a></li>
                                 </ul>
                                 <div class="tab-content ">
-                                    <div id="tab-6" class="tab-pane active">
+                                    <div id="tab-6" class="tab-pane">
                                         <div class="panel-body">
                                             <form id="form" action="#" class="form-horizontal">
                                                 <input type="text" name="id_profil" hidden>
@@ -77,26 +78,98 @@
                                             </form>
                                         </div>
                                     </div>
-                                    <div id="tab-7" class="tab-pane">
+                                    <div id="tab-7" class="tab-pane active">
                                         <div class="panel-body">
-                                            <strong>Donec quam felis</strong>
+                                            <strong>Nomor Rekening akan tercetak di Kwitansi</strong><br><br>
 
-                                            <p>Thousand unknown plants are noticed by me: when I hear the buzz of the little world among the stalks, and grow familiar with the countless indescribable forms of the insects
-                                                and flies, then I feel the presence of the Almighty, who formed us in his own image, and the breath </p>
+                                            <form id="form" action="#" class="form-horizontal">
+                                                <div class="col-md-6 b-r">
+                                                    <div class="form-group"><label class="col-md-2 control-label">Bank</label>
+                                                        <div class="col-md-10"><input onchange="upperCase()" id="bank" type="text" name="nama_bank" placeholder="Nama BANK" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group"><label class="col-md-2 control-label">Rekening</label>
+                                                        <div class="col-md-10"><input type="text" name="no_rekening" placeholder="Nomor Rekening" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group"><label class="col-md-2 control-label">Pemilik Rekening</label>
+                                                        <div class="col-md-10"><input type="text" name="nama_pemilik_pekening" placeholder="Nama Pemilik Rekening" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <button type="button" class="btn btn-primary btn-block" id="btnSaveRek" onclick="save('rekening')">Save Rekening</button>
+                                                </div>
 
-                                            <p>I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine. I am so happy, my dear friend, so absorbed in the exquisite
-                                                sense of mere tranquil existence, that I neglect my talents. I should be incapable of drawing a single stroke at the present moment; and yet.</p>
+                                                <div class="col-md-6">
+                                                    
+                                                </div>
+                                            </form>
+
+
                                         </div>
                                     </div>
                                     <div id="tab-8" class="tab-pane">
                                         <div class="panel-body">
-                                            <strong>Backup Database</strong>
+                                            <h3>User Login</h3>
+                                            
+                                            <div class="table-responsive">
+                                                <table class="table table-hover" id="tableUsers">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Username</th>
+                                                            <th>Level</th>
+                                                            <th>Aktif</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
 
-                                            <p>Thousand unknown plants are noticed by me: when I hear the buzz of the little world among the stalks, and grow familiar with the countless indescribable forms of the insects
-                                                and flies, then I feel the presence of the Almighty, who formed us in his own image, and the breath </p>
+                                                    </tbody>
+                                                </table>
 
-                                            <p>I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine. I am so happy, my dear friend, so absorbed in the exquisite
-                                                sense of mere tranquil existence, that I neglect my talents. I should be incapable of drawing a single stroke at the present moment; and yet.</p>
+                                                <form id="form_users" action="#" class="form-horizontal">
+                                                    <input type="text" name="id_users" hidden>
+                                                    <div class="col-md-6 b-r">
+                                                        <div class="form-group"><label class="col-md-2 control-label">Username</label>
+                                                            <div class="col-md-10"><input type="text" name="username" placeholder="Username" class="form-control"> <span class="help-block m-b-none"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group"><label class="col-md-2 control-label">Password</label>
+                                                            <div class="col-md-10"><input type="password" name="password" placeholder="Password" class="form-control"> <span class="help-block m-b-none"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group"><label class="col-md-2 control-label">Karyawan</label>
+                                                            <div class="col-md-10">
+                                                                <select name="id_karyawan" class="form-control">
+                                                                    <option value="">--SELECT--</option>
+                                                                </select> <span class="help-block m-b-none"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group"><label class="col-md-2 control-label">Privillege</label>
+                                                            <div class="col-md-10">
+                                                                <select name="level" class="form-control">
+                                                                    <option value="">--SELECT--</option>
+                                                                </select> <span class="help-block m-b-none"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group"><label class="col-md-2 control-label">Status</label>
+                                                            <div class="col-md-10">
+                                                                <select name="aktif" class="form-control">
+                                                                    <option value="aktif">AKTIF</option>
+                                                                    <option value="nonaktif">NONAKTIF</option>
+                                                                </select> <span class="help-block m-b-none"></span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <button type="button" class="btn btn-primary btn-block" id="btnSaveUsers" onclick="save('users')">Save</button>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

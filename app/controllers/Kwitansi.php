@@ -155,6 +155,20 @@ class Kwitansi extends CI_Controller
 			$profil = $this->kwitansi->profil_perusahaan();
 			// $kolektor = $this->kwitansi->findCollector($wilayah);
 			//$terms = $this->_invoiceTerms(); //BELUM DIPAKAI
+			$rek = $this->db->query("SELECT * FROM settings WHERE option_name LIKE 'bri_%'")->result();
+			$rekening = array();
+			foreach ($rek as $rk) {
+				if ($rk->option_name === 'bri_bank') {
+					$rekening['nama_bank'] = $rk->option_value;
+				}
+				if ($rk->option_name === 'bri_nama_pemilik_rekening') {
+					$rekening['pemilik_rekening'] = $rk->option_value;
+				}
+				if ($rk->option_name === 'bri_no_rekening') {
+					$rekening['no_rekening'] = $rk->option_value;
+				}
+			}
+
 			$terms = array(); //BELUM DIPAKAI
 			// echo json_encode($pelanggan);
 			$data = [];
@@ -207,6 +221,7 @@ class Kwitansi extends CI_Controller
 				'company' => $profil,
 				'cust' => $data,
 				'terms' => $terms,
+				'rekening' => $rekening,
 				'namafile' => $namafile,
 				'outputMode' => 'FILE', // STREAM = just temporarly open in browser | FILE = save to storage server
 			);
