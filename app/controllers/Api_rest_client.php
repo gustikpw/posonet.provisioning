@@ -1007,7 +1007,7 @@ class Api_rest_client extends CI_Controller
 
 %s
 Ont Phase : %s
-Ket	: "
+Ket	: ";
 
 		$text = sprintf(
 			$template,
