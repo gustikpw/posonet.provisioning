@@ -465,10 +465,16 @@ class Api_rest_client_model extends CI_Model
   public function perpanjangPaketFromDetailSetoran($no_pelanggan, $expired, $wamode=false) {
     $qry = $this->db->query("SELECT gpon_onu FROM pelanggan WHERE no_pelanggan='$no_pelanggan'")->row();
     // return [$qry->gpon_onu, $expired];
-    return $this->extendThisPaket($qry->gpon_onu, $expired, $wamode);
+    $data = (object) array(
+			'gpon_onu' => $qry->gpon_onu,
+			'expired' => $expired,
+			'username' => $this->session->username,
+		);
+
+    return $this->extendThisPaket($data, $wamode);
   }
 
-  public function extendThisPaket($gpon_onu, $expired, $wamode=false) {
+  public function extendThisPaket($data, $wamode=false) {
     if ($wamode == true) {
       /**
        * API Kirimwa.id membatasi pengiriman diatas jam 21.00
@@ -482,14 +488,14 @@ class Api_rest_client_model extends CI_Model
 		* atau cek di tabel v_expired apakan data gpon_onu exist
 		*/
 
-    $exp = $this->db->query("SELECT * FROM v_expired WHERE gpon_onu = '$gpon_onu'");
+    $exp = $this->db->query("SELECT * FROM v_expired WHERE gpon_onu = '$data->gpon_onu'");
     
     $cust = $exp->row();
 
     if ($exp->num_rows() > 0) {
       //kondisi jika perpanjang sesudah expire
       // update expired
-      $updateExp = $this->db->query("UPDATE pelanggan SET expired='$expired' WHERE gpon_onu='$gpon_onu'");
+      $updateExp = $this->db->query("UPDATE pelanggan SET expired='$data->expired' WHERE gpon_onu='$data->gpon_onu'");
       // ubah secret dari Expire ke paket asli
       $restore_paket = $this->routermodel->change_ppp_secret_profile($cust->username, $cust->mikrotik_profile);
 
@@ -506,72 +512,72 @@ class Api_rest_client_model extends CI_Model
       /**
        * KIRIM PESAN KE TELEGRAM
        */
-      $template = "\xE2\x8F\xB0 *Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s";
-      $teletext = sprintf($template, $cust->no_pelanggan .". ". $cust->nama_pelanggan, $cust->mikrotik_profile, $expired, date('Y-m-d H:i:s'));
+      $template = "\xE2\x8F\xB0 *Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s \n\n _handled by %s_";
+      $teletext = sprintf($template, $cust->no_pelanggan .". ". $cust->nama_pelanggan, $cust->mikrotik_profile, $data->expired, date('Y-m-d H:i:s'), $data->username);
       
       $sendToTelegram = $this->telegram->sendToAdmin($teletext);
 
       // kirim pesan ke wa
-      $data = [
-        'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($expired) . ".\n$cust->no_pelanggan",
+      $datat = [
+        'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($data->expired) . ".\n$cust->no_pelanggan",
         'phone_number' => $cust->telp,
       ];
 
       if ($modewa == true) {
-        $send = $this->kirimwa->post_messages($data);
+        $send = $this->kirimwa->post_messages($datat);
       }
       else {
         $send = "Kirimwa melewati jam 21:00:00 atau disabled";
       }
 
       return [
-        'message' => "Paket berhasil diperpanjang ke $expired. ONT pelanggan auto restart!",
+        'message' => "Paket berhasil diperpanjang ke $data->expired. ONT pelanggan auto restart!",
         'kirimwa' => $sendToTelegram,
         'status' => true,
       ];
     }
     //kondisi jika perpanjang sebelum expire
     else {
-      $msg = "Paket berhasil diperpanjang ke $expired.";
+      $msg = "Paket berhasil diperpanjang ke $data->expired.";
       // jika input tgl expire dibawah tgl sekarang maka langsung ubah ke expire
-      if ($expired < date('Y-m-d')) {
-        $expp = $this->db->query("SELECT username FROM pelanggan WHERE gpon_onu = '$gpon_onu'")->row();
+      if ($data->expired < date('Y-m-d')) {
+        $expp = $this->db->query("SELECT username FROM pelanggan WHERE gpon_onu = '$data->gpon_onu'")->row();
         $set_expire = $this->routermodel->change_ppp_secret_profile($expp->username, 'Expired');
         $this->routermodel->close_connection_ppp($expp->username);
         $msg = "Paket kembali ke expired";
         $modewa = false;
       }
       // kirim pesan ke wa
-      $plgn = $this->db->query("SELECT telp,no_pelanggan,name,mikrotik_profile FROM v_pelanggan WHERE gpon_onu = '$gpon_onu'")->row();
+      $plgn = $this->db->query("SELECT telp,no_pelanggan,name,mikrotik_profile FROM v_pelanggan WHERE gpon_onu = '$data->gpon_onu'")->row();
 
 
       /**
        * KIRIM PESAN KE TELEGRAM
        */
-      $template = "\xE2\x8F\xB0 *Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s";
-      $teletext = sprintf($template, $plgn->name, $plgn->mikrotik_profile, $expired, date('Y-m-d H:i:s'));
+      $template = "\xE2\x8F\xB0 *Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s \n\n _handled by %s_";
+      $teletext = sprintf($template, $plgn->name, $plgn->mikrotik_profile, $data->expired, date('Y-m-d H:i:s'), $data->username);
 
       $sendToTelegram = $this->telegram->sendToAdmin($teletext);
 
 
-      $data = [
-        'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($expired) . ". \n$plgn->no_pelanggan",
+      $datat = [
+        'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($data->expired) . ". \n$plgn->no_pelanggan",
         'phone_number' => ($plgn->telp == '') ? '081340310250' : $plgn->telp,
       ];
 
       if ($modewa == true) {
-        $send = $this->kirimwa->post_messages($data);
+        $send = $this->kirimwa->post_messages($datat);
       }
       else {
         $send = "Kirimwa melewati jam 21:00:00 atau disabled";
       }
 
-      $updateExp = $this->db->query("UPDATE pelanggan SET expired='$expired' WHERE gpon_onu='$gpon_onu'");
+      $updateExp = $this->db->query("UPDATE pelanggan SET expired='$data->expired' WHERE gpon_onu='$data->gpon_onu'");
       return [
         'message' => $msg, 
         'kirimwa' => $sendToTelegram, 
         'status' => true, 
-        'data' => $data
+        'data' => $datat
       ];
     }
   }

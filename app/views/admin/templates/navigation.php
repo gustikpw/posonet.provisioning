@@ -14,6 +14,9 @@
                     </div>
                     <div class="navbar-collapse collapse" id="navbar">
                         <ul class="nav navbar-nav">
+
+                            <?php if ($this->session->level == 'administrator'): ?>
+
                             <li class="<?= ($active == "dashboard") ? 'active' : '' ?>">
                                 <a aria-expanded="false" role="button" href="<?= site_url('dashboard') ?>"> Dashboard</a>
                             </li>
@@ -29,6 +32,11 @@
                                     <li><a href="<?= site_url('dashboard/wilayah') ?>">Wilayah</a></li>
                                 </ul>
                             </li>
+
+                            <?php endif; ?>
+
+                            <?php if ($this->session->level == 'administrator' || $this->session->level == 'kolektor'): ?>
+
                             <li class="dropdown <?= ($active == "pelanggan") ? 'active' : '' ?>">
                                 <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="fa fa-desktop"></span> Provisioning <span class="caret"></span>
@@ -38,6 +46,11 @@
                                     <li><a href="#">ONU Type</a></li>
                                 </ul>
                             </li>
+
+                            <?php endif; ?>
+
+                            <?php if ($this->session->level == 'administrator'): ?>
+
                             <li class="dropdown <?= ($active == "kwitansi" || $active == "setoran") ? 'active' : '' ?>">
                                 <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="fa fa-calculator"></span> Transaksi <span class="caret"></span>
@@ -84,8 +97,12 @@
                                 </ul>
                             </li> -->
 
+                            <?php endif; ?>
+
+
                         </ul>
                         <ul class="nav navbar-top-links navbar-right">
+                            <li><strong><?php echo $this->session->username; ?></strong></li>
                             <li>
                                 <a href="<?= site_url('logout') ?>">
                                     <i class="fa fa-sign-out"></i> Log out

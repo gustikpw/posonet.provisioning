@@ -821,10 +821,13 @@ class Api_rest_client extends CI_Controller
 
 	public function setExtendPaket()
 	{
-		$gpon_onu = $this->input->post('gpon_onu');
-		$expired = $this->input->post('expired');
+		$data = (object) array(
+			'gpon_onu' => $this->input->post('gpon_onu'),
+			'expired' => $this->input->post('expired'),
+			'username' => $this->session->username,
+		);
 		
-		$extend = $this->api->extendThisPaket($gpon_onu, $expired);
+		$extend = $this->api->extendThisPaket($data);
 		
 		echo json_encode($extend);
 	}

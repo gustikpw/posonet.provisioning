@@ -29,7 +29,7 @@ class Dashboard extends CI_Controller
 			'wa_notif',
 		);
 
-		$levelkolektor	= array('setoran');
+		$levelkolektor	= array('pelanggan');
 
 		$levelteknisi	= array('perbaikan', 'jenis_gangguan', 'pengaduan', 'perbaikan_gangguan');
 
@@ -41,7 +41,7 @@ class Dashboard extends CI_Controller
 			}
 		} elseif ($logses == 'kolektor') {
 			if (in_array($segmen, $levelkolektor)) {
-				$this->_create_view($segmen, $folder = 'kolektor');
+				$this->_create_view($segmen, $folder = 'admin');
 			} else {
 				set_status_header(404);
 			}
