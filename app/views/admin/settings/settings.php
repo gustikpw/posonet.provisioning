@@ -24,6 +24,7 @@
                                     <!-- <li class=""><a data-toggle="tab" href="#tab-7"><span class="fa fa-warning"></span> Keamanan</a></li> -->
                                     <li class="active"><a data-toggle="tab" href="#tab-7"><span class="fa fa-ticket"></span> Rekening</a></li>
                                     <li class=""><a data-toggle="tab" href="#tab-8"><span class="fa fa-database"></span> Users Access</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-9" onclick="getTgBot()"><span class="fa fa-bell"></span> Notifications</a></li>
                                 </ul>
                                 <div class="tab-content ">
                                     <div id="tab-6" class="tab-pane">
@@ -112,12 +113,13 @@
                                         <div class="panel-body">
                                             <h3>User Login</h3>
                                             
-                                            <div class="table-responsive">
+                                            <div class="table-responsiveX">
                                                 <table class="table table-hover" id="tableUsers">
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Username</th>
+                                                            <th>Owner</th>
                                                             <th>Level</th>
                                                             <th>Aktif</th>
                                                             <th>Actions</th>
@@ -127,49 +129,111 @@
 
                                                     </tbody>
                                                 </table>
-
-                                                <form id="form_users" action="#" class="form-horizontal">
-                                                    <input type="text" name="id_users" hidden>
-                                                    <div class="col-md-6 b-r">
-                                                        <div class="form-group"><label class="col-md-2 control-label">Username</label>
-                                                            <div class="col-md-10"><input type="text" name="username" placeholder="Username" class="form-control"> <span class="help-block m-b-none"></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group"><label class="col-md-2 control-label">Password</label>
-                                                            <div class="col-md-10"><input type="password" name="password" placeholder="Password" class="form-control"> <span class="help-block m-b-none"></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group"><label class="col-md-2 control-label">Karyawan</label>
-                                                            <div class="col-md-10">
-                                                                <select name="id_karyawan" class="form-control">
-                                                                    <option value="">--SELECT--</option>
-                                                                </select> <span class="help-block m-b-none"></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group"><label class="col-md-2 control-label">Privillege</label>
-                                                            <div class="col-md-10">
-                                                                <select name="level" class="form-control">
-                                                                    <option value="">--SELECT--</option>
-                                                                </select> <span class="help-block m-b-none"></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group"><label class="col-md-2 control-label">Status</label>
-                                                            <div class="col-md-10">
-                                                                <select name="aktif" class="form-control">
-                                                                    <option value="aktif">AKTIF</option>
-                                                                    <option value="nonaktif">NONAKTIF</option>
-                                                                </select> <span class="help-block m-b-none"></span>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <button type="button" class="btn btn-primary btn-block" id="btnSaveUsers" onclick="save('users')">Save</button>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        
-                                                    </div>
-                                                </form>
                                             </div>
+
+                                            <!-- Modal -->
+
+                                            <div class="modal inmodal" id="myModalUser" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog" style="width:80%">
+                                                    <div class="modal-content animated fadeInDown">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                            <h4 class="modal-title">Tambah <?php echo ucwords(str_replace('_', ' ', $active)); ?> Pelanggan</h4>
+                                                            <small class="font-bold"></small>
+                                                        </div>
+                                                        <div class="modal-body" id="step2">
+                                                            <div class="row">
+                                                                <form id="form_users" action="#" class="form-horizontal">
+                                                                    <input type="text" name="id_users" hidden>
+                                                                    <div class="col-md-6 b-r">
+                                                                        <div class="form-group"><label class="col-md-2 control-label">Username</label>
+                                                                            <div class="col-md-10"><input type="text" name="username" placeholder="Username" class="form-control"> <span class="help-block m-b-none"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group"><label class="col-md-2 control-label">Password</label>
+                                                                            <div class="col-md-10"><input type="password" name="password" placeholder="Password" class="form-control"> <span class="help-block m-b-none"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group"><label class="col-md-2 control-label">Karyawan</label>
+                                                                            <div class="col-md-10">
+                                                                                <select name="id_karyawan" class="form-control">
+                                                                                    <option value="">--SELECT--</option>
+                                                                                </select> <span class="help-block m-b-none"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group"><label class="col-md-2 control-label">Privillege</label>
+                                                                            <div class="col-md-10">
+                                                                                <select name="level" class="form-control">
+                                                                                    <option value="">--SELECT--</option>
+                                                                                </select> <span class="help-block m-b-none"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group"><label class="col-md-2 control-label">Status</label>
+                                                                            <div class="col-md-10">
+                                                                                <select name="aktif" class="form-control">
+                                                                                    <option value="aktif">AKTIF</option>
+                                                                                    <option value="nonaktif">NONAKTIF</option>
+                                                                                </select> <span class="help-block m-b-none"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <p>Descriptions</p>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-primary" id="btnSaveUsers" onclick="save('users')"><span class="fa fa-clock"></span> Save User</button>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="tab-9" class="tab-pane" >
+                                        <div class="panel-body">
+                                            <h3>Notif to TelegramBot</h3>
+
+                                            <form id="formTelegram" action="#" class="form-horizontal">
+                                                <div class="col-md-6 b-r">
+                                                    <div class="form-group"><label class="col-md-2 control-label">Base URL Bot</label>
+                                                        <div class="col-md-10"><input id="tg_base_url" type="text" value="https://api.telegram.org/" name="tg_base_url" placeholder="Base URL Bot" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group"><label class="col-md-2 control-label">Token</label>
+                                                        <div class="col-md-10"><input id="tg_token" type="text" name="tg_token" placeholder="Token Telegram botXXXXXX:XXXXXXXXXX" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group"><label class="col-md-2 control-label">Username Bot</label>
+                                                        <div class="col-md-10"><input type="text" name="tg_username" placeholder="Username Bot" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group"><label class="col-md-2 control-label">CHAT_ID ADMIN</label>
+                                                        <div class="col-md-10"><input type="text" name="tg_chat_id_admin" placeholder="CHAT_ID ADMIN" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group"><label class="col-md-2 control-label">CHAT_ID TEKNISI</label>
+                                                        <div class="col-md-10"><input type="text" name="tg_chat_id_teknisi" placeholder="CHAT_ID TEKNISI" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group"><label class="col-md-2 control-label">CHAT_ID GROUP</label>
+                                                        <div class="col-md-10"><input type="text" name="tg_chat_id_group" placeholder="CHAT_ID GROUP" class="form-control"> <span class="help-block m-b-none"></span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <button type="button" class="btn btn-primary btn-block" id="btnSaveTgBot" onclick="save('tg_bot')">Save Notif</button>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

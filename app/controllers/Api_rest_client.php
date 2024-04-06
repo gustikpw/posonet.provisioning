@@ -1000,12 +1000,14 @@ class Api_rest_client extends CI_Controller
 		$icon = ($plgn->ont_phase_state == 'LOS') ? "\xF0\x9F\x9A\xA8" : "\xF0\x9F\x9A\xA8";
 
 		$template = "%s *TICKET*
-Lokasi		: %s
-Nama		: *%s*
-HP			: %s
-Wilayah		: %s
-Ont Phase 	: %s
-Keluhan		: ";
+%s
+
+*%s*
+%s
+
+%s
+Ont Phase : %s
+Ket	: "
 
 		$text = sprintf(
 			$template,

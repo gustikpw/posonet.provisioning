@@ -58,4 +58,12 @@ add v.expired AFTER v.ont_phase_state
 - option_id = 21, option_name = bri_no_rekening, option_value = 
 - option_id = 22, option_name = bri_nama_pemilik_rekening, option_value = 
 
+# add data in table settings
+- option_id = 30, option_name = tg_base_url, option_value = 'https://api.telegram.org/'
+- option_id = 31, option_name = tg_token_bot, option_value = ''
+- option_id = 32, option_name = tg_username_bot, option_value = ''
+- option_id = 33, option_name = tg_chat_id_admin, option_value = ''
+- option_id = 34, option_name = tg_chat_id_teknisi, option_value = ''
+- option_id = 35, option_name = tg_chat_id_group, option_value = ''
+
 

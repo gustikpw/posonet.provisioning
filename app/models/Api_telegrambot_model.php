@@ -12,15 +12,28 @@ class Api_telegrambot_model extends CI_Model
         parent::__construct();
         $this->load->database();
 		$this->load->helper(array('MY_ribuan', 'MY_bulan'));
+        
+        // START telegram api configuration
+        $this->tgrow = array();
+        $this->tgbot = $this->db->query("SELECT * FROM settings where option_name LIKE 'tg_%' OR option_name LIKE 'bri_%'")->result();
+        foreach ($this->tgbot as $key) {
+			$this->tgrow["$key->option_name"] = $key->option_value;
+		}
+        // END load telegram api configuration
 
 
-        $this->bot = $this->config->item('telegram_bot');
+        // $this->bot = $this->config->item('telegram_bot');
 
-        $this->url = $this->bot['BASE_URL']. $this->bot['TOKEN'];
+        // $this->url = $this->bot['BASE_URL']. $this->bot['TOKEN'];
         
 
-        $this->telegram = new Bot($this->bot['TOKEN']);
+        // $this->telegram = new Bot($this->bot['TOKEN']);
+        $this->telegram = new Bot($this->tgrow['tg_token_bot']);
 
+    }
+
+    public function getTgSettings(){
+        return $this->tgrow;
     }
 
     public function getUpdates(){
@@ -49,7 +62,8 @@ class Api_telegrambot_model extends CI_Model
         ]);
 
         $response = $this->telegram->sendMessage([
-            'chat_id' => $this->bot['CHAT_ID_ADMIN'], 
+            // 'chat_id' => $this->bot['CHAT_ID_ADMIN'], 
+            'chat_id' => $this->tgrow['tg_chat_id_admin'], 
             'text' => 'Hello World', 
             'reply_markup' => $reply_markup
         ]);
@@ -62,26 +76,18 @@ class Api_telegrambot_model extends CI_Model
         $message = "\xF0\x9F\x9A\xA8 *LOS*\nName : %s\nLocation : %s\n\nHP : %s\nONT Phase : LOS/DyingGasp";
         $dt = sprintf($message,'Agus', 'https://maps.app.goo.gl/bYdqxJmzGSJzz12h6', '085320435480');
         $data = [
-            'chat_id'       => $this->bot['CHAT_ID_GROUP'],
+            'chat_id'       => $this->tgrow['tg_chat_id_group'],
             'text'          => $dt,
             'parse_mode'    => 'markdown'
         ];
 
-        $response = $this->telegram->sendMessage($data);
-
-
-        // $response = file_get_contents(
-        //     $this->url."/sendMessage?" .
-        //     http_build_query($data)
-        // );
-
-        return $response;
+        return $this->telegram->sendMessage($data);
     }
 
 
     public function sendToGroup($ticket){
         $data = [
-            'chat_id'       => $this->bot['CHAT_ID_GROUP'],
+            'chat_id'       => $this->tgrow['tg_chat_id_group'],
             'text'          => $ticket,
             'parse_mode'    => 'markdown'
         ];
@@ -90,13 +96,17 @@ class Api_telegrambot_model extends CI_Model
     }
 
     public function sendToAdmin($msg){
-        $data = [
-            'chat_id'       => $this->bot['CHAT_ID_ADMIN'],
-            'text'          => $msg,
-            'parse_mode'    => 'markdown'
-        ];
-
-        return $this->telegram->sendMessage($data);
+        try {
+            $data = [
+                'chat_id'       => $this->tgrow['tg_chat_id_admin'],
+                'text'          => $msg,
+                'parse_mode'    => 'markdown'
+            ];
+    
+            return $this->telegram->sendMessage($data);
+        } catch (\Exception $th) {
+            return $th;
+        }
     }
 
     public function sendNewClientToAdmin($data){
@@ -110,12 +120,12 @@ HP/WA : *%s*
 Tgl Instalasi : %s
 Paket Aktif : %s
 Harga Paket : %s/bulan
-Masa berakhir paket : %s
+Masa aktif berakhir : %s
 
 Pembayaran berikutnya jika melalui transfer
 Bank BRI:
-An. PT. Poso Media Vision:
-Rek: 0072 01 000 3235 68
+An. %s:
+Rek: %s
 
 Jumlah Transfer = %s
 (Transfer pas hingga digit terakhir)";
@@ -131,16 +141,23 @@ Jumlah Transfer = %s
             $paket->nama_paket,
             ribuan($paket->tarif),
             tgl_lokal($data['expired']),
+            $this->tgrow['bri_nama_pemilik_rekening'],
+            $this->tgrow['bri_no_rekening'],
             ribuan($paket->tarif + $data['no_pelanggan']),
         );
 
-        $data = [
-            'chat_id'       => $this->bot['CHAT_ID_ADMIN'],
-            'text'          => $msg,
-            'parse_mode'    => 'markdown'
-        ];
+        try {
+            $data = [
+                'chat_id'       => $this->tgrow['tg_chat_id_admin'],
+                'text'          => $msg,
+                'parse_mode'    => 'markdown'
+            ];
+            return $this->telegram->sendMessage($data);
+        } catch (\Exception $e) {
+            return $e;
+        }
 
-        return $this->telegram->sendMessage($data);
+
     }
 
     public function templateMessages($mode){

@@ -52,13 +52,15 @@
 
     function adds()
     {
-        save_method = 'add';
+        save_method = 'add_user';
         $('#form')[0].reset(); // reset form on modals
         $('[name="id_paket"]').val('');
-        $('#myModal').modal('show'); // show bootstrap modal
+        $('#myModalUser').modal('show'); // show bootstrap modal
         $('.help-block').empty();
         $('.fokus').focus();
-        $('.modal-title').text('Add <?php echo ucwords(str_replace('_',' ',$active)); ?>'); // Set Title to Bootstrap modal title
+        $('.modal-title').text('Tambah User'); // Set Title to Bootstrap modal title
+        $("#btnSaveUsers").text('Saved').attr('disabled',false);
+
     }
 
     function getRekening(){
@@ -70,8 +72,20 @@
 
             console.log(data);
         }, 'json');
+    }
+    
+    function getTgBot(){
+        $.get("<?= site_url('settings/get_tg_bot') ?>",
+        function(data, status) {
+            $('[name="tg_base_url"]').val(data['tg_base_url']);
+            $('[name="tg_token"]').val(data["tg_token_bot"]);
+            $('[name="tg_username"]').val(data["tg_username_bot"]);
+            $('[name="tg_chat_id_admin"]').val(data["tg_chat_id_admin"]);
+            $('[name="tg_chat_id_teknisi"]').val(data["tg_chat_id_teknisi"]);
+            $('[name="tg_chat_id_group"]').val(data["tg_chat_id_group"]);
 
-
+            console.log(data);
+        }, 'json');
     }
 
     function save(settings){
@@ -92,17 +106,30 @@
                 'json')
             }
             if(settings == 'users'){
-                console.log($("form_users").serialize());
+                if($('[name="password"]').val() == '') {
+                    alert('Masukan password baru!');
+                    return;
+                }
+                var url;
+                if(save_method == 'add_user') {
+                    url = "<?php echo site_url('settings/save_users')?>";
+                } else {
+                    url = "<?php echo site_url('settings/update_users')?>";
+                }
+
                 $.ajax({
-                    url: "<?= site_url('settings/save_users') ?>",
+                    url: url,
                     type: "POST",
-                    data: $("formUsers").serialize(),
+                    data: $("#form_users").serialize(),
                     dataType: "JSON",
                     success: function(data) {
                         if (data.status) {
                             console.log(data.message);
                             alert(data.message);
                             $("#btnSaveUsers").text('Saved').attr('disabled',true);
+                            reload_table();
+                            $('#myModalUser').modal('hide'); // hide bootstrap modal
+
                         }
                     },
                     error: function(e){
@@ -111,6 +138,49 @@
                 });
 
             }
+    }
+
+    function delete_user(id){
+        if(confirm('Are you sure delete this data?'))
+        {
+            $.ajax({
+            url : "<?php echo site_url('settings/delete_user')?>/"+id,
+            type: "POST",
+            dataType: "JSON",
+            success: function(data) {
+                notif('Berhasil menghapus data!','Sukses','success');
+                reload_table();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                notif('Gagal menghapus data!','Error','error');
+            }
+            });
+
+        }
+    }
+
+    function edit_user(id){
+        save_method = 'update';
+        $('#form')[0].reset(); // reset form on modals
+        $.ajax({
+            url : "<?php echo site_url('settings/get_edit_user/')?>" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(data) {
+                $('[name="id_users"]').val(data.id_users);
+                $('[name="username"]').val(data.username);
+                $('[name="password"]').val('');
+                $('[name="id_karyawan"]').val(data.id_karyawan);
+                $('[name="level"]').val(data.level);
+                $('[name="aktif"]').val(data.aktif);
+
+                $('#myModalUser').modal('show');
+                $('.modal-title').text('Edit User');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            notif('Gagal mengambil data!','Error','error');
+            }
+        });
     }
 
     function upperCase() {

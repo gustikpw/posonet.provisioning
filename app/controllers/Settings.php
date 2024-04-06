@@ -9,6 +9,7 @@ class Settings extends CI_Controller {
 			redirect('login?_rdr='.urlencode(current_url()));
 		}
 		$this->load->model('users_model','users');
+		$this->load->model('api_telegrambot_model','tg');
 	}
 
 	public function index()
@@ -53,6 +54,17 @@ class Settings extends CI_Controller {
 		echo json_encode($row);
 	}
 
+	public function get_tg_bot(){
+		$query = $this->db->query("SELECT * FROM settings where option_name LIKE 'tg_%'")->result();
+		$data = array();
+
+		foreach ($query as $key) {
+			$row[$key->option_name] = $key->option_value;
+		}
+
+		echo json_encode($row);
+	}
+
 	/**
 	 * Users Access
 	 * Create privillege login access
@@ -65,15 +77,16 @@ class Settings extends CI_Controller {
 		foreach ($list as $br) {
 			$no++;
 			$row = array();
-			$row[] = $br->id_users;
+			$row[] = $no;
 			$row[] = "<span class='font-bold'>$br->username</span>";
 			$row[] = "<span class='font-bold'>$br->level</span>";
+			$row[] = "$br->nama_lengkap";
 			$row[] = $br->aktif;
 			$row[] = "<div class=\"btn-group\">
 								<button data-toggle=\"dropdown\" class=\"btn btn-default btn-xs dropdown-toggle\" aria-expanded=\"false\">Action <span class=\"caret\"></span></button>
 								<ul class=\"dropdown-menu\">
-									<li><a href=\"javascript:void(0)\" onclick=\"edits('$br->id_users')\"><i class=\"glyphicon glyphicon-pencil\"></i> Edit</a></li>
-									<li><a href=\"javascript:void(0)\" onclick=\"deletes('$br->id_users')\"><i class=\"glyphicon glyphicon-trash\"></i> Hapus</a></li>
+									<li><a href=\"javascript:void(0)\" onclick=\"edit_user('$br->id_users')\"><i class=\"glyphicon glyphicon-pencil\"></i> Edit</a></li>
+									<li><a href=\"javascript:void(0)\" onclick=\"delete_user('$br->id_users')\"><i class=\"glyphicon glyphicon-trash\"></i> Hapus</a></li>
 								</ul>
 							</div>";
 			$data[] = $row;
@@ -92,7 +105,7 @@ class Settings extends CI_Controller {
 	{
 		$data = array(
 			'username' => $this->input->post('username'),
-			'password' => $this->input->post('password'),
+			'password' => md5($this->input->post('password')),
 			'id_karyawan' => $this->input->post('id_karyawan'),
 			'level' => $this->input->post('level'),
 			'aktif' => $this->input->post('aktif'),
@@ -102,29 +115,44 @@ class Settings extends CI_Controller {
 		echo json_encode(array("status" => TRUE, "message" => "Berhasil menambah User"));
 	}
 
-	public function update_paket()
+	public function update_users()
 	{
-		$this->_validate();
 		$data = array(
-			'nama_paket' => $this->input->post('nama_paket'),
-			'mikrotik_profile' => $this->input->post('mikrotik_profile'),
-			// 'speed_max' => $this->input->post('speed_max'),
-			'tarif' => $this->input->post('tarif'),
-			'keterangan' => $this->input->post('keterangan'),
+			'username' => $this->input->post('username'),
+			'password' => md5($this->input->post('password')),
+			'id_karyawan' => $this->input->post('id_karyawan'),
+			'level' => $this->input->post('level'),
+			'aktif' => $this->input->post('aktif'),
+			'rules' => 'webapp',
 		);
 		$this->users->update(array('id_users' => $this->input->post('id_users')), $data);
-		echo json_encode(array("status" => TRUE));
+		echo json_encode(array("status" => TRUE, "message" => "Berhasil Update User"));
 	}
 
-	public function delete_paket($id_users)
+	public function delete_user($id_users)
 	{
 		$this->users->delete_by_id($id_users);
-		echo json_encode(array("status" => TRUE));
+		echo json_encode(array("status" => TRUE, "message" => "Berhasil Delete User"));
 	}
 
-	public function get_edit($id_users=FALSE)
+	public function get_edit_user($id_users=FALSE)
 	{
 		$data= $this->users->get_by_id($id_users);
+		echo json_encode($data);
+	}
+
+	//tes
+	public function getTgSettings()
+	{
+		// $data= $this->tg->getTgSettings();
+		$data= $this->tg->sendNewClientToAdmin(array(
+			'no_pelanggan' => 222,
+			'nama_pelanggan' => 'Tes Regis',
+			'telp' => '082378901234',
+			'tgl_instalasi' => '2024-03-02',
+			'id_paket' => 15,
+			'expired' => '2024-03-21',
+		));
 		echo json_encode($data);
 	}
 

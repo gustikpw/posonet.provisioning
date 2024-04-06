@@ -108,7 +108,7 @@
                 $(".det8").text(data.chart_des.total_setoran.total_remark);
                 $(".det9").text(data.chart_des.total_setoran.bulan);
                 $(".det10").text(data.chart_des.max_setoran.kolektor);
-                $(".det11").text(data.chart_des.max_setoran.total);
+                $(".det11xx").text(data.chart_des.max_setoran.total);
                 $(".det12").text(data.chart_des.update_on);
                 $(".det13").text(data.chart_des.last_month_summary.bulan);
                 $(".det14").text(data.chart_des.last_month_summary.total_remark);
