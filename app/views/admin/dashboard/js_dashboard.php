@@ -111,7 +111,7 @@
                 $(".det11xx").text(data.chart_des.max_setoran.total);
                 $(".det12").text(data.chart_des.update_on);
                 $(".det13").text(data.chart_des.last_month_summary.bulan);
-                $(".det14").text(data.chart_des.last_month_summary.total_remark);
+                $(".det14xx").text(data.chart_des.last_month_summary.total_remark);
 
                 // Chart
                 mylineChart(data.line_chart_data);
