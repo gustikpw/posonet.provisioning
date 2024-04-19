@@ -794,6 +794,7 @@ class Api_rest_client extends CI_Controller
 	*/
 
 	public function setToExpire(){
+		ini_set('max_execution_time', 80);
 		// echo json_encode($this->routermodel->setProfileExpire());
 		echo json_encode($this->routermodel->match_paket());
 		// echo json_encode($this->routermodel->sesuaikan_paket());
