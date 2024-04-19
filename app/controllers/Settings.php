@@ -17,6 +17,32 @@ class Settings extends CI_Controller {
 		set_status_header(401);
 	}
 
+	public function ping()
+	{
+		echo "<h4>Ping to OLT</h4>";
+		
+		$ip =   "10.10.10.2";
+		exec("ping -n 3 $ip", $output, $status);
+
+		foreach ($output as $key => $val) {
+			echo $val."<br>";
+		}
+		
+		sleep(1);
+		
+		echo "<h4>Ping to Gateway</h4>";
+		
+		$ip =   "192.168.50.1";
+		exec("ping -n 3 $ip", $output2, $status2);
+		
+		foreach ($output2 as $key => $val) {
+			echo $val."<br>";
+		}
+
+		//if 1 = cant ping, 0 = success
+		echo $status2;
+	}
+
 	public function save_rekening(){
 		if ($this->input->post('bank') == 'BRI') {
 			$data = array(
