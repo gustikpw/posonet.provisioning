@@ -227,7 +227,7 @@ class Pelanggan extends CI_Controller
 		$data = array(
 			'nama_pelanggan' => $this->input->post('nama_pelanggan'),
 			'id_paket' => $this->input->post('id_paket'),
-			// 'tgl_instalasi' => $tgl_pasang,
+			'tgl_instalasi' => $tgl_pasang,
 			'expired' => $this->input->post('expired'),
 			// 'serial_number' => $this->input->post('serial_number'),
 			'lokasi_map' => urlencode($this->input->post('lokasi_map')),
