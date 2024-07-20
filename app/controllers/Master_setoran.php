@@ -44,7 +44,8 @@ class Master_setoran extends CI_Controller
 			$row[] = "<span class='font-bold'>$br->tgl_setoran</span>";
 			$row[] = "<span class='font-bold'>$bulanThn</span>";
 			$row[] = "<span class='font-bold'>$br->kolektor</span> $strWilayah";
-			$row[] = ($br->total_setoran_remark == null || $br->total_setoran_remark == 0) ? '-' : 'Rp.' . ribuan($br->total_setoran_remark);
+			$row[] = $br->keterangan;
+			// $row[] = ($br->total_setoran_remark == null || $br->total_setoran_remark == 0) ? '-' : 'Rp.' . ribuan($br->total_setoran_remark);
 			//add html for action
 			$row[] = "<a href=\"" . site_url('scan/' . $br->id_master_setoran) . "\" class=\"btn btn-outline btn-primary btn-xs\"><i class=\"glyphicon glyphicon-camera\"></i> Scan</a>
 			<div class=\"btn-group\">
