@@ -107,7 +107,7 @@ class Detail_setoran extends CI_Controller
 
 			$this->update_status_temp_invoice($kodeInvoice, $dataUpdate);
 			$insert = $this->setoran->save($data);
-			$extend = $this->olt->perpanjangPaketFromDetailSetoran($dt->no_pelanggan, $dt->expired);
+			// $extend = $this->olt->perpanjangPaketFromDetailSetoran($dt->no_pelanggan, $dt->expired);
 			$update = $this->db->query("UPDATE FROM pelanggan SET expired='$dt->expired' WHERE no_pelanggan='$dt->no_pelanggan'")->affected_rows();
 			return array('status' => TRUE, 'msg' => $extend);
 		} else {
