@@ -708,15 +708,18 @@ class Api_rest_client extends CI_Controller
 				array_push($interfaces, $interface);
 			}
 
-			if ($row->phase_state === "LOS") {
+			if ($row->phase_state == "LOS" || $row->phase_state === "syncMib") {
 				$los[] = $row->onu_index;
 			} 
-			else if ($row->phase_state === "DyingGasp" || $row->phase_state === "offline"|| $row->phase_state === "syncMib") {
+			
+			if ($row->phase_state === "DyingGasp" || $row->phase_state === "offline"|| $row->phase_state === "syncMib") {
 				$offline[] = $row->onu_index;
 			}
-			else if($row->phase_state === "working") {
+			
+			if($row->phase_state === "working") {
 				$online[] = $row->onu_index;
 			}
+			
 			$this->api->update_pelanggan(array('gpon_onu' => $row->onu_index), array('ont_phase_state' => $row->phase_state));
 		}
 
@@ -1249,7 +1252,8 @@ Ket	: ";
 		$this->load->model('api_telegrambot_model','telegrambot');
 
 		// $res = $this->telegrambot->getUpdates();
-		$res = $this->telegrambot->sendMessage();
+		$res = $this->telegrambot->getUp();
+		// $res = $this->telegrambot->sendMessage();
 		// $res = $this->telegrambot->sendMessages();
 		echo $res;
 	}

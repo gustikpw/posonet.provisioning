@@ -475,14 +475,14 @@ class Api_rest_client_model extends CI_Model
   }
 
   public function extendThisPaket($data, $wamode=false) {
-    if ($wamode == true) {
-      /**
-       * API Kirimwa.id membatasi pengiriman diatas jam 21.00
-       */
-      $modewa = ((int) date('Hms') > 70000 && (int) date('Hms') < 210000) ? true : false;
-    } else {
-      $modewa = false;
-    }
+    // if ($wamode == true) {
+    //   /**
+    //    * API Kirimwa.id membatasi pengiriman diatas jam 21.00
+    //    */
+    //   $modewa = ((int) date('Hms') > 70000 && (int) date('Hms') < 210000) ? true : false;
+    // } else {
+    //   $modewa = false;
+    // }
     /*
 		* cek tgl sekarang. jika belum lewat tgl expire yg telah ditentukan maka cukup update kolom expired di database.
 		* atau cek di tabel v_expired apakan data gpon_onu exist
@@ -512,23 +512,24 @@ class Api_rest_client_model extends CI_Model
       /**
        * KIRIM PESAN KE TELEGRAM
        */
-      $template = "\xE2\x8F\xB0 *Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s \n\n _handled by %s_";
+      $template = "*Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s \n\n _handled by %s_";
       $teletext = sprintf($template, $cust->no_pelanggan .". ". $cust->nama_pelanggan, $cust->mikrotik_profile, $data->expired, date('Y-m-d H:i:s'), $data->username);
       
-      $sendToTelegram = $this->telegram->sendToAdmin($teletext);
+      $sendToTelegram = ""; 
+      // $sendToTelegram = $this->telegram->sendToAdmin($teletext);
 
       // kirim pesan ke wa
-      $datat = [
-        'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($data->expired) . ".\n$cust->no_pelanggan",
-        'phone_number' => $cust->telp,
-      ];
+      // $datat = [
+      //   'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($data->expired) . ".\n$cust->no_pelanggan",
+      //   'phone_number' => $cust->telp,
+      // ];
 
-      if ($modewa == true) {
-        $send = $this->kirimwa->post_messages($datat);
-      }
-      else {
-        $send = "Kirimwa melewati jam 21:00:00 atau disabled";
-      }
+      // if ($modewa == true) {
+      //   $send = $this->kirimwa->post_messages($datat);
+      // }
+      // else {
+      //   $send = "Kirimwa melewati jam 21:00:00 atau disabled";
+      // }
 
       return [
         'message' => "Paket berhasil diperpanjang ke $data->expired. ONT pelanggan auto restart!",
@@ -554,10 +555,11 @@ class Api_rest_client_model extends CI_Model
       /**
        * KIRIM PESAN KE TELEGRAM
        */
-      $template = "\xE2\x8F\xB0 *Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s \n\n _handled by %s_";
+      $template = "*Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s \n\n _handled by %s_";
       $teletext = sprintf($template, $plgn->name, $plgn->mikrotik_profile, $data->expired, date('Y-m-d H:i:s'), $data->username);
 
-      $sendToTelegram = $this->telegram->sendToAdmin($teletext);
+      $sendToTelegram = "";
+      // $sendToTelegram = $this->telegram->sendToAdmin($teletext);
 
 
       $datat = [
@@ -565,19 +567,19 @@ class Api_rest_client_model extends CI_Model
         'phone_number' => ($plgn->telp == '') ? '081340310250' : $plgn->telp,
       ];
 
-      if ($modewa == true) {
-        $send = $this->kirimwa->post_messages($datat);
-      }
-      else {
-        $send = "Kirimwa melewati jam 21:00:00 atau disabled";
-      }
+      // if ($modewa == true) {
+      //   $send = $this->kirimwa->post_messages($datat);
+      // }
+      // else {
+      //   $send = "Kirimwa melewati jam 21:00:00 atau disabled";
+      // }
 
       $updateExp = $this->db->query("UPDATE pelanggan SET expired='$data->expired' WHERE gpon_onu='$data->gpon_onu'");
       return [
         'message' => $msg, 
         'kirimwa' => $sendToTelegram, 
         'status' => true, 
-        'data' => $datat
+        // 'data' => $datat
       ];
     }
   }

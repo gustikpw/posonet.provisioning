@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
-class Detail_setoran extends CI_Controller
+class Pembayaran extends CI_Controller
 {
 
 	function __construct()
@@ -25,14 +25,97 @@ class Detail_setoran extends CI_Controller
 		$data['detail_setoran'] = $this->setoran->getDetailKolektor($id_master_setoran);
 		$data['paket'] = $this->db->query("SELECT * FROM paket ORDER BY tarif ASC")->result();
 		$data['transfer'] = $this->db->query("SELECT * FROM karyawan WHERE id_karyawan = 3")->row();
-		$data['active'] = "detail_setoran";
+		$data['active'] = "pembayaran";
 		$this->load->view("admin/templates/header", $data);
 		$this->load->view("admin/templates/navigation");
-		$this->load->view("admin/detail_setoran/detail_setoran");
+		$this->load->view("admin/pembayaran/pembayaran");
 		$this->load->view("admin/templates/footer");
-		$this->load->view("admin/detail_setoran/js_detail_setoran");
+		$this->load->view("admin/pembayaran/js_pembayaran");
 		// echo json_encode($data);
 	}
+
+
+	public function cari(){
+		$cari = html_escape($this->input->post('cari'));
+		$results = $this->db->query("SELECT no_pelanggan,nama_pelanggan,wilayah,nama_paket,tarif,expired FROM v_pelanggan WHERE no_pelanggan LIKE '$cari%' OR nama_pelanggan LIKE '%$cari%'")->result();
+		$row = '';
+		foreach ($results as $dt) {
+			$row .= "<tr>
+<td>$dt->no_pelanggan. $dt->nama_pelanggan</td>
+<td>$dt->wilayah</td>
+<td class=\"text-navy\"> <a href=\"#\" class=\"ladda-button btn btn-warning btn-xs\" data-style=\"zoom-in\" onclick=\"getDetailInvoice($dt->no_pelanggan)\">Cek</a> </td>
+</tr>";
+		}
+		echo $row;
+	}
+
+
+	public function getDetailInvoice() {
+		$nopel = html_escape($this->input->post('no_pelanggan'));
+		
+		$rp = $this->db->query("SELECT * FROM v_pelanggan WHERE no_pelanggan = $nopel")->row();
+		$rs = $this->db->query("SELECT * FROM v_temp_invoice WHERE bulan_penagihan = (SELECT MAX(bulan_penagihan) FROM v_temp_invoice) AND no_pelanggan = $nopel")->row();
+
+		$data = '<ul class="list-group clear-list">
+                                        <li class="list-group-item fist-item">
+                                            <span class="pull-right">
+                                                <h3><strong class="text-success"><span id="dtNopelNama">'.$rs->no_pelanggan."-".$rs->nama_pelanggan.'</span></strong></h3>
+                                            </span>
+                                            <strong>No Internet/Pelanggan</strong>
+                                        </li>
+
+                                        <li class="list-group-item fist-item">
+                                            <span class="pull-right">
+                                                <strong class="text-success"><span id="dtPaket">'.$rs->kode_invoice.'<span></strong>
+                                            </span>
+                                            <strong>Kode Invoice</strong>
+                                        </li>
+
+                                        <li class="list-group-item fist-item">
+                                            <span class="pull-right">
+                                                <strong class="text-success"><span id="dtPaket">'.$rp->nama_paket.'<span></strong>
+                                            </span>
+                                            <strong>Paket</strong>
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="pull-right">
+                                                <strong class="text-warning"><span id="dtExpired">'.$rp->expired.'</span></strong>
+                                            </span>
+                                            <strong>Last Expired</strong>
+                                        </li>
+                                        
+                                        <li class="list-group-item">
+                                            <span class="pull-right" id="dtTarif" style="font-size: 12pt; font-weight: bold;">
+                                                '. number_format($rp->tarif, 0, ",", ".").'
+                                            </span>
+                                            <strong>Tagihan Rp</strong>
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="pull-right">
+                                                <strong class="text-danger"><span id="dtStatusBayar">'.$rs->status.'</span></strong>
+                                            </span>
+                                            <strong>Status Bayar</strong>
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="pull-right">
+                                                <a href="#" class="ladda-button btn btn-warning" data-style="zoom-in" onclick="proses_pembayaran('.$rs->no_pelanggan.')">Bayar Sekarang</a>
+                                            </span>
+                                            <strong></strong>
+                                        </li>
+                                    </ul>';
+		
+		echo $data;
+	}
+
+
+
+
+
+
+
 
 	/*
 		CRUD detail Setoran

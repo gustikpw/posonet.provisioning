@@ -26,10 +26,10 @@ class Dashboard extends CI_Controller
 			'perbaikan_gangguan', 'kwitansi',
 			'appsettings', 'dashboard', 'kolektor', 'pemutusan', 'laporan', 'quicklink',
 			'master_setoran', 'pengeluaran', 'users_api', 'backup', 'settings', 'images',
-			'wa_notif',
+			'wa_notif','pembayaran',
 		);
 
-		$levelkolektor	= array('pelanggan');
+		$levelkolektor	= array('pembayaran');
 
 		$levelteknisi	= array('perbaikan', 'jenis_gangguan', 'pengaduan', 'perbaikan_gangguan');
 

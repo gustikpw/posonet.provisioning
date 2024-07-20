@@ -16,7 +16,7 @@
 		"ifsnop/mysqldump-php": "^2.9",
 		"guzzlehttp/guzzle": "~6.0",
 		"evilfreelancer/routeros-api-php": "^1.4",
-		"irazasyed/telegram-bot-sdk": "2.0"
+		"irazasyed/telegram-bot-sdk": "^3.9"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

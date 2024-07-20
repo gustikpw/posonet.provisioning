@@ -164,6 +164,12 @@ Jumlah Transfer = %s
         $extend = "\xF0\x9F\x95\x93 *Extend Paket*\nName : {}\nExpired at: {}\nProfile : {}";
         $los = "\xF0\x9F\x94\xB4 \xF0\x9F\x86\x98 *LOS*\nName : {}\nLocation : {}\nHP : {}";
     }
+
+    public function getUp(){
+        $telegram = new Bot('5657520282:AAEM8VglypDXYgx6FN5wkijmgl7zVfbpbnM');
+        $response = $telegram->getMe();
+        return $response;
+    }
     
 
 }

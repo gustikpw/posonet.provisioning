@@ -55,7 +55,11 @@ class Login extends CI_Controller
 			if ($rdr != '') {
 				redirect(urldecode($rdr));
 			} else {
-				redirect(site_url('dashboard/pelanggan'));
+				if ($this->session->level == 'kolektor') {
+					redirect(site_url('dashboard/pembayaran'));
+				} else {
+					redirect(site_url('dashboard/pelanggan'));
+				}
 			}
 		}
 	}

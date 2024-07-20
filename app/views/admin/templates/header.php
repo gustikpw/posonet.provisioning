@@ -18,6 +18,10 @@
   <link href="<?= base_url('assets/inspinia271/css/animate.css') ?>" rel="stylesheet">
   <link href="<?= base_url('assets/inspinia271/css/style.css') ?>" rel="stylesheet">
 
+  <?php if ($active == 'pembayaran') : ?>
+    <link href="<?php echo base_url('assets/inspinia271/css/plugins/ladda/ladda-themeless.min.css') ?>" rel="stylesheet">
+  <?php endif; ?>
+
   <?php if ($active != 'profil_perusahaan') : ?>
     <link href="<?php echo base_url('assets/inspinia271/css/plugins/dataTables/datatables.min.css') ?>" rel="stylesheet">
   <?php endif; ?>
