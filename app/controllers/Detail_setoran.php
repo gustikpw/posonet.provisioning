@@ -109,7 +109,7 @@ class Detail_setoran extends CI_Controller
 			$insert = $this->setoran->save($data);
 			// $extend = $this->olt->perpanjangPaketFromDetailSetoran($dt->no_pelanggan, $dt->expired);
 			$update = $this->db->query("UPDATE FROM pelanggan SET expired='$dt->expired' WHERE no_pelanggan='$dt->no_pelanggan'")->affected_rows();
-			return array('status' => TRUE, 'msg' => $extend);
+			return array('status' => TRUE, 'msg' => "");
 		} else {
 			return array('status' => FALSE, 'msg' => '');
 		}
