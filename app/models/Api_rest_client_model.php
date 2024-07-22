@@ -515,8 +515,8 @@ class Api_rest_client_model extends CI_Model
       $template = "*Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s \n\n _handled by %s_";
       $teletext = sprintf($template, $cust->no_pelanggan .". ". $cust->nama_pelanggan, $cust->mikrotik_profile, $data->expired, date('Y-m-d H:i:s'), $data->username);
       
-      $sendToTelegram = ""; 
-      // $sendToTelegram = $this->telegram->sendToAdmin($teletext);
+      // $sendToTelegram = ""; 
+      $sendToTelegram = $this->telegram->sendToAdmin($teletext);
 
       // kirim pesan ke wa
       // $datat = [
@@ -533,7 +533,7 @@ class Api_rest_client_model extends CI_Model
 
       return [
         'message' => "Paket berhasil diperpanjang ke $data->expired. ONT pelanggan auto restart!",
-        'kirimwa' => $sendToTelegram,
+        // 'kirimwa' => $sendToTelegram,
         'status' => true,
       ];
     }
@@ -558,8 +558,8 @@ class Api_rest_client_model extends CI_Model
       $template = "*Perubahan Masa aktif Paket*\nName : %s\nProfile : %s\nExpired to : %s\nTgl Input : %s \n\n _handled by %s_";
       $teletext = sprintf($template, $plgn->name, $plgn->mikrotik_profile, $data->expired, date('Y-m-d H:i:s'), $data->username);
 
-      $sendToTelegram = "";
-      // $sendToTelegram = $this->telegram->sendToAdmin($teletext);
+      // $sendToTelegram = "";
+      $sendToTelegram = $this->telegram->sendToAdmin($teletext);
 
 
       $datat = [
@@ -577,7 +577,7 @@ class Api_rest_client_model extends CI_Model
       $updateExp = $this->db->query("UPDATE pelanggan SET expired='$data->expired' WHERE gpon_onu='$data->gpon_onu'");
       return [
         'message' => $msg, 
-        'kirimwa' => $sendToTelegram, 
+        // 'kirimwa' => $sendToTelegram, 
         'status' => true, 
         // 'data' => $datat
       ];
