@@ -170,6 +170,8 @@ class Pelanggan extends CI_Controller
 			'ktp_filename' => $ktp_filename,
 			
 			'odp_number' => $this->input->post('odp_number'),
+			'odp_location' => urlencode($this->input->post('odp_location')),
+
 			'sn_stb' => $this->input->post('sn_stb'),
 			'stb_username' => $this->input->post('no_pelanggan'),
 			'stb_password' => rand(111111,999999),
@@ -239,6 +241,8 @@ class Pelanggan extends CI_Controller
 			'ktp_filename' => $ktp_filename,
 			
 			'odp_number' => $this->input->post('odp_number'),
+			'odp_location' => urlencode($this->input->post('odp_location')),
+
 			'onu_type' => $this->input->post('onutype'),
 			'access_mode' => $this->input->post('service_mode'),
 			'vlan_profile' => $this->input->post('vlan_profile'),
@@ -316,7 +320,9 @@ class Pelanggan extends CI_Controller
 			'nama_paket' => $data1->nama_paket,
 			'tarif' => $paket,
 			'status' => $status,
-			'lokasi_map' => ($data1->lokasi_map == '' || $data1->lokasi_map == null) ? "<a href='javascript:void(0)' class='btn btn-sm btn-warning'><span class='fa fa-map-marker'></span> Lokasi Kosong</a>" : "<a href='" . urldecode($data1->lokasi_map) . "' target='_blank' class='btn btn-sm btn-info'><span class='fa fa-map-marker'></span> Buka Lokasi</a>",
+			'lokasi_map' => ($data1->lokasi_map == '' || $data1->lokasi_map == null) ? "<a href='javascript:void(0)' class='btn btn-sm btn-warning'><span class='fa fa-map-marker'></span> Lokasi ONT Kosong</a>" : "<a href='" . urldecode($data1->lokasi_map) . "' target='_blank' class='btn btn-sm btn-info'><span class='fa fa-map-marker'></span> Buka Lokasi ONT</a>",
+			'odp_number' => $data1->odp_number,
+			'odp_location' => ($data1->odp_location == '' || $data1->odp_location == null) ? "<a href='javascript:void(0)' class='btn btn-sm btn-warning'><span class='fa fa-map-marker'></span> Lokasi ODP Kosong</a>" : "<a href='" . urldecode($data1->odp_location) . "' target='_blank' class='btn btn-sm btn-info'><span class='fa fa-map-marker'></span> Buka Lokasi ODP</a>",
 			'expired' => $data1->expired,
 			'keterangan' => $data1->keterangan,
 		);

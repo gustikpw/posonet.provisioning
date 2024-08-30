@@ -306,6 +306,9 @@
         $('[name="odp_number"]').val(data.odp_number);
         $('[name="stb_username"]').val(data.stb_username);
         $('[name="stb_password"]').val(data.stb_password);
+        
+        $('[name="odp_number"]').val(data.odp_number);
+        $('[name="odp_location"]').val(decodeURIComponent(data.odp_location));
 
 
         $('.ktpfilename').text(data.ktp_filename);

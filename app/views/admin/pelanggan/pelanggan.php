@@ -83,6 +83,8 @@
                                         <th>Interface</th>
                                         <th>Name</th>
                                         <th>Cause</th>
+                                        <th>ODP</th>
+                                        <th>ONT</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -254,6 +256,15 @@
                                     </div>
                                     <div class="form-group"><label class="col-md-3 control-label  text-danger">Expired at</label>
                                         <div class="col-md-9"><input type="text" name="expired" placeholder="Paket kadaluarsa" class="form-control date"> <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group"><label class="col-md-3 control-label">ODP Number</label>
+                                        <div class="col-md-9"><input type="text" name="odp_number" placeholder="ODP-PDL-001" class="form-control"> <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group"><label class="col-md-3 control-label">ODP Location</label>
+                                        <div class="col-md-9"><input type="text" name="odp_location" placeholder="ODP Map Location" class="form-control"> <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
                                 </div>

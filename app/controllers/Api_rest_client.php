@@ -112,6 +112,11 @@ class Api_rest_client extends CI_Controller
 			$row[] = $br->gpon_onu;
 			$row[] = $br->no_pelanggan.". ". $br->nama_pelanggan;
 			$row[] = $br->ont_phase_state;
+			
+			$odpLocation = ($br->odp_location == '' || $br->odp_location == null) ? "javascript:void(0)" : urldecode($br->odp_location);
+			$ontLocation = ($br->lokasi_map == '' || $br->lokasi_map == null) ? "javascript:void(0)" : urldecode($br->lokasi_map);
+			$row[] = "<a href=\"$odpLocation\" target=\"_blank\" class=\"btn btn-xs btn-danger\"><span class=\"fa fa-map\"></span> $br->odp_number</a>";
+			$row[] = "<a href=\"$ontLocation\" target=\"_blank\" class=\"btn btn-sm\"><span class=\"fa fa-map\"></span> Lokasi ONT</a>";
 
 			$data[] = $row;
 		}
@@ -646,13 +651,27 @@ class Api_rest_client extends CI_Controller
 
 		$state = ($remote_state == 'enable') ? 'enabled' : 'disabled';
 
+		if ($request->ip_address == '0.0.0.0') {
+			//ambil ip dari router berdasarkan username pppoe
+			$userPpp = $this->db->query("SELECT username FROM pelanggan WHERE gpon_onu='$gpon_onu'")->row()->username;
+
+			$getActiveConnection = $this->routermodel->get_ppp_ip_address($userPpp);
+			$ipRemote='';
+			foreach ($getActiveConnection as $key) {
+				$ipRemote = $key['address'];
+			}
+
+		} else {
+			$ipRemote = $request->ip_address;
+		}
+
 		$query = $this->db->query("UPDATE pelanggan 
 		SET ip_address='$request->ip_address', remote_web_state='$state'
 		WHERE gpon_onu='$gpon_onu'");
 
 		echo json_encode([
 			"message" => $request->message,
-			"link" => "http://$request->ip_address",
+			"link" => "http://$ipRemote",
 			"status" => true,
 		]);
 	}
@@ -1252,9 +1271,10 @@ Ket	: ";
 		$this->load->model('api_telegrambot_model','telegrambot');
 
 		// $res = $this->telegrambot->getUpdates();
-		$res = $this->telegrambot->getUp();
+		// $res = $this->telegrambot->getUp();
 		// $res = $this->telegrambot->sendMessage();
 		// $res = $this->telegrambot->sendMessages();
+		$res = $this->telegrambot->sendKontak();
 		echo $res;
 	}
 
@@ -1282,7 +1302,5 @@ Expired to : 2023-11-20
 Tgl Input : 2023-10-19 08:49:08";
 		echo json_encode($data);
 	}
-
-	
 
 }

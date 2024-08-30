@@ -639,4 +639,7 @@ class Api_rest_client_model extends CI_Model
     $this->db->update('pelanggan', $data, $where);
     return $this->db->affected_rows();
   }
+
+
+  
 }

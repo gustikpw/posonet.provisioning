@@ -146,13 +146,27 @@ Jumlah Transfer = %s
             ribuan($paket->tarif + $data['no_pelanggan']),
         );
 
+        $contactName = "WIFI %s. %s";
+        $firstName = sprintf($contactName, $data['no_pelanggan'], $data['nama_pelanggan']);
+        $lastName = $paket->nama_paket;
+
         try {
-            $data = [
+            $dataPesan = [
                 'chat_id'       => $this->tgrow['tg_chat_id_admin'],
                 'text'          => $msg,
                 'parse_mode'    => 'markdown'
             ];
-            return $this->telegram->sendMessage($data);
+
+            $dataKontak = [
+                'chat_id'       => $this->tgrow['tg_chat_id_admin'],
+                'phone_number'  => $this->formatNomor($data['telp']),
+                'first_name'    => $firstName,
+                'last_name'     => $lastName
+            ];
+            $feedback = $this->telegram->sendMessage($dataPesan);
+            $this->telegram->sendContact($dataKontak);
+
+            return $feedback;
         } catch (\Exception $e) {
             return $e;
         }
@@ -169,6 +183,32 @@ Jumlah Transfer = %s
         $telegram = new Bot('5657520282:AAEM8VglypDXYgx6FN5wkijmgl7zVfbpbnM');
         $response = $telegram->getMe();
         return $response;
+    }
+
+    public function formatNomor($phoneNumber){
+        // Check if the phone number starts with '0'
+        if (substr($phoneNumber, 0, 1) === '0') {
+            // Replace the leading '0' with '+62'
+            $formattedPhoneNumber = '+62' . substr($phoneNumber, 1);
+        } else {
+            // If it does not start with '0', leave it unchanged
+            $formattedPhoneNumber = $phoneNumber;
+        }
+        return $formattedPhoneNumber;
+    }
+
+    public function sendKontak(){
+
+        try {
+            $data = [
+                'chat_id'       => $this->tgrow['tg_chat_id_admin'],
+                'phone_number'  => $this->formatNomor('085326612643'),
+                'first_name'    => 'WIFI 10M 304. EVI TORUNDE'
+            ];
+            return $this->telegram->sendContact($data);
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
     
 

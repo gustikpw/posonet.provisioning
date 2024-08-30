@@ -67,3 +67,9 @@ add v.expired AFTER v.ont_phase_state
 - option_id = 35, option_name = tg_chat_id_group, option_value = ''
 
 
+# (2024-07-25) add line on v_pelanggan after "AS status_berlangganan"
+- ,p.odp_number, p.odp_location
+
+# (2024-07-25) add line on v_onu_los after "v.ont_phase_state"
+- ,v.odp_number, v.odp_location, v.lokasi_map
+

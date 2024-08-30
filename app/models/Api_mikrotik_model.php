@@ -179,5 +179,13 @@ class Api_mikrotik_model extends CI_Model
   // }
 
 
+  public function get_ppp_ip_address($username = false)
+  {
+    //get by name for return .id
+    $query = (new Query('/ppp/active/print',))
+    ->where('name', $username);
+    
+    return $this->_clientMtik->query($query)->read();
+  }
 
 }
