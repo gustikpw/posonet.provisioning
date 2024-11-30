@@ -65,9 +65,9 @@
                                 </ul>
                             </li>
 
-                            <li class="<?= ($active == "pembayaran") ? 'active' : '' ?>">
-                                <a aria-expanded="false" role="button" href="<?= site_url('dashboard/pembayaran') ?>"><span class="fa fa-area-chart"></span> Pembayaran <!--span class="badge badge-info">New (1)--></a>
-                            </li>
+                            <!-- <li class="</?= ($active == "pembayaran") ? 'active' : '' ?>">
+                                <a aria-expanded="false" role="button" href="</?= site_url('dashboard/pembayaran') ?>"><span class="fa fa-area-chart"></span> Pembayaran </!--span class="badge badge-info">New (1)--/></a>
+                            </li> -->
 
                             <li class="">
                                 <a aria-expanded="false" role="button" href="<?= site_url('dashboard/pengeluaran') ?>"><span class="fa fa-area-chart"></span> Pengeluaran <!--span class="badge badge-info">New (1)--></a>
