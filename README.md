@@ -1,7 +1,7 @@
 # PosoNet.Provisioning
  App for Inet
 # Requirements
-- Xampp with php 7.3.x
+- Xampp with php 7.3.9 (Enable manually ext-sockets in php.ini)
 - Composer
 - Python 3.8.10 (support windows 7)
 
