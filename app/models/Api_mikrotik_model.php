@@ -19,18 +19,19 @@ class Api_mikrotik_model extends CI_Model
     parent::__construct();
     $this->load->database();
 
-    $this->_client = new GClient([
-      'base_uri' => 'http://127.0.0.1:5000/v1/'
-    ]);
-
     // MIKROTIK
     $this->mikrotik = $this->config->item('mikrotik');
-
+    
     $this->_mikrotik = new \RouterOS\Config([
       'host' => $this->mikrotik['HOST'],
       'user' => $this->mikrotik['USERNAME'],
       'pass' => $this->mikrotik['PASSWORD'],
       'port' => $this->mikrotik['PORT'],
+    ]);
+    
+    $this->_restClient = new GClient([
+      'base_uri' => $this->mikrotik['REST_URL'],
+      'timeout' => 9.0
     ]);
 
     $this->_clientMtik = new RClient($this->_mikrotik);
@@ -187,5 +188,71 @@ class Api_mikrotik_model extends CI_Model
     
     return $this->_clientMtik->query($query)->read();
   }
+
+  /**
+	 * TEST REST HTTP ROUTEROS 7,9^
+	 */
+
+   function getRestSecret($username) {
+    if ($username == '') {
+      $query = '';
+    } else {
+      $query = "?name=$username";
+    }
+
+    $response = $this->_restClient->get("ppp/secret$query",
+    [
+      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']]
+    ]);
+
+    return $response->getBody();
+   }
+
+   function putRestSecret($data) {
+    $response = $this->_restClient->put('ppp/secret',
+    [
+      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']],
+      'headers' => ['Content-type: application/json'],
+      'body' => json_encode($data),
+    ]);
+
+    // return $response->getBody();
+    return true;
+   }
+
+
+   function patchRestSecret($data) {
+    $getId =  json_decode($this->getRestSecret($data->name), true);
+    $id = '';
+
+    foreach ($getId as $key) {
+      $id = $key['.id'];
+    }
+    
+    $response = $this->_restClient->patch("ppp/secret/$id",
+    [
+      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']],
+      'headers' => ['Content-type: application/json'],
+      'body' => json_encode($data),
+    ]);
+
+    return $response->getBody();
+   }
+
+   function deleteRestSecret($data) {
+    $getId =  json_decode($this->getRestSecret($data->name), true);
+    $id = '';
+
+    foreach ($getId as $key) {
+      $id = $key['.id'];
+    }
+    
+    $response = $this->_restClient->delete("ppp/secret/$id",
+    [
+      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']]
+    ]);
+
+    return $response->getBody();
+   }
 
 }
