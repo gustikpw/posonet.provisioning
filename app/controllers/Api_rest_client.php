@@ -435,8 +435,10 @@ class Api_rest_client extends CI_Controller
 		$permanent = $this->input->post('permanent');
 		//ambil username pppoe utk delete secret di mikrotik
 		$username = $this->db->query("SELECT username from pelanggan WHERE gpon_onu = '$gpon_onu'")->row()->username;
-		//delete onu di olt dan mikrotik
+		//delete onu di olt
 		$delete_onu = $this->api->delete_onu($gpon_onu, $username);
+		//delete onu di mikrotik
+		$delete_secret = $this->routermodel->deleteRestSecret((object) array('name' => $username));
 		//delete onu di database sql
 		if ($permanent == 'yes'){
 			$delete_cust = $this->db->query("DELETE from pelanggan WHERE gpon_onu = '$gpon_onu'");

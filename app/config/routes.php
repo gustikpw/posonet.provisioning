@@ -59,3 +59,4 @@ $route['login'] = 'login/login';
 $route['logout'] = 'login/logout';
 $route['quicklink'] = 'dashboard/url/quicklink';
 $route['scan/(:num)'] = "detail_setoran/detail/$1";
+$route['bot/(:any)/hooks'] = "bot/myhook/$1";

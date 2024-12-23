@@ -199,7 +199,8 @@
     $('.ktpfilename').val('');
     id_wilayah.val(null);
     id_paket.val(null).trigger('change');
-    zstatus.val(null).trigger('change');
+    zstatus.val('AKTIF').trigger('change');
+    $('.date').val("").datepicker("update");
     $('#myModal').modal('show'); // show bootstrap modal
     $('.help-block').empty();
     $('.form-group').removeClass('has-error');
@@ -638,7 +639,7 @@
           if (d.status != '200') {
             $('#expired').hide();
           } else {
-            $('#expired').show()
+            // $('#expired').show()
             return d.data
           }
         }
@@ -647,6 +648,10 @@
       paging: false,
       info: false
     });
+  }
+
+  function toggleExpired(){
+    $('#expired').toggle();
   }
 
   function setExpired() {

@@ -8,6 +8,7 @@
                     <div class="ibox-title">
                         <h5><?php echo ucwords(str_replace('_', ' ', $active)); ?></h5>
                         <div class="ibox-tools">
+                            <button class="btn btn-xs" id="#btnExpiredContent" onclick="toggleExpired()">Show Expired</button>
                             <button class="btn btn-xs" data-toggle="modal" data-target="#exampleModal">Recent Request</button>
                             <!-- <button class="btn btn-xs btn-primary v_online">online -</button> -->
                             <a href="#divoffline" class="btn btn-xs v_offline">offline -</a>

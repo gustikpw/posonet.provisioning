@@ -16,6 +16,7 @@ $config['node_whatsappapi'] = [
 
 $config['telegram_bot'] = [
 	'TOKEN' 			=> '5657520282:AAEM8VglypDXYgx6FN5wkijmgl7zVfbpbnM',
+	'TOKENTEST'			=> '7497901283:AAHWWrqS-L09GKZgnvCCNHkVUIHA0LG8DsQ',
 	'USERNAME' 			=> 'posonetbot',
 	'CHAT_ID_ADMIN' 	=> '2092734947',
 	'CHAT_ID_TEKNISI' 	=> '795842822',
@@ -37,6 +38,7 @@ $config['mikrotik'] = [
 	'PORT' => 8728,
 	'USERNAME' => 'flaskendpoint',
 	'PASSWORD' => '.flask!',
+	'REST_URL' => 'http://192.168.50.1:8090/rest/'
 ];
 
 

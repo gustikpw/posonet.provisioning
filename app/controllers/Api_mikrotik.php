@@ -91,4 +91,42 @@ class Api_mikrotik extends CI_Controller
 	}
 
 
+	/**
+	 * TEST REST HTTP ROUTEROS 7,9^
+	 */
+
+	
+	function getPPPSecret($username = false) {
+	   $body = $this->routermodel->getRestSecret($username);
+	   echo $body;
+	}
+
+	function putPPPSecret() {
+	   $body = $this->routermodel->putRestSecret();
+	   echo $body;
+	}
+	
+	function patchPPPSecret($data = false) {
+		$data = (object) array(
+			"name" => "COBAREST7",
+			"password" => "COBAREST7890X",
+			// "profile"=> "UPTO-10M",
+		);
+		$body = $this->routermodel->patchRestSecret($data);
+		// var_dump($body);
+		echo $body;
+
+	}
+
+	function deletePPPSecret($data = false) {
+		// $data = (object) array(
+		// 	"name" => "COBAREST7",
+		// );
+		$body = $this->routermodel->deleteRestSecret(
+			(object) array("name" => "COBAREST7")
+		);
+		// var_dump($body);
+		echo $body;
+
+	}
 }

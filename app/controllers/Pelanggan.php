@@ -10,6 +10,7 @@ class Pelanggan extends CI_Controller
 			redirect('login?_rdr=' . urlencode(current_url()));
 		}
 		$this->load->model('pelanggan_model', 'pelanggan');
+		$this->load->model('api_mikrotik_model', 'routermodel');
 		$this->load->model('api_rest_client_model', 'olt');
 		$this->load->helper(array('MY_ribuan', 'MY_bulan'));
 	}
@@ -183,8 +184,9 @@ class Pelanggan extends CI_Controller
 		// 	echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
 		// 	exit();
 		// }
-
+		//insert to db
 		$insert = $this->pelanggan->save($data);
+		//regist ont
 		$onu = $this->olt->create_onu($data);
 		
 		if ($onu->status == '200') {
@@ -197,6 +199,16 @@ class Pelanggan extends CI_Controller
 			$data1['description'] = $onu->data->description;
 
 			$update = $this->pelanggan->update(array('no_pelanggan' => $this->input->post('no_pelanggan')), $data1);
+
+			//create secret on router
+			$secretData = (object) array(
+					'name'      => $onu->data->username,
+					'password'  => $onu->data->password,
+					'profile'   => $onu->data->ppp_profile,
+					'service'   => 'pppoe'
+			);
+
+			$makePPPSecret = $this->routermodel->putRestSecret($secretData);
 		}
 
 
@@ -422,6 +434,48 @@ class Pelanggan extends CI_Controller
 				echo json_encode(['newCode' => "$mulai" , 'kondisi' => 'e']);
 			}
 		// }
+	}
+
+	public function aicode($id_wilayah){
+		//kumpulkan data no_pelanggan dalam bentuk grup
+		$query = $this->db->query("SELECT kode_wilayah, GROUP_CONCAT(no_pelanggan) AS no_pelanggan FROM v_pelanggan
+			WHERE id_wilayah = $id_wilayah
+			ORDER BY no_pelanggan ASC");
+		$row = $query->row();
+		
+		$angkaTerlewat = array();
+		
+		if ($row->kode_wilayah != null) {
+			$angkaTerendah = $row->kode_wilayah.'00'; //200
+			$angkaTertinggi = $row->kode_wilayah.'99'; //200
+			// print_r($angkaTertinggi);
+			// exit();
+			$dataArray = explode(",",$row->no_pelanggan);
+
+			for ($i=$angkaTerendah; $i <= $angkaTertinggi; $i++) { 
+				if (!in_array($i, $dataArray)) {
+					$angkaTerlewat[] = $i;
+				}
+			}
+
+			if (empty($angkaTerlewat)) {
+				$angkaTerlewat[] = max($dataArray) + 1;
+			}
+			
+		} elseif ($row->kode_wilayah == null) {
+			$kodeWilayah = $this->db->query("SELECT kode_wilayah FROM wilayah WHERE id_wilayah=$id_wilayah")->row()->kode_wilayah;
+			
+			//ambil angka terendah
+			$angkaTerlewat = $kodeWilayah.'00'; //200
+
+			//khusus untuk kode wilayah 000
+			if ($angkaTerlewat == '000') {
+				$angkaTerlewat= ["001"];
+			}
+			
+		}
+
+		print_r(min($angkaTerlewat));
 	}
 
 
