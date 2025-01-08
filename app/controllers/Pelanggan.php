@@ -358,6 +358,9 @@ class Pelanggan extends CI_Controller
 		}
 	}
 
+	/***
+	 * Kode LAMA
+	 */
 
 	public function getcodenew($id_wilayah){
 		$query = $this->db->query("SELECT kode_wilayah, GROUP_CONCAT(no_pelanggan) AS no_pelanggan FROM v_pelanggan
@@ -436,6 +439,11 @@ class Pelanggan extends CI_Controller
 		// }
 	}
 
+
+	/***
+	 * Kode BARU
+	 */
+
 	public function aicode($id_wilayah){
 		//kumpulkan data no_pelanggan dalam bentuk grup
 		$query = $this->db->query("SELECT kode_wilayah, GROUP_CONCAT(no_pelanggan) AS no_pelanggan FROM v_pelanggan
@@ -444,10 +452,12 @@ class Pelanggan extends CI_Controller
 		$row = $query->row();
 		
 		$angkaTerlewat = array();
+
+		$kondisi = '';
 		
 		if ($row->kode_wilayah != null) {
 			$angkaTerendah = $row->kode_wilayah.'00'; //200
-			$angkaTertinggi = $row->kode_wilayah.'99'; //200
+			$angkaTertinggi = $row->kode_wilayah.'99'; //299
 			// print_r($angkaTertinggi);
 			// exit();
 			$dataArray = explode(",",$row->no_pelanggan);
@@ -460,22 +470,39 @@ class Pelanggan extends CI_Controller
 
 			if (empty($angkaTerlewat)) {
 				$angkaTerlewat[] = max($dataArray) + 1;
+				$kondisi = 'b';
 			}
+
+			if (min($angkaTerlewat) > $angkaTertinggi) {
+				$angkaTerlewat = ['----FULL----'];
+				$kondisi = 'c';
+			}
+
 			
 		} elseif ($row->kode_wilayah == null) {
-			$kodeWilayah = $this->db->query("SELECT kode_wilayah FROM wilayah WHERE id_wilayah=$id_wilayah")->row()->kode_wilayah;
+			$getKode = $this->db->query("SELECT kode_wilayah FROM wilayah WHERE id_wilayah=$id_wilayah");
 			
-			//ambil angka terendah
-			$angkaTerlewat = $kodeWilayah.'00'; //200
-
-			//khusus untuk kode wilayah 000
-			if ($angkaTerlewat == '000') {
-				$angkaTerlewat= ["001"];
+			if ($getKode->row() == null) {
+				$angkaTerlewat=['WILAYAH NOT EXIST!'];
+				// exit();
+			} else {
+				$kodeWilayah = $getKode->row()->kode_wilayah;
+				//ambil angka terendah
+				$angkaTerlewat = $kodeWilayah.'00'; //200
+	
+				//khusus untuk kode wilayah 000
+				if ($angkaTerlewat == '000') {
+					$angkaTerlewat= ["001"];
+					$kondisi = 'a';
+				}
 			}
+			
 			
 		}
 
-		print_r(min($angkaTerlewat));
+		// print_r(min($angkaTerlewat));
+		// print_r($angkaTerlewat);
+		echo json_encode(['newCode' => min($angkaTerlewat), 'kondisi' => $kondisi]);
 	}
 
 

@@ -173,13 +173,16 @@
 
   function getCode(wil) {
     $.ajax({
-      url: "<?= site_url('pelanggan/getcodenew/') ?>" + wil,
+      url: "<?= site_url('pelanggan/aicode/') ?>" + wil,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
-        if(data.newCode == 'full'){
+        if(data.newCode == '----FULL----'){
           $("#btnSave").text('Slot NoPel FULL');
           $("#btnSave").attr('disabled', true);
+        } else {
+          $("#btnSave").text('Register');
+          $("#btnSave").attr('disabled', false);
         }
         $('[name="no_pelanggan"]').val(data.newCode);
         // $('[name="no_pelanggan"]').val(data.newCode).attr("readonly", "false");
