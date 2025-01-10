@@ -247,12 +247,16 @@ class Api_mikrotik_model extends CI_Model
       $id = $key['.id'];
     }
     
-    $response = $this->_restClient->delete("ppp/secret/$id",
-    [
-      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']]
-    ]);
+    if ($id!='') {
+      $response = $this->_restClient->delete("ppp/secret/$id",
+      [
+        'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']]
+      ]);
+  
+      return $response->getBody();
 
-    return $response->getBody();
+    }
+
    }
 
 }
