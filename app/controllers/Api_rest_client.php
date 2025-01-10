@@ -290,7 +290,8 @@ class Api_rest_client extends CI_Controller
 
 				if ($this->api->reconfig_onu($configData)) {
 					// make secret mikrotik
-					$remove_old_secret = $this->routermodel->remove_secret("$data->username");
+					// $remove_old_secret = $this->routermodel->remove_secret("$data->username");
+					$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $data->username));
 					$create_new_secret = $this->routermodel->create_ppp_secret($secret->username, $secret->password, 'pppoe', $data->mikrotik_profile);
 					//update gpon_onu di database
 					$query 	= "UPDATE pelanggan 
@@ -330,7 +331,8 @@ class Api_rest_client extends CI_Controller
 					$onu_index_old = preg_split('/:/', $data->gpon_onu)[1];
 
 					$remove_old_onu = $this->api->remove_onu($gpon_olt_old, $onu_index_old);
-					$remove_old_secret = $this->routermodel->remove_secret("$data->username");
+					// $remove_old_secret = $this->routermodel->remove_secret("$data->username");
+					$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $data->username));
 
 					//update gpon_onu di database
 					$this->db->query("UPDATE pelanggan 
@@ -938,7 +940,8 @@ class Api_rest_client extends CI_Controller
 
 		
 		if ($remove_old_onu->status) {
-			$remove_old_secret = $this->routermodel->remove_secret("$old_secret->username");
+			// $remove_old_secret = $this->routermodel->remove_secret("$old_secret->username");
+			$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $old_secret->username));
 			$create_new_secret = $this->routermodel->create_ppp_secret($data['username'], $data['password'], 'pppoe', $data['mikrotik_profile']);
 			
 			// reconfig onu will delete old onu first, after that will config onu with different sn but same gpon_onu
