@@ -291,11 +291,19 @@ class Api_rest_client extends CI_Controller
 				if ($this->api->reconfig_onu($configData)) {
 					// make secret mikrotik
 					// $remove_old_secret = $this->routermodel->remove_secret("$data->username");
+					// $create_new_secret = $this->routermodel->create_ppp_secret($secret->username, $secret->password, 'pppoe', $data->mikrotik_profile);
 					$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $data->username));
-					$create_new_secret = $this->routermodel->create_ppp_secret($secret->username, $secret->password, 'pppoe', $data->mikrotik_profile);
+					$create_new_secret = $this->routermodel->putRestSecret(
+						(object) array(
+							'name'      => $secret->username,
+							'password'  => $secret->password,
+							'profile'   => $data->mikrotik_profile,
+							'service'   => 'pppoe'
+						)
+					);
 					//update gpon_onu di database
 					$query 	= "UPDATE pelanggan 
-						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password' 
+						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
 						WHERE serial_number='$key->sn'";
 					$update = $this->db->query($query);
 
@@ -333,10 +341,18 @@ class Api_rest_client extends CI_Controller
 					$remove_old_onu = $this->api->remove_onu($gpon_olt_old, $onu_index_old);
 					// $remove_old_secret = $this->routermodel->remove_secret("$data->username");
 					$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $data->username));
+					$create_new_secret = $this->routermodel->putRestSecret(
+						(object) array(
+							'name'      => $secret->username,
+							'password'  => $secret->password,
+							'profile'   => $data->mikrotik_profile,
+							'service'   => 'pppoe'
+						)
+					);
 
 					//update gpon_onu di database
 					$this->db->query("UPDATE pelanggan 
-						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password' 
+						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
 						WHERE serial_number='$key->sn'");
 					
 					$countPindahPort++;
@@ -821,9 +837,11 @@ class Api_rest_client extends CI_Controller
 
 	public function setToExpire(){
 		ini_set('max_execution_time', 80);
-		// echo json_encode($this->routermodel->setProfileExpire());
-		echo json_encode($this->routermodel->match_paket());
-		// echo json_encode($this->routermodel->sesuaikan_paket());
+		// Run on ROS 6
+		// echo json_encode($this->routermodel->match_paket());
+		
+		// Run on ROS 7
+		echo json_encode($this->routermodel->match_paket_rest());
 
 	}
 	/* 
@@ -942,7 +960,14 @@ class Api_rest_client extends CI_Controller
 		if ($remove_old_onu->status) {
 			// $remove_old_secret = $this->routermodel->remove_secret("$old_secret->username");
 			$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $old_secret->username));
-			$create_new_secret = $this->routermodel->create_ppp_secret($data['username'], $data['password'], 'pppoe', $data['mikrotik_profile']);
+			// $create_new_secret = $this->routermodel->create_ppp_secret($data['username'], $data['password'], 'pppoe', $data['mikrotik_profile']);
+			$create_new_secret = $this->routermodel->putRestSecret(
+				(object) array(
+					'name' 		=> $data['username'], 
+					'password' 	=> $data['password'], 
+					'service' 	=> 'pppoe', 
+					'profile' 	=> $data['mikrotik_profile']
+				));
 			
 			// reconfig onu will delete old onu first, after that will config onu with different sn but same gpon_onu
 			$reconfig_onu = $this->api->reconfig_onu($data);
@@ -955,7 +980,8 @@ class Api_rest_client extends CI_Controller
 				name='" . $data['name'] . "', 
 				username='" . $data['username'] . "', 
 				password='" . $data['password'] . "',
-				ppp_profile='" . $data['mikrotik_profile'] . "'
+				ppp_profile='" . $data['mikrotik_profile'] . "',
+				remote_web_state='disabled'
 			WHERE gpon_onu='$gpon_onu'";
 
 			$this->db->query($query);
@@ -985,9 +1011,9 @@ class Api_rest_client extends CI_Controller
 		$snSubstring = substr($sn, 4);
 
 		// Username
-		$username = strtoupper($nameSubstring . $snSubstring);
+		$username = $nameSubstring . $snSubstring;
 		// Buat sandi dengan '.' di awal dan '!' di akhir
-		$password = strtoupper('.' . $snSubstring . '!');
+		$password = '.' . $snSubstring . '!';
 
 		return (object) [
 			'name' 		=> $name, 

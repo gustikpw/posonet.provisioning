@@ -493,7 +493,7 @@
             // Code to be executed after the delay
             tbl_unconfig.destroy().clear();
             uncfg()
-          }, 5000);
+          }, 7000);
         },
         'json'
       );

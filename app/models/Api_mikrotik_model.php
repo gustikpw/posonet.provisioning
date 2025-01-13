@@ -126,7 +126,7 @@ class Api_mikrotik_model extends CI_Model
   public function match_paket(){
     /***
      * apabila paket ppp secret mikrotik tidak sama dengan yang ada di database. 
-     * maka ubah ppp secret dengan yang di database
+     * maka ubah ppp secret di mikrotik dengan yang di database
      * kemudian close connection
      */
     $no = 0;
@@ -163,21 +163,64 @@ class Api_mikrotik_model extends CI_Model
     return "$no Profile changed! [$changedProfile]";
   }
 
-  // public function setProfileExpire()
-  // {
-  //   $query = $this->db->query("SELECT * FROM v_expired")->result();
-  //   $no = 0;
-  //   $no2 = 0;
-  //   foreach ($query as $cust) {
-  //     $this->change_ppp_secret_profile($cust->username,'Expired');
-  //     $no++;
-  //   }
-  //   foreach ($query as $cust) {
-  //     $this->close_connection_ppp($cust->username);
-  //     $no2++;
-  //   }
-  //   return ['message'=>"$no Client(s) set to Expire! and $no2 disconnected."];
-  // }
+  /* 
+  Set to Expire on ROS7 REST
+  */
+  public function match_paket_rest(){
+    /***
+     * apabila paket ppp secret mikrotik tidak sama dengan yang ada di database. 
+     * maka ubah ppp secret di mikrotik dengan yang di database
+     * kemudian close connection
+     */
+    $no = 0;
+    $notMatch = $changedToExpired = '';
+    $secretMtik = json_decode($this->getRestSecret(), true);
+    // return json_decode($secretMtik);
+    // exit();
+    
+    foreach ($secretMtik as $d) {
+      $name = $this->db->escape($d['name']);
+      $cekdb = $this->db->query("SELECT id_pelanggan, username, mikrotik_profile, status_berlangganan FROM v_pelanggan WHERE username=$name");
+      
+      // echo "M=$d->name<br>";
+      
+      // jika name sama maka cek profile
+      if ($cekdb->num_rows() > 0 ){
+        $data = $cekdb->row();
+        
+        // echo "M=$d[name] | DB=$data->username <br>";
+
+        if ($data->status_berlangganan == 'Expired' && $d['profile'] != 'Expired') {
+          // set to Expired
+          $this->patchRestSecretById($d['.id'], 
+          (object) array(
+            'profile' => 'Expired'
+          ));
+
+          // close connection ppp
+          $this->pppCloseConnection($d['name']);
+          
+          $changedToExpired .= "$name, ";
+          $no++;
+        } elseif ($data->status_berlangganan == 'Active' && $d['profile'] != $data->mikrotik_profile) {
+          $this->patchRestSecretById($d['.id'], 
+          (object) array(
+            'profile' => $data->mikrotik_profile
+          ));
+
+          $this->pppCloseConnection($d['name']);
+          
+          $notMatch .= "$name, ";
+          $no++;
+        } else {
+          // nothing changed!
+        }
+      }
+    }
+    return "$no PPP Secret Profile changed! <br>Expired = [$changedToExpired]<br>Not Match = [$notMatch]";
+  }
+
+  
 
 
   public function get_ppp_ip_address($username = false)
@@ -190,15 +233,11 @@ class Api_mikrotik_model extends CI_Model
   }
 
   /**
-	 * TEST REST HTTP ROUTEROS 7,9^
+	 * REST HTTP ROUTEROS 7,9^
 	 */
 
-   function getRestSecret($username) {
-    if ($username == '') {
-      $query = '';
-    } else {
-      $query = "?name=$username";
-    }
+   function getRestSecret($username=false) {
+    $query = (!$username) ? "" : "?name=$username";
 
     $response = $this->_restClient->get("ppp/secret$query",
     [
@@ -209,14 +248,22 @@ class Api_mikrotik_model extends CI_Model
    }
 
    function putRestSecret($data) {
+    /** Contoh data
+      *  $data = (object) array(
+      *		'name'      => "COBA",
+      *		'password'  =>".COBA!",
+      *		'profile'   => "UPTO-10M",
+      *		'service'   => 'pppoe'
+      *  );
+      * 
+     */
+
     $response = $this->_restClient->put('ppp/secret',
     [
       'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']],
       'headers' => ['Content-type: application/json'],
       'body' => json_encode($data),
     ]);
-
-    // return $response->getBody();
     return true;
    }
 
@@ -239,7 +286,30 @@ class Api_mikrotik_model extends CI_Model
     return $response->getBody();
    }
 
+   function patchRestSecretById($id, $data) {
+    /* 
+    $data = (object) array(
+      'profile' => 'Expired'
+    ); 
+    */
+
+    $response = $this->_restClient->patch("ppp/secret/$id",
+    [
+      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']],
+      'headers' => ['Content-type: application/json'],
+      'body' => json_encode($data),
+    ]);
+
+    return $response->getBody();
+   }
+
    function deleteRestSecret($data) {
+
+    /**Contoh data yang diminta harus dalam bentuk object
+     * $data = (object) array('name' => $data->username);
+     * 
+    */
+
     $getId =  json_decode($this->getRestSecret($data->name), true);
     $id = '';
 
@@ -249,6 +319,43 @@ class Api_mikrotik_model extends CI_Model
     
     if ($id!='') {
       $response = $this->_restClient->delete("ppp/secret/$id",
+      [
+        'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']]
+      ]);
+  
+      return $response->getBody();
+
+    }
+
+   }
+
+   function getRestActiveConnection($username=false) {
+    $query = (!$username) ? "" : "?name=$username";
+
+    $response = $this->_restClient->get("ppp/active$query",
+    [
+      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']]
+    ]);
+
+    return $response->getBody();
+   }
+   
+   function pppCloseConnection($data) {
+
+    /**Contoh data yang diminta harus dalam bentuk object
+     * $data = (object) array('name' => $data->username);
+     * 
+    */
+
+    $getId =  json_decode($this->getRestActiveConnection($data), true);
+    $id = '';
+
+    foreach ($getId as $key) {
+      $id = $key['.id'];
+    }
+    
+    if ($id!='') {
+      $response = $this->_restClient->delete("ppp/active/$id",
       [
         'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']]
       ]);

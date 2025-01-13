@@ -108,11 +108,25 @@ class Api_mikrotik extends CI_Controller
 	
 	function patchPPPSecret($data = false) {
 		$data = (object) array(
-			"name" => "COBAREST7",
-			"password" => "COBAREST7890X",
-			// "profile"=> "UPTO-10M",
+			"name" => "COBA",
+			// "password" => "COBAREST7890X",
+			// "profile"=> "UPTO-15M",
+			"profile"=> "Expired",
 		);
 		$body = $this->routermodel->patchRestSecret($data);
+		// var_dump($body);
+		echo $body;
+		
+	}
+	
+	function patchRestSecretById($id='*1F7') {
+		
+		$data = (object) array(
+			'profile' => 'Expired'
+		); 
+		
+
+		$body = $this->routermodel->patchRestSecretById($id, $data);
 		// var_dump($body);
 		echo $body;
 
@@ -128,5 +142,20 @@ class Api_mikrotik extends CI_Controller
 		// var_dump($body);
 		echo $body;
 
+	}
+
+	function pppCloseActiveConn($data = false) {
+		$data = (object) array(
+			"name" => "336.-Tes-Siapa-C71F6297",
+		);
+		$body = $this->routermodel->pppCloseConnection($data);
+		// var_dump($body);
+		echo $body;
+
+	}
+
+	public function cekExpire(){
+		$data = $this->routermodel->match_paket_rest();
+		echo json_encode($data);
 	}
 }
