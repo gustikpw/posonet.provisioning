@@ -185,14 +185,15 @@ class Pelanggan extends CI_Controller
 		// 	exit();
 		// }
 		//insert to db
-		$insert = $this->pelanggan->save($data);
-		//regist ont
-		$onu = $this->olt->create_onu($data);
+		if($insert = $this->pelanggan->save($data)){
+			//regist ont
+			$onu = $this->olt->create_onu($data);
+		}
 		
 		if ($onu->status == '200') {
 			$data1 = array();
 			$data1['name'] = $onu->data->name;
-			$data1['username'] = $onu->data->username;
+			$data1['username'] = str_replace("'", "",$onu->data->username);
 			$data1['password'] = $onu->data->password;
 			$data1['gpon_onu'] = $onu->data->gpon_onu;
 			$data1['ppp_profile'] = $onu->data->ppp_profile;

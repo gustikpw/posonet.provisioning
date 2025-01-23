@@ -305,7 +305,7 @@
         $('[name="service_mode"]').val(data.access_mode);
         $('[name="vlan_profile"]').val(data.vlan_profile);
         $('[name="cvlan"]').val(data.cvlan);
-        $('[name="serial_number"]').val(data.serial_number);
+        $('[name="serial_number"]').val(data.serial_number).prop('disabled', true);
         $('[name="expired"]').val(data.expired);
         $('[name="odp_number"]').val(data.odp_number);
         $('[name="stb_username"]').val(data.stb_username);
@@ -442,7 +442,7 @@
           // Code to be executed after the delay
           tbl_unconfig.destroy().clear();
           uncfg()
-        }, 5000);
+        }, 7000);
       },
       error: function(jqXHR, textStatus, errorThrown) {
         notif('Gagal Reconfig!', 'Error', 'error');

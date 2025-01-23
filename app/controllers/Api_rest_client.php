@@ -1003,7 +1003,7 @@ class Api_rest_client extends CI_Controller
 
 	private function _make_ppp_secret($no_pelanggan, $nama_pelanggan, $sn){
 		//buat username dengan kombinasi NOPEL+NAME+NEW-SN
-		$name = $no_pelanggan.'. '.$nama_pelanggan;
+		$name = $no_pelanggan.'. '.str_replace("'", "", $nama_pelanggan);
 		// Ambil 10 karakter pertama dari $name dan ganti spasi dengan '-'
 		$nameSubstring = str_replace(' ', '-', $name);
 		$nameSubstring = substr($nameSubstring, 0, 15);

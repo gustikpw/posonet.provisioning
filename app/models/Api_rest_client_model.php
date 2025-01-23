@@ -60,7 +60,7 @@ class Api_rest_client_model extends CI_Model
         'gpon_olt' => $data['gpon_olt'],
         'onu_type' => $data['onu_type'],
         'sn' => $data['serial_number'],
-        'name' => $data['no_pelanggan'] . '. ' . $data['nama_pelanggan'],
+        'name' => str_replace("'", "", $data['no_pelanggan'] . '. ' . $data['nama_pelanggan']),
         'description' => 'p=' . $profile->mikrotik_profile . ' &e=' . date('d/m/Y', strtotime($data['expired'])) . ' &h=0' . ' &a=' . $data['access_mode'],
         'ppp_profile' => $profile->mikrotik_profile,
         'access_mode' => $data['access_mode'],
