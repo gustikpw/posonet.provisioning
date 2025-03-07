@@ -17,5 +17,8 @@ app/logs/*
 !app/logs/index.html
 !app/logs/.htaccess
 /vendor/
+app/config/config.php
+app/config/database.php
+assets/backup/*
 assets/invoice/*
 assets/tempQr/img/*
