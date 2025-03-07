@@ -119,7 +119,7 @@ class PDF extends FPDF
   }
 
 
-  function Kop($cust, $company, $terms, $rekening)
+  function Kop($cust, $company, $terms, $rekening, $logo)
   {
     $a = 0;
     $i = 0;
@@ -174,6 +174,7 @@ class PDF extends FPDF
       $this->setX($dx);
       $this->Image($qr, 20, $yg1 + 1, 18, 18); // Tengah kiri
       $this->setX($dx);
+      $this->Image($logo, $gxr-60, $yg2-12, 40, 8); // Pojok kanan atas
       $this->Image($qr, $gxr, $yg2, 18, 18); // Pojok kanan atas
 
       $this->NomorPelanggan($plgn['no_pelanggan'], $xkiri2, $yg1 - 22); // Kiri
@@ -210,7 +211,7 @@ class PDF extends FPDF
       $this->setX($xkanan + 19);
       $this->cell(25, 6, '', 'LTR', 0, 'L', 0); //$plgn['no_pelanggan']
 
-      $this->setFont('Arial', 'B', 12);
+      $this->setFont('Arial', 'B', 9);
       $this->setFillColor(255, 255, 255);
       $this->setX($xkanan + 30 + 2);
       $this->cell(110, 5, $company->nama_perusahaan . '       |', 0, 0, 'R', 0);
@@ -230,11 +231,11 @@ class PDF extends FPDF
       $this->setX($xkanan + 20 - 1);
       $this->cell(25, 4, '', 'LBR', 0, 'L', 0); // Robekan Bagian Kanan //$plgn['wilayah']
 
-      $this->setFont('Arial', '', 8);
+      $this->setFont('Arial', '', 6);
       $this->setFillColor(255, 255, 255);
       $this->setX($xkanan + 58);
-      $this->cell($xkanan, 3, $company->slogan, 0, 1, 'R', 0); // Robekan Bagian Kanan
-      $this->setX($xkanan2 - 30 + 13);
+      $this->cell($xkanan+2, 3, $company->slogan, 0, 1, 'R', 0); // Robekan Bagian Kanan
+      $this->setX($xkanan2 - 30 + 13+2);
       $this->cell(45, 3, $company->alamat . ' Telp. ' . $company->telp, 0, 1, 'R', 0); // Robekan Bagian Kanan2
 
       $this->Ln(1);
@@ -530,7 +531,7 @@ $pdf->SetCreator('POSO TV App');
 $pdf->SetAuthor('Rahtut Aza');
 // $pdf->SetAutoPageBreak(true,3);
 $pdf->AddPage();
-$pdf->Kop($cust, $company, $terms, $rekening);
+$pdf->Kop($cust, $company, $terms, $rekening, $logo);
 // $path = $GLOBALS['namafile'];
 $path = $namafile;
 if ($outputMode == 'FILE') {

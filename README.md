@@ -73,3 +73,14 @@ add v.expired AFTER v.ont_phase_state
 # (2024-07-25) add line on v_onu_los after "v.ont_phase_state"
 - ,v.odp_number, v.odp_location, v.lokasi_map
 
+# (2025-03-01) add line on v_onu_los before "v.gpon_onu"
+- v.gpon_olt,
+
+# (2025-03-01) add view "v_interfaces"
+SELECT gpon_olt, COUNT(gpon_onu) AS ont 
+FROM pelanggan 
+GROUP BY gpon_olt 
+
+# (2025-03-05) change column datatype tgl_input DATE to DATETIME on table "detail_setoran"
+# (2025-03-05) change column datatype tgl_penyetoran DATE to DATETIME on table "temp_invoice"
+

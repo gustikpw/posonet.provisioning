@@ -82,6 +82,7 @@ class Api_rest_client extends CI_Controller
 		}
 
 		$output = array(
+			"total" => count($data),
 			"data" => $data,
 			"status" => (count($data) == 0) ? "404" : "200"
 		);
@@ -121,7 +122,33 @@ class Api_rest_client extends CI_Controller
 			$data[] = $row;
 		}
 
+		//smart detection when interface los
+		$ifaceLos = $this->db->query("SELECT l.gpon_olt, COUNT(l.gpon_onu) AS ont_los, i.ont AS all_ont 
+			FROM v_onu_los AS l JOIN v_interfaces AS i 
+			GROUP BY gpon_olt")->result();
+		
+		$ifaceFounds = "";
+		$status = false;
+		$count = 0;
+
+		foreach ($ifaceLos as $il) {
+			if ($il->ont_los > ($il->all_ont * 0.05) ) {
+				$status = true;
+				$ifaceFounds .= $il->gpon_olt . ' ';
+				$count++;
+			}
+		}
+
+		$templateNotif = 	"<div class=\"alert alert-danger alert-dismissable\">
+								<button aria-hidden=\"true\" data-dismiss=\"alert\" class=\"close\" type=\"button\">×</button>
+								Interface LOS <strong>$ifaceFounds</strong>. Silahkan cek SFP atau Jalur Distribusi!
+							</div>";
+
 		$output = array(
+			"interface_los" => array(
+				"status"=> $status,
+				"data"	=> (!$status) ? "" : $templateNotif,
+			),
 			"data" => $data,
 			"status" => (count($data) == 0) ? "404" : "200"
 		);
@@ -459,9 +486,9 @@ class Api_rest_client extends CI_Controller
 		$delete_secret = $this->routermodel->deleteRestSecret((object) array('name' => $username));
 		//delete onu di database sql
 		if ($permanent == 'yes'){
-			$delete_cust = $this->db->query("DELETE from pelanggan WHERE gpon_onu = '$gpon_onu'");
+			$delete_cust = $this->db->query("DELETE FROM pelanggan WHERE gpon_onu = '$gpon_onu'");
 		} else {
-			$updateOntPhase = $this->db->query("UPDATE pelanggan SET ont_phase_state='Unconfigured' WHERE gpon_onu = '$gpon_onu'");
+			$updateOntPhase = $this->db->query("UPDATE pelanggan SET ont_phase_state='Unconfigured', remote_web_state='disabled' WHERE gpon_onu = '$gpon_onu'");
 		}
 		echo json_encode([
 			"data" => $this->input->post('gpon_onu') . '  & ' . $username,
@@ -747,15 +774,15 @@ class Api_rest_client extends CI_Controller
 				array_push($interfaces, $interface);
 			}
 
-			if ($row->phase_state == "LOS" || $row->phase_state === "syncMib") {
+			if ($row->phase_state == "LOS" || $row->phase_state == "syncMib") {
 				$los[] = $row->onu_index;
 			} 
 			
-			if ($row->phase_state === "DyingGasp" || $row->phase_state === "offline"|| $row->phase_state === "syncMib") {
+			if ($row->phase_state == "DyingGasp" || $row->phase_state == "offline" || $row->phase_state == "syncMib") {
 				$offline[] = $row->onu_index;
 			}
 			
-			if($row->phase_state === "working") {
+			if($row->phase_state == "working") {
 				$online[] = $row->onu_index;
 			}
 			
@@ -1096,6 +1123,81 @@ Ket	: ";
 		echo json_encode([
 			'status' => true,
 			'data' => $response,
+		]);
+	}
+
+
+	public function showInterfaces() {
+		$q = $this->db->query("SELECT * FROM v_interfaces")->result();
+		$row = '';
+		$total_ont = $total_interface = 0;
+		$table = "<table class=\"table\">
+					<thead>
+					<tr>
+						<th>GPON_OLT</th>
+						<th>ONU</th>
+					</tr>
+					</thead>
+					<tbody>";
+		foreach ($q as $d) {
+			$row .= 
+			"<tr>
+				<td>$d->gpon_olt</td>
+				<td>$d->ont</td>
+			</tr>";
+			$total_ont = $total_ont + $d->ont;
+			$total_interface++;
+		}
+
+		$table .= $row . "<tr>
+					<td>Interface Active $total_interface</td>
+					<td>Total Onu $total_ont</td>
+				</tr>
+			</tbody>
+		</table>";
+
+		echo json_encode([
+			"data" => "<pre>$table</pre>",
+			"header" => "Showing Active Interfaces",
+			"status" => true,
+		]);
+	}
+
+	public function showLogEvent() {
+		$q = $this->db->query("SELECT * FROM log ORDER BY id_log DESC LIMIT 100")->result();
+		$row = '';
+		$number = 0;
+		$table = "
+		<div class=\"table-responsive\" style=\"height:400px\">
+		<table class=\"table table-hover\" id=\"log-table\">
+					<thead>
+					<tr>
+						<th>#</th>
+						<th>Time</th>
+						<th>Topic</th>
+						<th>Messages</th>
+					</tr>
+					</thead>
+					<tbody>";
+		foreach ($q as $d) {
+			$row .= 
+			"<tr>
+				<td>$number</td>
+				<td>$d->time</td>
+				<td>$d->topic</td>
+				<td>$d->message</td>
+			</tr>";
+			$number++;
+		}
+
+		$table .= $row . "
+			</tbody>
+		</table></div>";
+
+		echo json_encode([
+			"data" => $table,
+			"header" => "Showing Log Activity",
+			"status" => true,
 		]);
 	}
 

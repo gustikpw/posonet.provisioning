@@ -218,6 +218,7 @@ class Kwitansi extends CI_Controller
 			}
 
 			$kirim = array(
+				'logo' => base_url() . '/assets/posonet/img/primahomelogo3.png',
 				'company' => $profil,
 				'cust' => $data,
 				'terms' => $terms,
@@ -439,7 +440,25 @@ class Kwitansi extends CI_Controller
 			);
 		}
 
+		$rek = $this->db->query("SELECT * FROM settings WHERE option_name LIKE 'bri_%'")->result();
+			$rekening = array();
+			foreach ($rek as $rk) {
+				if ($rk->option_name === 'bri_bank') {
+					$rekening['nama_bank'] = $rk->option_value;
+				}
+				if ($rk->option_name === 'bri_nama_pemilik_rekening') {
+					$rekening['pemilik_rekening'] = $rk->option_value;
+				}
+				if ($rk->option_name === 'bri_no_rekening') {
+					$rekening['no_rekening'] = $rk->option_value;
+				}
+			}
+		
+
+
 		$data = array(
+			'logo' => base_url() . '/assets/posonet/img/primahomelogo3.png',
+			'rekening' => $rekening,
 			'cust' => $cust,
 			'company' => $this->kwitansi->profil_perusahaan(),
 			'terms' => array(),

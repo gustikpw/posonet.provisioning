@@ -9,6 +9,7 @@
                         <h5><?php echo ucwords(str_replace('_', ' ', $active)); ?></h5>
                         <div class="ibox-tools">
                             <button class="btn btn-xs" id="#btnExpiredContent" onclick="toggleExpired()">Show Expired</button>
+                            <button class="btn btn-xs" onclick="show_raw_content('log','')">Show Log</button>
                             <button class="btn btn-xs" data-toggle="modal" data-target="#exampleModal">Recent Request</button>
                             <!-- <button class="btn btn-xs btn-primary v_online">online -</button> -->
                             <a href="#divoffline" class="btn btn-xs v_offline">offline -</a>
@@ -26,6 +27,7 @@
                                     <li><a href="javascript:void(0)" onclick="show_raw_content('gpon-profile-traffic','')">Show Profile Traffic</a></li>
                                     <li><a href="javascript:void(0)" onclick="show_raw_content('onu-type','')">Show ONU Type</a></li>
                                     <li><a href="javascript:void(0)" onclick="show_raw_content('ip-route','')">Show IP Route</a></li>
+                                    <li><a href="javascript:void(0)" onclick="show_raw_content('interfaces','')">Show Interfaces</a></li>
                                     <!-- <li><a href="javascript:void(0)" onclick="show_raw_content('detail-info','')">Backup Config</a></li> -->
                                 </ul>
                             </div>
@@ -58,6 +60,10 @@
                         </div>
                     </div>
                     <div class="ibox-content">
+                        <div class="iface-los">
+                            
+                        </div>
+                        
                         <div class="xtable-responsive" id="unconfig" style="display:none">
                             <table class="table table-condensed table-hover" id="tb-unconfig">
                                 <thead class="bg-info">
@@ -375,7 +381,7 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-info" id="headerModalExample">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="exampleModalLabel">New message</h4>
                 </div>

@@ -33,8 +33,9 @@
     // dropdownParent : $('#myModal')
   });
 
-  var table, pdfdata;
+  var table, logTable, pdfdata;
   $(document).ready(function() {
+
     $('.btnFokus').focus(); // fokus ke field ketika tombol tambah di klik
     $('.date').datepicker({
       todayBtn: "linked",
@@ -537,11 +538,25 @@
     if (mode == 'ip-route') {
       url = "<?= site_url('api_rest_client/raw_ip_route') ?>";
     }
+    if (mode == 'interfaces') {
+      url = "<?= site_url('api_rest_client/showInterfaces') ?>";
+    }
+    if (mode == 'log') {
+      url = "<?= site_url('api_rest_client/showLogEvent') ?>";
+    }
 
     $.post(url, {
         data: data,
       },
       function(data, status) {
+        if (mode == 'log') {
+          logTable = $('#log-table').DataTable({
+            paging: true,
+            pageLength: 25,
+            scrollY: 400,
+            search: true
+          });
+        }
         $('#rawdata').html(data.data);
         $('#exampleModalLabel').html(data.header);
         $('#exampleModal').modal('show');
@@ -551,13 +566,15 @@
   }
 
   function reboot(gpon_onu) {
-    $.post(
-      "<?= site_url('api_rest_client/reboot') ?>", {
-        gpon_onu: gpon_onu
-      },
-      function(data, status) {
-        if (status) notif(data.message, 'Sukses', 'success');
-      })
+    if (confirm('Yakin ingin reboot ont?')) {
+      $.post(
+        "<?= site_url('api_rest_client/reboot') ?>", {
+          gpon_onu: gpon_onu
+        },
+        function(data, status) {
+          if (status) notif(data.message, 'Sukses', 'success');
+        })
+    }
   }
 
   function restore_factory(gpon_onu) {
@@ -602,7 +619,7 @@
       function(data, status) {
         if (status) {
           // $('.v_online').html(data.online);
-          $('.v_offline').html(data.offline);
+          // $('.v_offline').html(data.offline);
           $('.v_los').html(data.los);
           $('.v_ont').html(data.total);
           reload_table();
@@ -621,6 +638,7 @@
           if (d.status != '200') {
             $('#offline').hide();
           } else {
+            $('.v_offline').html('Offline ' + d.total);
             $('#offline').show()
             return d.data
           }
@@ -670,8 +688,11 @@
         'url': "<?= site_url('api_rest_client/los') ?>",
         'dataSrc': function(d) {
           if (d.status != '200') {
-            $('#los').hide();
           } else {
+            $('#los').hide();
+            if (d.interface_los.status) {
+              $('.iface-los').html(d.interface_los.data);
+            }
             $('#los').show()
           }
           return d.data

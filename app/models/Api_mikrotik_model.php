@@ -269,6 +269,14 @@ class Api_mikrotik_model extends CI_Model
 
 
    function patchRestSecret($data) {
+
+    /* 
+    $data = (object) array(
+      'name' => '123.NAME'
+      'profile' => 'Expired'
+    ); 
+    */
+
     $getId =  json_decode($this->getRestSecret($data->name), true);
     $id = '';
 
@@ -342,8 +350,8 @@ class Api_mikrotik_model extends CI_Model
    
    function pppCloseConnection($data) {
 
-    /**Contoh data yang diminta harus dalam bentuk object
-     * $data = (object) array('name' => $data->username);
+    /**
+     * $data = $data->username;
      * 
     */
 

@@ -475,14 +475,7 @@ class Api_rest_client_model extends CI_Model
   }
 
   public function extendThisPaket($data, $wamode=false) {
-    // if ($wamode == true) {
-    //   /**
-    //    * API Kirimwa.id membatasi pengiriman diatas jam 21.00
-    //    */
-    //   $modewa = ((int) date('Hms') > 70000 && (int) date('Hms') < 210000) ? true : false;
-    // } else {
-    //   $modewa = false;
-    // }
+    
     /*
 		* cek tgl sekarang. jika belum lewat tgl expire yg telah ditentukan maka cukup update kolom expired di database.
 		* atau cek di tabel v_expired apakan data gpon_onu exist
@@ -497,7 +490,13 @@ class Api_rest_client_model extends CI_Model
       // update expired
       $updateExp = $this->db->query("UPDATE pelanggan SET expired='$data->expired' WHERE gpon_onu='$data->gpon_onu'");
       // ubah secret dari Expire ke paket asli
-      $restore_paket = $this->routermodel->change_ppp_secret_profile($cust->username, $cust->mikrotik_profile);
+      // $restore_paket = $this->routermodel->change_ppp_secret_profile($cust->username, $cust->mikrotik_profile);
+      $restore_paket = $this->routermodel->patchRestSecret(
+        (object) array(
+          'name' => $cust->username, 
+          'profile' => $cust->mikrotik_profile
+          )
+      );
 
       if ($cust->ont_phase_state == 'working') {
         // reboot ont (untuk zte F660 versi lama). 
@@ -506,7 +505,8 @@ class Api_rest_client_model extends CI_Model
 
       if ($cust->active_connection == 'connected') {
         // close connection di ppp>active connection
-        $this->routermodel->close_connection_ppp($cust->username);
+        // $this->routermodel->close_connection_ppp($cust->username);
+        $this->routermodel->pppCloseConnection($cust->username);
       }
 
       /**
@@ -517,19 +517,11 @@ class Api_rest_client_model extends CI_Model
       
       // $sendToTelegram = ""; 
       $sendToTelegram = $this->telegram->sendToAdmin($teletext);
-
-      // kirim pesan ke wa
-      // $datat = [
-      //   'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($data->expired) . ".\n$cust->no_pelanggan",
-      //   'phone_number' => $cust->telp,
-      // ];
-
-      // if ($modewa == true) {
-      //   $send = $this->kirimwa->post_messages($datat);
-      // }
-      // else {
-      //   $send = "Kirimwa melewati jam 21:00:00 atau disabled";
-      // }
+      
+      // save to Log table
+      $this->saveLogEvent('Payment', "Payment success! $cust->no_pelanggan. $cust->nama_pelanggan $cust->mikrotik_profile Exp=$data->expired by $data->username");
+      // update temp_invoice
+      // $this->updateTempInvoice($cust->no_pelanggan);
 
       return [
         'message' => "Paket berhasil diperpanjang ke $data->expired. ONT pelanggan auto restart!",
@@ -542,15 +534,24 @@ class Api_rest_client_model extends CI_Model
       $msg = "Paket berhasil diperpanjang ke $data->expired.";
       // jika input tgl expire dibawah tgl sekarang maka langsung ubah ke expire
       if ($data->expired < date('Y-m-d')) {
-        $expp = $this->db->query("SELECT username FROM pelanggan WHERE gpon_onu = '$data->gpon_onu'")->row();
-        $set_expire = $this->routermodel->change_ppp_secret_profile($expp->username, 'Expired');
-        $this->routermodel->close_connection_ppp($expp->username);
+        $expp = $this->db->query("SELECT no_pelanggan, nama_pelanggan, username FROM pelanggan WHERE gpon_onu = '$data->gpon_onu'")->row();
+        // $set_expire = $this->routermodel->change_ppp_secret_profile($expp->username, 'Expired');
+        $set_expire = $this->routermodel->patchRestSecret(
+          (object) array(
+            'name' => $expp->username, 
+            'profile' => 'Expired'
+            )
+        );
+        // $this->routermodel->close_connection_ppp($expp->username);
+        $this->routermodel->pppCloseConnection($expp->username);
         $msg = "Paket kembali ke expired";
         $modewa = false;
-      }
-      // kirim pesan ke wa
-      $plgn = $this->db->query("SELECT telp,no_pelanggan,name,mikrotik_profile FROM v_pelanggan WHERE gpon_onu = '$data->gpon_onu'")->row();
 
+        // save to Log table
+        $this->saveLogEvent('Payment', "Pembayaran gagal! Kembali ke Expire $expp->no_pelanggan. $expp->nama_pelanggan Exp=$data->expired by $data->username");
+      }
+      
+      $plgn = $this->db->query("SELECT telp,no_pelanggan,name,mikrotik_profile FROM v_pelanggan WHERE gpon_onu = '$data->gpon_onu'")->row();
 
       /**
        * KIRIM PESAN KE TELEGRAM
@@ -561,18 +562,13 @@ class Api_rest_client_model extends CI_Model
       // $sendToTelegram = "";
       $sendToTelegram = $this->telegram->sendToAdmin($teletext);
 
+      // save to Log table
+      $this->saveLogEvent('Payment', "Payment success! $plgn->name $plgn->mikrotik_profile Exp=$data->expired by $data->username");
 
       $datat = [
         'message' => "Pelanggan Yth, terima kasih telah melakukan pembayaran. Masa aktif Internet Anda telah diperpanjang hingga " . tgl_lokal($data->expired) . ". \n$plgn->no_pelanggan",
         'phone_number' => ($plgn->telp == '') ? '081340310250' : $plgn->telp,
       ];
-
-      // if ($modewa == true) {
-      //   $send = $this->kirimwa->post_messages($datat);
-      // }
-      // else {
-      //   $send = "Kirimwa melewati jam 21:00:00 atau disabled";
-      // }
 
       $updateExp = $this->db->query("UPDATE pelanggan SET expired='$data->expired' WHERE gpon_onu='$data->gpon_onu'");
       return [
@@ -582,6 +578,55 @@ class Api_rest_client_model extends CI_Model
         // 'data' => $datat
       ];
     }
+  }
+
+  public function updateTempInvoice($no_pelanggan){
+    $yMonth = date('Y-m');
+    $now = date('Y-m-d');
+    $dateTime = date('Y-m-d H:i:s');
+    // get id_kolektor
+    $loginSession = $this->session->username;
+    $id_karyawan = $this->db->query("SELECT id_karyawan FROM user WHERE username='$loginSession'")->row()->id_karyawan;
+    $id_kolektor = $this->db->query("SELECT id_kolektor FROM kolektor WHERE id_karyawan='$id_karyawan'")->row()->id_kolektor;
+
+
+    $checkMasterSetoran = $this->db->query("SELECT * FROM master_setoran WHERE tgl_setoran LIKE '$yMonth%' AND id_kolektor=$id_kolektor");
+    
+    if ($checkMasterSetoran->num_rows() == 0) {
+      $this->db->insert('master_setoran', [
+        'tgl_setoran' => $now,
+        'id_kolektor' => $id_kolektor
+      ]);
+      $newIdMasterSetoran = $this->db->insert_id();
+    } 
+    else {
+      $idMasterSetoran = $checkMasterSetoran->row()->id_master_setoran;
+      $idKolektor = $checkMasterSetoran->row()->id_kolektor;
+      $getInvoice = $this->db->query("SELECT * FROM v_temp_invoice 
+        WHERE no_pelanggan=$no_pelanggan 
+        ORDER BY id_trx DESC 
+        LIMIT 1")->row();
+
+      $this->db->insert('detail_setoran', [
+        'id_master_setoran' => $idMasterSetoran,
+        'tgl_input' => $now,
+        'id_kolektor' => $id_kolektor,
+        'kode_invoice' => $getInvoice->kode_invoice,
+        'no_pelanggan' => $getInvoice->no_pelanggan,
+        'bulan_penagihan' => $getInvoice->bulan_penagihan,
+        'expired' => $getInvoice->expired,
+        'tgl_input' => $dateTime,
+        'status' => 'Lunas',
+        'metode_pembayaran' => 'antar',
+        'penerima' => $id_kolektor,
+        'kode_wilayah' => $getInvoice->kode_wilayah,
+        'remark' => $getInvoice->tarif,
+        'tarif' => $getInvoice->tarif,
+      ]);
+      $idDetailSetoran = $this->db->insert_id();
+    }
+
+ 
   }
 
 
@@ -608,7 +653,18 @@ class Api_rest_client_model extends CI_Model
     return $this->db->affected_rows();
   }
 
+  public function saveLogEvent($topic, $message){
+    //Data must be an array
+    $data = array(
+      'time' => date('Y-m-d H:i:s'),
+      'topic' => $topic,
+      'message' => $message, 
+      //'Payment 275. HAMDAN 250.000 success Exp=2025-03-01',
+    );
 
+    $save = $this->db->insert('log', $data);
+    return $this->db->affected_rows();
+  }
 
 
 
