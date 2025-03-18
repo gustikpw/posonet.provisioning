@@ -480,16 +480,18 @@ class Pelanggan extends CI_Controller
 			}
 
 			
-		} elseif ($row->kode_wilayah == null) {
+		} elseif ($row->kode_wilayah == NULL) {
 			$getKode = $this->db->query("SELECT kode_wilayah FROM wilayah WHERE id_wilayah=$id_wilayah");
 			
 			if ($getKode->row() == null) {
 				$angkaTerlewat=['WILAYAH NOT EXIST!'];
+				$kondisi = 'e';
 				// exit();
 			} else {
 				$kodeWilayah = $getKode->row()->kode_wilayah;
 				//ambil angka terendah
-				$angkaTerlewat = $kodeWilayah.'00'; //200
+				$angkaTerlewat[] = $kodeWilayah.'00'; //200
+				$kondisi = 'd';
 	
 				//khusus untuk kode wilayah 000
 				if ($angkaTerlewat == '000') {
