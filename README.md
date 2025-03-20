@@ -84,3 +84,18 @@ GROUP BY gpon_olt
 # (2025-03-05) change column datatype tgl_input DATE to DATETIME on table "detail_setoran"
 # (2025-03-05) change column datatype tgl_penyetoran DATE to DATETIME on table "temp_invoice"
 
+# (2025-03-11) create table 'log'
+CREATE TABLE `log` (
+	`id_log` INT(11) NOT NULL AUTO_INCREMENT,
+	`time` DATETIME NULL DEFAULT NULL,
+	`topic` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`message` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	PRIMARY KEY (`id_log`) USING BTREE
+)
+COMMENT='rekaman aktivitas di halaman pelangan meliputi:\r\n- perpanjang paket\r\n- attenuation\r\n- remote\r\n- dll'
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=0
+;
+
+
