@@ -9,6 +9,9 @@ class Pelanggan extends CI_Controller
 		if (!is_logged_in()) {
 			redirect('login?_rdr=' . urlencode(current_url()));
 		}
+
+		$this->ros = $this->config->item('mikrotik');
+
 		$this->load->model('pelanggan_model', 'pelanggan');
 		$this->load->model('api_mikrotik_model', 'routermodel');
 		$this->load->model('api_rest_client_model', 'olt');
@@ -178,12 +181,6 @@ class Pelanggan extends CI_Controller
 			'stb_password' => rand(111111,999999),
 		);
 
-		// echo json_encode($data);
-		// return;
-		// if (strlen($data['no_pelanggan']) >=5) {
-		// 	echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
-		// 	exit();
-		// }
 		//insert to db
 		if($insert = $this->pelanggan->save($data)){
 			//regist ont
@@ -202,14 +199,21 @@ class Pelanggan extends CI_Controller
 			$update = $this->pelanggan->update(array('no_pelanggan' => $this->input->post('no_pelanggan')), $data1);
 
 			//create secret on router
-			$secretData = (object) array(
-					'name'      => $onu->data->username,
-					'password'  => $onu->data->password,
-					'profile'   => $onu->data->ppp_profile,
-					'service'   => 'pppoe'
-			);
+			if ($this->ros['ROS_VERSION'] == 6) {
+				$makePPPSecret = $this->routermodel->create_ppp_secret($onu->data->username,$onu->data->password,'pppoe',$onu->data->ppp_profile);
+			} elseif ($this->ros['ROS_VERSION'] == 7) {
+				$secretData = (object) array(
+						'name'      => $onu->data->username,
+						'password'  => $onu->data->password,
+						'profile'   => $onu->data->ppp_profile,
+						'service'   => 'pppoe'
+				);
 
-			$makePPPSecret = $this->routermodel->putRestSecret($secretData);
+				$makePPPSecret = $this->routermodel->putRestSecret($secretData);
+			} else {
+				echo json_encode(['error' => 'RouterOS version not match! Pelanggan Line 214']);
+			}
+			
 		}
 
 
@@ -263,10 +267,7 @@ class Pelanggan extends CI_Controller
 			'id_wilayah' => $this->input->post('id_wilayah'),
 			'no_pelanggan' => $this->input->post('no_pelanggan'),
 		);
-		// if (strlen($data['no_pelanggan']) >= 4) {
-		// 	echo json_encode(array("status" => FALSE, "msg" => 'Slot pelanggan di lokasi ini FULL!'));
-		// 	exit();
-		// }
+
 		$this->pelanggan->update(array('id_pelanggan' => $this->input->post('id_pelanggan')), $data);
 		echo json_encode(array("status" => TRUE));
 	}

@@ -18,6 +18,7 @@ class Api_rest_client extends CI_Controller
 		}
 		
 		$this->olt = $this->config->item('olt');
+		$this->ros = $this->config->item('mikrotik');
 
 		$this->_client = new Client([
 			'base_uri' => $this->olt['BASE_URI']
@@ -317,20 +318,25 @@ class Api_rest_client extends CI_Controller
 
 				if ($this->api->reconfig_onu($configData)) {
 					// make secret mikrotik
-					// $remove_old_secret = $this->routermodel->remove_secret("$data->username");
-					// $create_new_secret = $this->routermodel->create_ppp_secret($secret->username, $secret->password, 'pppoe', $data->mikrotik_profile);
-					$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $data->username));
-					$create_new_secret = $this->routermodel->putRestSecret(
-						(object) array(
-							'name'      => $secret->username,
-							'password'  => $secret->password,
-							'profile'   => $data->mikrotik_profile,
-							'service'   => 'pppoe'
-						)
-					);
+        			if ($this->ros['ROS_VERSION'] == 6) {
+						$remove_old_secret = $this->routermodel->remove_secret("$data->username");
+						$create_new_secret = $this->routermodel->create_ppp_secret($secret->username, $secret->password, 'pppoe', $data->mikrotik_profile);
+					} elseif ($this->ros['ROS_VERSION'] == 7) {
+						$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $data->username));
+						$create_new_secret = $this->routermodel->putRestSecret(
+							(object) array(
+								'name'      => $secret->username,
+								'password'  => $secret->password,
+								'profile'   => $data->mikrotik_profile,
+								'service'   => 'pppoe'
+							)
+						);
+					} else {
+						echo json_encode(['error' => 'RouterOS version not match! Api_rest_client Line 335']);
+					}
 					//update gpon_onu di database
 					$query 	= "UPDATE pelanggan 
-						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
+						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
 						WHERE serial_number='$key->sn'";
 					$update = $this->db->query($query);
 
@@ -366,20 +372,27 @@ class Api_rest_client extends CI_Controller
 					$onu_index_old = preg_split('/:/', $data->gpon_onu)[1];
 
 					$remove_old_onu = $this->api->remove_onu($gpon_olt_old, $onu_index_old);
-					// $remove_old_secret = $this->routermodel->remove_secret("$data->username");
-					$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $data->username));
-					$create_new_secret = $this->routermodel->putRestSecret(
-						(object) array(
-							'name'      => $secret->username,
-							'password'  => $secret->password,
-							'profile'   => $data->mikrotik_profile,
-							'service'   => 'pppoe'
-						)
-					);
+        			
+					if ($this->ros['ROS_VERSION'] == 6) {
+						$remove_old_secret = $this->routermodel->remove_secret("$data->username");
+						$create_new_secret = $this->routermodel->create_ppp_secret($secret->username, $secret->password, 'pppoe', $data->mikrotik_profile);
+					} elseif ($this->ros['ROS_VERSION'] == 7) {
+						$remove_old_secret = $this->routermodel->deleteRestSecret((object) array('name' => $data->username));
+						$create_new_secret = $this->routermodel->putRestSecret(
+							(object) array(
+								'name'      => $secret->username,
+								'password'  => $secret->password,
+								'profile'   => $data->mikrotik_profile,
+								'service'   => 'pppoe'
+							)
+						);
+					} else {
+						echo json_encode(['error' => 'RouterOS version not match! Api_rest_client Line 390']);
+					}
 
 					//update gpon_onu di database
 					$this->db->query("UPDATE pelanggan 
-						SET name='$secret->name', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
+						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
 						WHERE serial_number='$key->sn'");
 					
 					$countPindahPort++;
@@ -863,12 +876,17 @@ class Api_rest_client extends CI_Controller
 	*/
 
 	public function setToExpire(){
-		ini_set('max_execution_time', 80);
-		// Run on ROS 6
-		// echo json_encode($this->routermodel->match_paket());
+		ini_set('max_execution_time', 100);
+		if ($this->ros['ROS_VERSION'] == 6) {
+			// Run on ROS 6
+			echo json_encode($this->routermodel->match_paket());
+		} elseif ($this->ros['ROS_VERSION'] == 7) {
+			// Run on ROS 7
+			echo json_encode($this->routermodel->match_paket_rest());
+		} else {
+			echo json_encode(['error' => 'RouterOS version not match! Api_rest_client Line 875']);
+		}
 		
-		// Run on ROS 7
-		echo json_encode($this->routermodel->match_paket_rest());
 
 	}
 	/* 

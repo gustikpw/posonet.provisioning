@@ -490,13 +490,18 @@ class Api_rest_client_model extends CI_Model
       // update expired
       $updateExp = $this->db->query("UPDATE pelanggan SET expired='$data->expired' WHERE gpon_onu='$data->gpon_onu'");
       // ubah secret dari Expire ke paket asli
-      // $restore_paket = $this->routermodel->change_ppp_secret_profile($cust->username, $cust->mikrotik_profile);
-      $restore_paket = $this->routermodel->patchRestSecret(
-        (object) array(
-          'name' => $cust->username, 
-          'profile' => $cust->mikrotik_profile
-          )
-      );
+      if ($this->mikrotik['ROS_VERSION'] == 6) {
+        $restore_paket = $this->routermodel->change_ppp_secret_profile($cust->username, $cust->mikrotik_profile);
+      } elseif ($this->mikrotik['ROS_VERSION'] == 7) {
+        $restore_paket = $this->routermodel->patchRestSecret(
+          (object) array(
+            'name' => $cust->username, 
+            'profile' => $cust->mikrotik_profile
+            )
+        );
+      } else {
+        			echo json_encode(['error' => 'RouterOS version not match! Api_rest_client_model Line 503']);
+      }
 
       if ($cust->ont_phase_state == 'working') {
         // reboot ont (untuk zte F660 versi lama). 
@@ -505,8 +510,13 @@ class Api_rest_client_model extends CI_Model
 
       if ($cust->active_connection == 'connected') {
         // close connection di ppp>active connection
-        // $this->routermodel->close_connection_ppp($cust->username);
-        $this->routermodel->pppCloseConnection($cust->username);
+        if ($this->mikrotik['ROS_VERSION'] == 6) {
+          $this->routermodel->close_connection_ppp($cust->username);
+        } elseif ($this->mikrotik['ROS_VERSION'] == 7) {
+          $this->routermodel->pppCloseConnection($cust->username);
+        } else {
+          echo json_encode(['error' => 'RouterOS version not match! Api_rest_client_model Line 518']);
+        }
       }
 
       /**
@@ -535,15 +545,22 @@ class Api_rest_client_model extends CI_Model
       // jika input tgl expire dibawah tgl sekarang maka langsung ubah ke expire
       if ($data->expired < date('Y-m-d')) {
         $expp = $this->db->query("SELECT no_pelanggan, nama_pelanggan, username FROM pelanggan WHERE gpon_onu = '$data->gpon_onu'")->row();
-        // $set_expire = $this->routermodel->change_ppp_secret_profile($expp->username, 'Expired');
-        $set_expire = $this->routermodel->patchRestSecret(
-          (object) array(
-            'name' => $expp->username, 
-            'profile' => 'Expired'
-            )
-        );
-        // $this->routermodel->close_connection_ppp($expp->username);
-        $this->routermodel->pppCloseConnection($expp->username);
+        
+        if ($this->mikrotik['ROS_VERSION'] == 6) {
+          $set_expire = $this->routermodel->change_ppp_secret_profile($expp->username, 'Expired');
+          $this->routermodel->close_connection_ppp($expp->username);
+        } elseif ($this->mikrotik['ROS_VERSION'] == 7) {
+          $set_expire = $this->routermodel->patchRestSecret(
+            (object) array(
+              'name' => $expp->username, 
+              'profile' => 'Expired'
+              )
+          );
+          $this->routermodel->pppCloseConnection($expp->username);
+        } else {
+          echo json_encode(['error' => 'RouterOS version not match! Api_rest_client_model Line 561']);
+        }
+
         $msg = "Paket kembali ke expired";
         $modewa = false;
 

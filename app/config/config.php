@@ -34,6 +34,7 @@ $config['olt'] = [
 ];
 
 $config['mikrotik'] = [
+	'ROS_VERSION' => 7, // Pilih sesuai versi RouterOS 7 atau 6. Jika v6.47-7.8 pilih 6, jika 7.9 keatas pilih 7
 	'HOST' => '192.168.50.1',
 	'PORT' => 8728,
 	'USERNAME' => 'flaskendpoint',
