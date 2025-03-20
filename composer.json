@@ -14,7 +14,7 @@
 		"php": ">=5.3.7",
 		"phpoffice/phpspreadsheet": "^1.14",
 		"ifsnop/mysqldump-php": "^2.9",
-		"guzzlehttp/guzzle": "~6.0",
+		"guzzlehttp/guzzle": "^7.0",
 		"evilfreelancer/routeros-api-php": "^1.4",
 		"irazasyed/telegram-bot-sdk": "^3.9"
 	},
