@@ -5,7 +5,7 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
 
   <link rel="apple-touch-icon" sizes="180x180" href="<?php echo base_url('assets/inspinia271/img/favicon/apple-touch-icon.png') ?>">
   <link rel="icon" type="image/png" sizes="32x32" href="<?php echo base_url('assets/inspinia271/img/favicon/favicon-32x32.png') ?>">
