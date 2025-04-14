@@ -462,6 +462,21 @@ class Api_rest_client_model extends CI_Model
     return [$result];
   }
 
+  public function changeSsidOlt($data)
+  {
+
+    $response = $this->_client->request('POST', 'wpa', [
+      'form_params' => [
+        'gpon_onu' => $data['gpon_onu'],
+        'mode' => $data['mode'],
+        'ssid' => $data['ssid'],
+        'wpa_key' => $data['wpa_key'],
+      ]
+    ]);
+
+    return json_decode($response->getBody());
+  }
+
   public function perpanjangPaketFromDetailSetoran($no_pelanggan, $expired, $wamode=false) {
     $qry = $this->db->query("SELECT gpon_onu FROM pelanggan WHERE no_pelanggan='$no_pelanggan'")->row();
     // return [$qry->gpon_onu, $expired];

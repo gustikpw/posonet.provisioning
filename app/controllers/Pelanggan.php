@@ -60,6 +60,8 @@ class Pelanggan extends CI_Controller
 								<li><a href=\"javascript:void(0)\" onclick=\"reboot('$br->gpon_onu')\"><span class=\"fa fa-refresh\"></span> Reboot</a></li>
 								<li><a href=\"javascript:void(0)\" onclick=\"extendPaket('$br->gpon_onu')\"><span class=\"fa fa-calendar\"></span> Perpanjang Paket</a></li>
 								<li role=\"separator\" class=\"divider\"></li>
+								<li><a href=\"javascript:void(0)\" onclick=\"changeSsid('$br->gpon_onu')\"><span class=\"fa fa-wifi\"></span> Change SSID</a></li>
+								<li role=\"separator\" class=\"divider\"></li>
 								<li><a href=\"javascript:void(0)\" onclick=\"restore_factory('$br->gpon_onu')\"><span class=\"fa fa-undo\"></span> Restore Factory</a></li>
 								<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','no')\"><span class=\"fa fa-trash\"></span> Delete Manual</a></li>
 								<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','yes')\"><span class=\"fa fa-trash\"></span> Delete Permanent</a></li>

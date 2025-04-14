@@ -368,8 +368,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="btnSave" onclick="save()">Regis ONU</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                        <button type="button" class="ladda-button ladda-button-demo btn btn-primary pull-right" data-style="expand-right" id="btnSave" onclick="save()">Regis ONU</button>
                     </div>
                 </div>
             </div>
@@ -431,7 +431,98 @@
                 </div>
                 <div class="modal-footer">
                     <!-- <button type="button" class="btn btn-warning" id="btnSaveExtendPaketSementara" onclick="setExtendPaket()"><span class="fa fa-send-o"></span> Sementara</button> -->
-                    <button type="button" class="btn btn-primary" id="btnSaveExtendPaket" onclick="setExtendPaket()"><span class="fa fa-clock"></span> Extend</button>
+                    <button type="button" class="ladda-button ladda-button-demo btn btn-primary" data-style="expand-right" id="btnSaveExtendPaket" onclick="setExtendPaket()"><span class="fa fa-clock"></span> Extend</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="changessidModal" tabindex="-1" role="dialog" aria-labelledby="changessidLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="changessidLabel">Change SSID</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1"> WPA Passphrase</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-2">SSID</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3">ALL</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <form id="formChangeSsid" action="#" class="form-horizontal">
+                                            <input type="text" name="cs_gpon_onu" hidden>
+                                            <div class="col-md-12">
+                                                <div class="form-group"><label class="col-md-3 control-label ">WPA Passphrase</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" name="wpa_keyx" placeholder="Enter new WAP Key" class="form-control m-b-sm">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <!-- </form> -->
+                                    </div>
+                                    <button type="button" class="ladda-button ladda-button-demo btn btn-primary pull-right" data-style="expand-right" id="btnSaveSsidx" onclick="setSsid('wpa_key')">Change Key</button>
+
+
+                                    
+                                </div>
+                            </div>
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <!-- <form id="formChangeSsidy" action="#" class="form-horizontal">
+                                            <input type="text" name="md_gpon_onu" hidden> -->
+                                            <div class="col-md-12">
+                                                <div class="form-group"><label class="col-md-3 control-label ">SSID</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" name="ssidy" placeholder="Enter new SSID" class="form-control m-b-sm">
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        <!-- </form> -->
+                                    </div>
+                                    <button type="button" class="ladda-button ladda-button-demo btn btn-primary pull-right" data-style="expand-right" id="btnSaveSsidy" onclick="setSsid('ssid')">Change SSID</button>
+                                </div>
+                            </div>
+                            <div id="tab-3" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <!-- <form id="formChangeSsidz" action="#" class="form-horizontal">
+                                            <input type="text" name="md_gpon_onu" hidden> -->
+                                            <div class="col-md-12">
+                                                <div class="form-group"><label class="col-md-3 control-label ">SSID</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" name="ssidz" placeholder="Enter new SSID" class="form-control m-b-sm">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group"><label class="col-md-3 control-label ">WPA Passphrase</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" name="wpa_keyz" placeholder="Enter new WAP Key" class="form-control m-b-sm">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <button type="button" class="ladda-button ladda-button-demo btn btn-primary pull-right" data-style="expand-right" id="btnSaveSsidz" onclick="setSsid('both')">Change All</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    
+
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

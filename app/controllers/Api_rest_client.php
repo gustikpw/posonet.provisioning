@@ -1219,6 +1219,46 @@ Ket	: ";
 		]);
 	}
 
+
+	public function changeSsid($mode){
+		
+		
+		if ($mode == 'wpa_key') {
+			$data = array(
+				'mode' => $mode,
+				'gpon_onu' => $this->input->post('cs_gpon_onu'),
+				'wpa_key' => $this->input->post('wpa_keyx'),
+				'ssid' => 'ZTE' //
+			);
+
+			$reply = $this->api->changeSsidOlt($data);
+			echo json_encode($reply);
+			
+		} elseif ($mode == 'ssid') {
+			$data = array(
+				'mode' => $mode,
+				'gpon_onu' => $this->input->post('cs_gpon_onu'),
+				'ssid' => $this->input->post('ssidy'),
+				'wpa_key' => '12345678'
+			);
+
+			$reply = $this->api->changeSsidOlt($data);
+			echo json_encode($reply);
+
+		} elseif ($mode == 'both') {
+			$data = array(
+				'mode' => $mode,
+				'gpon_onu' => $this->input->post('cs_gpon_onu'),
+				'ssid' => $this->input->post('ssidz'),
+				'wpa_key' => $this->input->post('wpa_keyz'),
+			);
+
+			$reply = $this->api->changeSsidOlt($data);
+			echo json_encode($reply);
+		}
+
+	}
+
 	/*
 	CARA MEMASUKAN DATA PELANGGAN OLT MELALUI FILE .DAT
 	DAN MENGUPDATE DATA PELANGGAN DI DATABASE

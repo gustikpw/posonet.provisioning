@@ -62,5 +62,7 @@
   <?php endif; ?>
 
   <link href="<?php echo base_url('assets/inspinia271/css/plugins/toastr/toastr.min.css') ?>" rel="stylesheet">
+  <link href="<?php echo base_url('assets/inspinia271/css/plugins/ladda/ladda-themeless.min.css') ?>" rel="stylesheet">
+
 
 </head>

@@ -35,8 +35,19 @@
 
   var table, logTable, pdfdata;
   $(document).ready(function() {
-
-    $('.btnFokus').focus(); // fokus ke field ketika tombol tambah di klik
+    $("#formChangeSsid").validate({
+        rules: {
+            wpa_keyx: {
+                required: true,
+                minlength: 8
+            },
+            wpa_keyz: {
+                required: true,
+                minlength: 8
+            },
+        }
+    });
+    // $('.btnFokus').focus(); // fokus ke field ketika tombol tambah di klik
     $('.date').datepicker({
       todayBtn: "linked",
       keyboardNavigation: true,
@@ -182,7 +193,7 @@
           $("#btnSave").text('Slot NoPel FULL');
           $("#btnSave").attr('disabled', true);
         } else {
-          $("#btnSave").text('Register');
+          // $("#btnSave").text('Register');
           $("#btnSave").attr('disabled', false);
         }
         $('[name="no_pelanggan"]').val(data.newCode);
@@ -195,6 +206,8 @@
   }
 
   function adds() {
+    $("#btnSave").text('Register');
+    $("#btnSave").attr('disabled', false);
     save_method = 'add';
     wilMethod = 'on';
     // $('#form')[0].reset(); // reset form on modals
@@ -213,14 +226,15 @@
   }
 
   function save() {
+    $('#btnSave').text('Registering ONU'); //change button text
+    // $('#btnSave').attr('disabled', false); //set button enable
+
     var url;
     if ($('[name="id_paket"]').val() == null || $('[name="status"]').val() == '' || $('[name="vlan_profile"]').val() == '') {
       alert('Isi kolom yang kosong! (select VLAN  or PAKET or STATUS wajib diisi)');
       return;
     }
 
-    $("#btnSave").text('Registering ONU...');
-    $("#btnSave").attr('disabled', true);
 
     if (save_method == 'add') {
       url = "<?= site_url('pelanggan/save_pelanggan') ?>";
@@ -228,7 +242,6 @@
       url = "<?= site_url('pelanggan/update_pelanggan') ?>";
     }
     // validateKtp();
-
     // ajax adding data to database
     $.ajax({
       url: url,
@@ -243,21 +256,27 @@
       success: function(data) {
         if (data.status) //if success close modal and reload ajax table
         {
-          $('#myModal').modal('hide');
-          $('.btnFokus').focus();
-          notif('Berhasil menambah/edit data!', 'Sukses', 'success');
           tbl_unconfig.destroy().clear();
           uncfg();
+          
           setTimeout(function() {
             connection_status();
             reload_table();
           }, 5000);
+          
+          setTimeout(function(){
+              l.ladda('stop');
+          },2000);
+          
+          $('#myModal').modal('hide');
+          notif('Berhasil menambah/edit data!', 'Sukses', 'success');
         } else {
           for (var i = 0; i < data.inputerror.length; i++) {
             $('[name="' + data.inputerror[i] + '"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
             $('[name="' + data.inputerror[i] + '"]').next().text(data.error_string[i]); //select span help-block class set text error string
           }
         }
+
         $('#btnSave').text('Register ONU'); //change button text
         $('#btnSave').attr('disabled', false); //set button enable
       },
@@ -336,7 +355,7 @@
         success: function(data) {
           notif('Berhasil menghapus data!', 'Sukses', 'success');
           reload_table();
-          $('.btnFokus').focus();
+          // $('.btnFokus').focus();
         },
         error: function(jqXHR, textStatus, errorThrown) {
           notif('Gagal menghapus data!', 'Error', 'error');
@@ -659,6 +678,7 @@
         'dataSrc': function(d) {
           if (d.status != '200') {
             $('#expired').hide();
+            return d.data
           } else {
             // $('#expired').show()
             return d.data
@@ -731,7 +751,7 @@
 
   function setExtendPaket() {
     $("#btnSaveExtendPaket").text('Processing...');
-    $('#btnSaveExtendPaket').attr('disabled', true);
+    // $('#btnSaveExtendPaket').attr('disabled', true);
     $.post(
       "<?= site_url('api_rest_client/setExtendPaket') ?>", {
         gpon_onu: $('[name="md_gpon_onu"]').val(),
@@ -742,6 +762,9 @@
           $('#extendPaket').modal('hide');
           notif(data.message, 'Perpanjang Paket', 'success');
           reload_table();
+          setTimeout(function(){
+              l.ladda('stop');
+          },2000);
           $("#btnSaveExtendPaket").text('Perpanjang');
           $('#btnSaveExtendPaket').attr('disabled', false);
         }
@@ -873,9 +896,6 @@
 
     // Copy the text inside the text field
     navigator.clipboard.writeText(copyText.value);
-
-    // Alert the copied text
-    // alert("Copied the text: " + copyText.value);
   }
 
   function setVlanProfile(){
@@ -889,6 +909,30 @@
       function(data, status) {
         $("#cvlan").html(data.select_option);
       }, 'json');
+  }
+
+  function changeSsid(gpon_onu){
+    $('#changessidModal').modal('show');
+    $('[name="cs_gpon_onu"]').val(gpon_onu);
+  }
+
+  function setSsid(mode){
+    var dataSsid = $('#formChangeSsid').serialize();
+    // return;
+    $.post(
+      "<?=site_url('api_rest_client/changeSsid/')?>" + mode, dataSsid,
+      function(d, status) {
+        // console.log(d);
+        if (status) {
+          notif(d.message, 'Change SSID', 'success');
+          $('#formChangeSsid')[0].reset();
+          $('#changessidModal').modal('hide');
+          setTimeout(function(){
+              l.ladda('stop');
+          },2000)
+        }
+      },
+      'json')
   }
 
 
@@ -924,6 +968,23 @@
     uncfg();
     los();
   }, 300000); //ms
+</script>
+
+<script type="text/javascript">
+var l = $( '.ladda-button-demo' ).ladda();
+
+l.click(function(){
+    // Start loading
+    l.ladda( 'start' );
+
+    // Timeout example
+    // Do something in backend and then stop ladda
+    // setTimeout(function(){
+    //     l.ladda('stop');
+    // },2000)
+
+
+});
 </script>
 </body>
 

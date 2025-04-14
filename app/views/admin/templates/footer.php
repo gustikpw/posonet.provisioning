@@ -37,7 +37,14 @@
 
                 <!-- Toastr -->
                 <script src="<?php echo base_url('assets/inspinia271/js/plugins/toastr/toastr.min.js') ?>"></script>
-
+                <!-- Jquery Validate -->
+                <script src="<?php echo base_url('assets/inspinia271/js/plugins/validate/jquery.validate.min.js') ?>"></script>
+                <!-- Ladda -->
+                <script src="<?php echo base_url('assets/inspinia271/js/plugins/ladda/spin.min.js') ?>"></script>
+                <script src="<?php echo base_url('assets/inspinia271/js/plugins/ladda/ladda.min.js') ?>"></script>
+                <script src="<?php echo base_url('assets/inspinia271/js/plugins/ladda/ladda.jquery.min.js') ?>"></script>
+                
+                
 
                 <script>
                     var jdlPesan, isiPesan, msgType;
