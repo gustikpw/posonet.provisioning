@@ -496,7 +496,12 @@ class Api_rest_client extends CI_Controller
 		//delete onu di olt
 		$delete_onu = $this->api->delete_onu($gpon_onu, $username);
 		//delete onu di mikrotik
-		$delete_secret = $this->routermodel->deleteRestSecret((object) array('name' => $username));
+		if ($this->ros['ROS_VERSION'] == 6) {
+			$delete_secret = $this->routermodel->remove_secret("$username");
+		}
+		elseif ($this->ros['ROS_VERSION'] == 7) {
+			$delete_secret = $this->routermodel->deleteRestSecret((object) array('name' => $username));
+		}
 		//delete onu di database sql
 		if ($permanent == 'yes'){
 			$delete_cust = $this->db->query("DELETE FROM pelanggan WHERE gpon_onu = '$gpon_onu'");
