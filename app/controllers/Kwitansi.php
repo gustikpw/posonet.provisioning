@@ -310,8 +310,8 @@ class Kwitansi extends CI_Controller
 				} else {
 					$data = array('status' => FALSE, 'msg' => 'File sudah tidak tersedia! [311]');
 				}
-			} catch (\Exception $e) {
-				echo json_encode($e);
+			} catch (\Throwable $th) {
+				echo json_encode($th);
 			}
 		} else {
 			$data = array('status' => FALSE, 'msg' => 'Gagal menghapus kwitansi. Sandi salah! [317]');
