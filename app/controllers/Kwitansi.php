@@ -295,17 +295,18 @@ class Kwitansi extends CI_Controller
 					$dd = explode("_", $namaFile);
 					$blnPenagihan = $dd[0] . '-02';
 					$kode_wilayah = $dd[1];
-					if ($this->kwitansi->delete_by($blnPenagihan, $kode_wilayah)) {
+					try {
+						$this->kwitansi->delete_by($blnPenagihan, $kode_wilayah);
 						// echo json_encode(['bulan' => $blnPenagihan, 'kode_wilayah' => $kode_wilayah]);
 						// menghapus file pada server sesuai isi database
 						if(unlink($pathh)){
-							$this->hapusTempAll(true);
+							// $this->hapusTempAll(true);
 							$data = array('status' => TRUE, 'msg' => "Bulan=$blnPenagihan <br>KodeWilayah=$kode_wilayah <br>Berhasil menghapus kwitansi! [303]");
 						} else {
 							$data = array('status' => FALSE, 'msg' => 'Gagal menghapus file kwitansi! [305]');
 						}
-					} else {
-						$data = array('status' => FALSE, 'msg' => 'Gagal menghapus invoice di database! [308]');
+					} catch (\Throwable $th){
+						$data = array('status' => FALSE, 'msg' => "$th <br>Gagal menghapus invoice di database! [308]<br>Bulan=$blnPenagihan <br>KodeWilayah=$kode_wilayah");
 					}
 				} else {
 					$data = array('status' => FALSE, 'msg' => 'File sudah tidak tersedia! [311]');

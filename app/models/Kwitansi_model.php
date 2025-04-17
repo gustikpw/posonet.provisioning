@@ -19,12 +19,13 @@ class kwitansi_model extends CI_Model
     return $this->db->affected_rows();
   }
 
-  public function delete_by($blnPenagihan, $wilayah)
+  public function delete_by($blnPenagihan, $kode_wilayah)
   {
-    $delete = $this->db->query("DELETE FROM temp_invoice
-      WHERE bulan_penagihan = '$blnPenagihan'
-      AND kode_wilayah = '$wilayah' ");
-    return $delete;
+    $this->db->delete('temp_invoice', array('bulan_penagihan' => $blnPenagihan, 'kode_wilayah' => "$kode_wilayah"));
+    // $delete = $this->db->query("DELETE FROM temp_invoice
+    //   WHERE bulan_penagihan = '$blnPenagihan'
+    //   AND kode_wilayah = '$kode_wilayah'");
+    // return $delete;
   }
 
   public function cekInvoiceCode($cari)
