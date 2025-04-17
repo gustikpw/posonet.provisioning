@@ -285,21 +285,36 @@ class Kwitansi extends CI_Controller
 	public function hapusFile($namaFile, $self = false)
 	{
 		$sandi = html_escape($this->input->post('sandi'));
+		$data = array();
+
 		if ($this->_confirm_pass($sandi)) {
 			$pathh = FCPATH . 'assets/invoice/' . $namaFile;
-			if (file_exists($pathh)) {
-				// menghapus data pada database berdasarkan bulan Penagihan
-				$dd = explode("_", $namaFile);
-				$blnPenagihan = $dd[0] . '-02';
-				$wilayah = $dd[1];
-				$this->kwitansi->delete_by($blnPenagihan, $wilayah);
-				// menghapus file pada server sesuai isi database
-				unlink($pathh);
+			try {
+				if (file_exists($pathh)) {
+					// menghapus data pada database berdasarkan bulan Penagihan
+					$dd = explode("_", $namaFile);
+					$blnPenagihan = $dd[0] . '-02';
+					$kode_wilayah = $dd[1];
+					if ($this->kwitansi->delete_by($blnPenagihan, $kode_wilayah)) {
+						// echo json_encode(['bulan' => $blnPenagihan, 'kode_wilayah' => $kode_wilayah]);
+						// menghapus file pada server sesuai isi database
+						if(unlink($pathh)){
+							$this->hapusTempAll(true);
+							$data = array('status' => TRUE, 'msg' => "Bulan=$blnPenagihan <br>KodeWilayah=$kode_wilayah <br>Berhasil menghapus kwitansi! [303]");
+						} else {
+							$data = array('status' => FALSE, 'msg' => 'Gagal menghapus file kwitansi! [305]');
+						}
+					} else {
+						$data = array('status' => FALSE, 'msg' => 'Gagal menghapus invoice di database! [308]');
+					}
+				} else {
+					$data = array('status' => FALSE, 'msg' => 'File sudah tidak tersedia! [311]');
+				}
+			} catch (\Exception $e) {
+				echo json_encode($e);
 			}
-			$this->hapusTempAll(true);
-			$data = array('status' => TRUE, 'msg' => 'Berhasil menghapus kwitansi!');
 		} else {
-			$data = array('status' => FALSE, 'msg' => 'Gagal menghapus kwitansi. Sandi salah!');
+			$data = array('status' => FALSE, 'msg' => 'Gagal menghapus kwitansi. Sandi salah! [317]');
 		}
 
 		if ($self == false) {
@@ -307,6 +322,7 @@ class Kwitansi extends CI_Controller
 		} else {
 			return true;
 		}
+		
 	}
 
 	public function hapusTempAll($self = false)
