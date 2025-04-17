@@ -21,7 +21,10 @@ class kwitansi_model extends CI_Model
 
   public function delete_by($blnPenagihan, $kode_wilayah)
   {
-    $this->db->delete('temp_invoice', array('bulan_penagihan' => $blnPenagihan, 'kode_wilayah' => "$kode_wilayah"));
+    $this->db->where('kode_wilayah',$kode_wilayah);
+    $this->db->where('bulan_penagihan',$blnPenagihan);
+    $this->db->delete('temp_invoice');
+    // $this->db->delete('temp_invoice', array('bulan_penagihan' => $blnPenagihan, 'kode_wilayah' => "$kode_wilayah"));
     // $delete = $this->db->query("DELETE FROM temp_invoice
     //   WHERE bulan_penagihan = '$blnPenagihan'
     //   AND kode_wilayah = '$kode_wilayah'");

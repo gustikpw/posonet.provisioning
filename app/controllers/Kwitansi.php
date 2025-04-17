@@ -296,11 +296,10 @@ class Kwitansi extends CI_Controller
 					$blnPenagihan = $dd[0] . '-02';
 					$kode_wilayah = $dd[1];
 					try {
-						$this->kwitansi->delete_by($blnPenagihan, $kode_wilayah);
-						// echo json_encode(['bulan' => $blnPenagihan, 'kode_wilayah' => $kode_wilayah]);
+						$del = $this->db->query("DELETE FROM temp_invoice WHERE kode_wilayah='$kode_wilayah' 
+							AND bulan_penagihan='$blnPenagihan'");
 						// menghapus file pada server sesuai isi database
 						if(unlink($pathh)){
-							// $this->hapusTempAll(true);
 							$data = array('status' => TRUE, 'msg' => "Bulan=$blnPenagihan <br>KodeWilayah=$kode_wilayah <br>Berhasil menghapus kwitansi! [303]");
 						} else {
 							$data = array('status' => FALSE, 'msg' => 'Gagal menghapus file kwitansi! [305]');
