@@ -111,7 +111,8 @@ class Api_mikrotik_model extends CI_Model
     $query = (new Query('/ppp/secret/print',))
       ->where('name', $username);
     $secrets = $this->_clientMtik->query($query)->read();
-
+    $rem = false;
+    
     foreach ($secrets as $secret) {
 
       $remove = (new Query('/ppp/secret/remove',))
