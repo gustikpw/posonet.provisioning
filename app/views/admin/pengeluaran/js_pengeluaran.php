@@ -113,6 +113,8 @@
   }
 
   function adds() {
+    $('#btnSave').text('Save changes'); //change button text
+    $('#btnSave').attr('disabled', false); //set button enable
     save_method = 'add';
     $('#form')[0].reset(); // reset form on modals
     $('[name="id_pengeluaran"]').val('');
@@ -162,8 +164,10 @@
       }
     });
   }
-
+  
   function edits(id) {
+    $('#btnSave').text('Save changes'); //change button text
+    $('#btnSave').attr('disabled', false); //set button enable
     save_method = 'update';
     $('#form')[0].reset(); // reset form on modals
     $.ajax({
