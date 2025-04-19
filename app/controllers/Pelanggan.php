@@ -239,7 +239,7 @@ class Pelanggan extends CI_Controller
 
 				$makePPPSecret = $this->routermodel->putRestSecret($secretData);
 			} else {
-				echo json_encode(['error' => 'RouterOS version not match! Pelanggan Line 241']);
+				$error = 'RouterOS version not match! Pelanggan Line 241';
 			}
 			
 			// save to Log table
@@ -256,6 +256,7 @@ class Pelanggan extends CI_Controller
 				"status" => TRUE,
 				"callback" => $onu,
 				"telegram" => ($telegram == null) ? [] : $telegram,
+				"message" => ($error == "") ? '' : $error
 			),
 		);
 	}
