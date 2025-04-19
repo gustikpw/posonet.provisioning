@@ -119,8 +119,8 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Username</th>
-                                                            <th>Owner</th>
                                                             <th>Level</th>
+                                                            <th>Owner</th>
                                                             <th>Aktif</th>
                                                             <th>Actions</th>
                                                         </tr>
@@ -180,7 +180,10 @@
                                                                     </div>
 
                                                                     <div class="col-md-6">
-                                                                        <p>Descriptions</p>
+                                                                        Privillege: <br>
+                                                                        <strong>Admin</strong> Bisa mengakses semua menu <br>
+                                                                        <strong>Kolektor</strong> Hanya melakukan perpanjangan <br>
+                                                                        <strong>Teknisi</strong> Hanya melakukan PSB <br>
                                                                     </div>
                                                                 </form>
                                                             </div>

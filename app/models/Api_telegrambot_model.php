@@ -128,7 +128,9 @@ An. %s:
 Rek: %s
 
 Jumlah Transfer = %s
-(Transfer pas hingga digit terakhir)";
+(Transfer pas hingga digit terakhir)
+
+input by %s";
 
         $query = "SELECT nama_paket,tarif FROM paket WHERE id_paket=".$data['id_paket'];
         $paket = $this->db->query($query)->row();
@@ -144,6 +146,7 @@ Jumlah Transfer = %s
             $this->tgrow['bri_nama_pemilik_rekening'],
             $this->tgrow['bri_no_rekening'],
             ribuan($paket->tarif + $data['no_pelanggan']),
+            $data['input_by'],
         );
 
         $contactName = "WIFI %s. %s";

@@ -29,9 +29,10 @@ class Dashboard extends CI_Controller
 			'wa_notif','pembayaran',
 		);
 
-		$levelkolektor	= array('pembayaran');
+		$levelkolektor	= array('pembayaran','pelanggan');
 
-		$levelteknisi	= array('perbaikan', 'jenis_gangguan', 'pengaduan', 'perbaikan_gangguan');
+		$levelteknisi	= array('pelanggan');
+		// $levelteknisi	= array('perbaikan', 'jenis_gangguan', 'pengaduan', 'perbaikan_gangguan');
 
 		if ($logses == 'administrator') {
 			if (in_array($segmen, $leveladmin)) {
@@ -47,7 +48,7 @@ class Dashboard extends CI_Controller
 			}
 		} elseif ($logses == 'teknisi') {
 			if (in_array($segmen, $levelteknisi)) {
-				$this->_create_view($segmen, $folder = 'teknisi');
+				$this->_create_view($segmen, $folder = 'admin');
 			} else {
 				set_status_header(404);
 			}

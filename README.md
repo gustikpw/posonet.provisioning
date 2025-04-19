@@ -98,4 +98,6 @@ ENGINE=InnoDB
 AUTO_INCREMENT=0
 ;
 
+# (2025-04-19) add column input_by after stb_password on table "pelanggan"
 
+input_by ALLOW NULL

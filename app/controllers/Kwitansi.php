@@ -295,26 +295,22 @@ class Kwitansi extends CI_Controller
 					$dd = explode("_", $namaFile);
 					$blnPenagihan = $dd[0] . '-02';
 					$kode_wilayah = $dd[1];
-					try {
-						$del = $this->db->query("DELETE FROM temp_invoice WHERE kode_wilayah='$kode_wilayah' 
-							AND bulan_penagihan='$blnPenagihan'");
-						// menghapus file pada server sesuai isi database
-						if(unlink($pathh)){
-							$data = array('status' => TRUE, 'msg' => "Bulan=$blnPenagihan <br>KodeWilayah=$kode_wilayah <br>Berhasil menghapus kwitansi! [303]");
-						} else {
-							$data = array('status' => FALSE, 'msg' => 'Gagal menghapus file kwitansi! [305]');
-						}
-					} catch (\Throwable $th){
-						$data = array('status' => FALSE, 'msg' => "$th <br>Gagal menghapus invoice di database! [308]<br>Bulan=$blnPenagihan <br>KodeWilayah=$kode_wilayah");
+					$del = $this->db->query("DELETE FROM temp_invoice WHERE kode_wilayah='$kode_wilayah' 
+						AND bulan_penagihan='$blnPenagihan'");
+					// menghapus file pada server sesuai isi database
+					if(unlink($pathh)){
+						$data = array('status' => TRUE, 'msg' => "Bulan=$blnPenagihan <br>KodeWilayah=$kode_wilayah <br>Berhasil menghapus kwitansi! [302]");
+					} else {
+						$data = array('status' => FALSE, 'msg' => 'Gagal menghapus file kwitansi! [304]');
 					}
 				} else {
-					$data = array('status' => FALSE, 'msg' => 'File sudah tidak tersedia! [311]');
+					$data = array('status' => FALSE, 'msg' => 'File sudah tidak tersedia! [307]');
 				}
 			} catch (\Throwable $th) {
 				echo json_encode($th);
 			}
 		} else {
-			$data = array('status' => FALSE, 'msg' => 'Gagal menghapus kwitansi. Sandi salah! [317]');
+			$data = array('status' => FALSE, 'msg' => 'Gagal menghapus kwitansi. Sandi salah! [313]');
 		}
 
 		if ($self == false) {

@@ -39,6 +39,39 @@ class Pelanggan extends CI_Controller
 			} else {
 				$remote = "<li><a href=\"javascript:void(0)\" onclick=\"remote('$br->gpon_onu','enable')\"><span class=\"fa fa-globe\"></span> Open Remote Web</a></li>";
 			}
+
+			if ($this->session->level == 'administrator') {
+				$akses = 	"<li><a href=\"javascript:void(0)\" onclick=\"extendPaket('$br->gpon_onu')\"><span class=\"fa fa-calendar\"></span> Perpanjang Paket</a></li>
+							<li role=\"separator\" class=\"divider\"></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"changeSsid('$br->gpon_onu')\"><span class=\"fa fa-wifi\"></span> Change SSID</a></li>
+							<li role=\"separator\" class=\"divider\"></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"restore_factory('$br->gpon_onu')\"><span class=\"fa fa-undo\"></span> Restore Factory</a></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','no')\"><span class=\"fa fa-trash\"></span> Delete Manual</a></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','yes')\"><span class=\"fa fa-trash\"></span> Delete Permanent</a></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"getReplaceOnt('$br->gpon_onu')\"><span class=\"fa fa-exchange\"></span> Replace ONT</a></li>";
+				
+				$editButton = "<li><a href=\"javascript:void(0)\" onclick=\"edits('$br->id_pelanggan')\"><i class=\"glyphicon glyphicon-pencil\"></i> Edit</a></li>
+                                <li><a href=\"javascript:void(0)\" onclick=\"deletes('$br->id_pelanggan')\"><i class=\"glyphicon glyphicon-trash\"></i> Hapus</a></li>";
+			} elseif ($this->session->level == 'kolektor') {
+				$akses = 	"<li><a href=\"javascript:void(0)\" onclick=\"extendPaket('$br->gpon_onu')\"><span class=\"fa fa-calendar\"></span> Perpanjang Paket</a></li>
+							<li role=\"separator\" class=\"divider\"></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"changeSsid('$br->gpon_onu')\"><span class=\"fa fa-wifi\"></span> Change SSID</a></li>";
+
+				$editButton = "";
+			} elseif ($this->session->level == 'teknisi') {
+				$akses = 	"
+							<li><a href=\"javascript:void(0)\" onclick=\"changeSsid('$br->gpon_onu')\"><span class=\"fa fa-wifi\"></span> Change SSID</a></li>
+							<li role=\"separator\" class=\"divider\"></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"restore_factory('$br->gpon_onu')\"><span class=\"fa fa-undo\"></span> Restore Factory</a></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','no')\"><span class=\"fa fa-trash\"></span> Delete Manual</a></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','yes')\"><span class=\"fa fa-trash\"></span> Delete Permanent</a></li>
+							<li><a href=\"javascript:void(0)\" onclick=\"getReplaceOnt('$br->gpon_onu')\"><span class=\"fa fa-exchange\"></span> Replace ONT</a></li>";
+
+				$editButton = "";
+			} else {
+				$akses = $editButton = "";
+			}
+
 			$row[] = "<div class=\"btn-group\">
 							<button type=\"button\" class=\"btn btn-xs dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" $btn_mode>
 								<span class=\"fa fa-info\"> <span class=\"caret\"></span>
@@ -58,14 +91,7 @@ class Pelanggan extends CI_Controller
 							<ul class=\"dropdown-menu\">
 								$remote
 								<li><a href=\"javascript:void(0)\" onclick=\"reboot('$br->gpon_onu')\"><span class=\"fa fa-refresh\"></span> Reboot</a></li>
-								<li><a href=\"javascript:void(0)\" onclick=\"extendPaket('$br->gpon_onu')\"><span class=\"fa fa-calendar\"></span> Perpanjang Paket</a></li>
-								<li role=\"separator\" class=\"divider\"></li>
-								<li><a href=\"javascript:void(0)\" onclick=\"changeSsid('$br->gpon_onu')\"><span class=\"fa fa-wifi\"></span> Change SSID</a></li>
-								<li role=\"separator\" class=\"divider\"></li>
-								<li><a href=\"javascript:void(0)\" onclick=\"restore_factory('$br->gpon_onu')\"><span class=\"fa fa-undo\"></span> Restore Factory</a></li>
-								<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','no')\"><span class=\"fa fa-trash\"></span> Delete Manual</a></li>
-								<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','yes')\"><span class=\"fa fa-trash\"></span> Delete Permanent</a></li>
-								<li><a href=\"javascript:void(0)\" onclick=\"getReplaceOnt('$br->gpon_onu')\"><span class=\"fa fa-exchange\"></span> Replace ONT</a></li>
+								$akses
 								<li role=\"separator\" class=\"divider\"></li>
 								<li><a href=\"javascript:void(0)\" onclick=\"makeTickets('$br->gpon_onu')\"><span class=\"fa fa-ticket\"></span> Make Ticket</a></li>
 							</ul>
@@ -129,8 +155,7 @@ class Pelanggan extends CI_Controller
                             <button data-toggle=\"dropdown\" class=\"btn btn-default btn-xs dropdown-toggle\" aria-expanded=\"false\">Action <span class=\"caret\"></span></button>
                             <ul class=\"dropdown-menu\">
                                 <li><a href=\"javascript:void(0)\" onclick=\"views('$br->id_pelanggan')\"><i class=\"glyphicon glyphicon-eye-open\"></i> Lihat Detail</a></li>
-                                <li><a href=\"javascript:void(0)\" onclick=\"edits('$br->id_pelanggan')\"><i class=\"glyphicon glyphicon-pencil\"></i> Edit</a></li>
-                                <!--li><a href=\"javascript:void(0)\" onclick=\"deletes('$br->id_pelanggan')\"><i class=\"glyphicon glyphicon-trash\"></i> Hapus</a></li-->
+                                $editButton
 								<li class=\"divider\"></li>
                                 <li>$linkMap</li>
 							</ul>
@@ -181,6 +206,7 @@ class Pelanggan extends CI_Controller
 			'sn_stb' => $this->input->post('sn_stb'),
 			'stb_username' => $this->input->post('no_pelanggan'),
 			'stb_password' => rand(111111,999999),
+			'input_by' => $this->session->username
 		);
 
 		//insert to db
@@ -213,16 +239,18 @@ class Pelanggan extends CI_Controller
 
 				$makePPPSecret = $this->routermodel->putRestSecret($secretData);
 			} else {
-				echo json_encode(['error' => 'RouterOS version not match! Pelanggan Line 214']);
+				echo json_encode(['error' => 'RouterOS version not match! Pelanggan Line 241']);
 			}
 			
+			// save to Log table
+			$this->olt->saveLogEvent('PSB', "New Customer! " . $onu->data->name ." ". $onu->data->ppp_profile . " Exp=" . $data['expired'] . " by " . $data['input_by']);
 		}
 
 
 		//send new client data to Admin telegram
 		$this->load->model('Api_telegrambot_model','telegramModel');
 		$telegram = $this->telegramModel->sendNewClientToAdmin($data);
-		// }
+
 		echo json_encode(
 			array(
 				"status" => TRUE,

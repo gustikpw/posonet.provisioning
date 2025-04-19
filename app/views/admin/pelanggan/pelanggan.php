@@ -8,7 +8,10 @@
                     <div class="ibox-title">
                         <h5><?php echo ucwords(str_replace('_', ' ', $active)); ?></h5>
                         <div class="ibox-tools">
+                            <?php if ($this->session->level == 'administrator' || $this->session->level == 'kolektor'): ?>
                             <button class="btn btn-xs" id="#btnExpiredContent" onclick="toggleExpired()">Show Expired</button>
+                            <?php endif; ?>
+                            
                             <button class="btn btn-xs" onclick="show_raw_content('log','')">Show Log</button>
                             <button class="btn btn-xs" data-toggle="modal" data-target="#exampleModal">Recent Request</button>
                             <!-- <button class="btn btn-xs btn-primary v_online">online -</button> -->

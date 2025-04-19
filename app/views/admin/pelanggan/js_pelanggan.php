@@ -226,8 +226,12 @@
   }
 
   function save() {
+    // setTimeout(function(){
+    //     l.ladda('stop');
+    // },2000);
+
     $('#btnSave').text('Registering ONU'); //change button text
-    // $('#btnSave').attr('disabled', false); //set button enable
+    $('#btnSave').attr('disabled', true); //set button enable
 
     var url;
     if ($('[name="id_paket"]').val() == null || $('[name="status"]').val() == '' || $('[name="vlan_profile"]').val() == '') {
@@ -259,14 +263,14 @@
           tbl_unconfig.destroy().clear();
           uncfg();
           
-          setTimeout(function() {
+          // setTimeout(function() {
             connection_status();
             reload_table();
-          }, 5000);
+          // }, 5000);
           
-          setTimeout(function(){
+          // setTimeout(function(){
               l.ladda('stop');
-          },2000);
+          // },2000);
           
           $('#myModal').modal('hide');
           notif('Berhasil menambah/edit data!', 'Sukses', 'success');
