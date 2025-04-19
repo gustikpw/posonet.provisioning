@@ -99,5 +99,7 @@ AUTO_INCREMENT=0
 ;
 
 # (2025-04-19) add column input_by after stb_password on table "pelanggan"
-
 input_by ALLOW NULL
+
+# (2025-04-21) CHANGE Lenght/Set 1 to 2 kode_wilayah on table wilayah
+Lenght/Set to 2
