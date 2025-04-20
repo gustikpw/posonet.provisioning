@@ -221,15 +221,11 @@
     $('#myModal').modal('show'); // show bootstrap modal
     $('.help-block').empty();
     $('.form-group').removeClass('has-error');
-    $('.fokus').focus();
+    // $('.fokus').focus();
     $('.modal-title').text('Add <?= ucwords(str_replace('_', ' ', $active)); ?>'); // Set Title to Bootstrap modal title
   }
 
   function save() {
-    // setTimeout(function(){
-    //     l.ladda('stop');
-    // },2000);
-
     $('#btnSave').text('Registering ONU'); //change button text
     $('#btnSave').attr('disabled', true); //set button enable
 
@@ -237,59 +233,58 @@
     if ($('[name="id_paket"]').val() == null || $('[name="status"]').val() == '' || $('[name="vlan_profile"]').val() == '') {
       alert('Isi kolom yang kosong! (select VLAN  or PAKET or STATUS wajib diisi)');
       return;
-    }
-
-
-    if (save_method == 'add') {
-      url = "<?= site_url('pelanggan/save_pelanggan') ?>";
     } else {
-      url = "<?= site_url('pelanggan/update_pelanggan') ?>";
-    }
-    // validateKtp();
-    // ajax adding data to database
-    $.ajax({
-      url: url,
-      type: "POST",
-      data: new FormData(document.getElementById("form")),
-      processData: false,
-      contentType: false,
-      cache: false,
-      async: false,
-      // data: $('#form').serialize(),
-      dataType: "JSON",
-      success: function(data) {
-        if (data.status) //if success close modal and reload ajax table
-        {
-          tbl_unconfig.destroy().clear();
-          uncfg();
-          
-          // setTimeout(function() {
-            connection_status();
-            reload_table();
-          // }, 5000);
-          
-          // setTimeout(function(){
-              l.ladda('stop');
-          // },2000);
-          
-          $('#myModal').modal('hide');
-          notif('Berhasil menambah/edit data!', 'Sukses', 'success');
-        } else {
-          for (var i = 0; i < data.inputerror.length; i++) {
-            $('[name="' + data.inputerror[i] + '"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
-            $('[name="' + data.inputerror[i] + '"]').next().text(data.error_string[i]); //select span help-block class set text error string
-          }
-        }
 
-        $('#btnSave').text('Register ONU'); //change button text
-        $('#btnSave').attr('disabled', false); //set button enable
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        notif('Gagal mengUpdate data! \n' + errorThrown, 'Error', 'error');
-        $('#btnSave').text('Register ONU'); //change button text
-        $('#btnSave').attr('disabled', false); //set button enable
+      if (save_method == 'add') {
+        url = "<?= site_url('pelanggan/save_pelanggan') ?>";
+      } else {
+        url = "<?= site_url('pelanggan/update_pelanggan') ?>";
       }
-    });
+      // validateKtp();
+      // ajax adding data to database
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: new FormData(document.getElementById("form")),
+        processData: false,
+        contentType: false,
+        cache: false,
+        async: false,
+        // data: $('#form').serialize(),
+        dataType: "JSON",
+        success: function(data, status) {
+          if (data.status) //if success close modal and reload ajax table
+          {
+            tbl_unconfig.destroy().clear();
+            uncfg();
+            
+            setTimeout(function() {
+              connection_status();
+              reload_table();
+              l.ladda('stop');
+            }, 5000);
+                        
+            $('#myModal').modal('hide');
+            notif('Berhasil menambah/edit data!', 'Sukses', 'success');
+          } else {
+            for (var i = 0; i < data.inputerror.length; i++) {
+              $('[name="' + data.inputerror[i] + '"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
+              $('[name="' + data.inputerror[i] + '"]').next().text(data.error_string[i]); //select span help-block class set text error string
+            }
+          }
+  
+          $('#btnSave').text('Register ONU'); //change button text
+          $('#btnSave').attr('disabled', false); //set button enable
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          notif('Gagal mengUpdate data! \n' + errorThrown, 'Error', 'error');
+          $('#btnSave').text('Register ONU'); //change button text
+          $('#btnSave').attr('disabled', false); //set button enable
+        }
+      });
+    } //end else
+
+
   }
 
   function edits(id) {
@@ -343,8 +338,12 @@
         $('#myModal').modal('show');
         $('.modal-title').text('Edit <?= ucwords(str_replace('_', ' ', $active)); ?>');
         $('#btnSave').text('Update');
+        $('#btnSave').attr('disabled', false); //set button enable
+        
       },
       error: function(jqXHR, textStatus, errorThrown) {
+        $('#btnSave').text('Update');
+        $('#btnSave').attr('disabled', false); //set button enable
         notif('Gagal mengambil data! \n' + errorThrown, 'Error', 'error');
       }
     });
@@ -711,13 +710,14 @@
       ajax: {
         'url': "<?= site_url('api_rest_client/los') ?>",
         'dataSrc': function(d) {
-          if (d.status != '200') {
-          } else {
+          if (d.status == '200') {
             $('#los').hide();
             if (d.interface_los.status) {
               $('.iface-los').html(d.interface_los.data);
+              $('#los').show()
             }
-            $('#los').show()
+          } else {
+            $('#los').hide();
           }
           return d.data
         }
