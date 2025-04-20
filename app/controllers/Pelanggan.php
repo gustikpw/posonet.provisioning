@@ -174,6 +174,7 @@ class Pelanggan extends CI_Controller
 
 	public function save_pelanggan()
 	{
+		$error = '';
 		// $this->_validate();
 		// upload ktp
 		$ktp_filename = $this->_do_upload();
@@ -256,7 +257,7 @@ class Pelanggan extends CI_Controller
 				"status" => TRUE,
 				"callback" => $onu,
 				"telegram" => ($telegram == null) ? [] : $telegram,
-				"message" => ($error == "") ? '' : $error
+				"message" => $error
 			),
 		);
 	}
