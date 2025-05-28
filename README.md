@@ -101,5 +101,15 @@ AUTO_INCREMENT=0
 # (2025-04-19) add column input_by after stb_password on table "pelanggan"
 input_by ALLOW NULL
 
-# (2025-04-21) CHANGE Lenght/Set 1 to 2 kode_wilayah on table wilayah
+# (2025-04-21) CHANGE Lenght/Set 1 to 2 'kode_wilayah' on 'table wilayah'
 Lenght/Set to 2
+
+# (2025-04-30) add line after "WHERE v.ont_phase_state = 'LOS'" on view "v_onu_los"
+OR v.ont_phase_state = 'syncMib' OR v.ont_phase_state = 'logging'
+
+# (2025-05-07) add column after "tarif" on table "paket"
+`tcont` VARCHAR(50) NOT NULL DEFAULT 'tcont 1 profile default',
+`gemport` VARCHAR(50) NOT NULL DEFAULT 'gemport 1 tcont 1',
+
+# (2025-05-17) add line before 'v.ont_phase_state' on v_onu_los
+v.expired,

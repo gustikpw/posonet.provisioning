@@ -9,6 +9,7 @@ class Paket extends CI_Controller {
 			redirect('login?_rdr='.urlencode(current_url()));
 		}
 		$this->load->model('paket_model','paket');
+		$this->load->model('Provisioning_model','prov');
 		$this->load->helper(array('MY_ribuan','MY_bulan'));
 	}
 
@@ -28,6 +29,8 @@ class Paket extends CI_Controller {
 		$row[] = "<span class='font-bold'>$br->nama_paket</span>";
 		$row[] = "<span class='font-bold'>$br->mikrotik_profile</span>";
 		$row[] = 'Rp.'.ribuan($br->tarif);
+		$row[] = $br->tcont;
+		$row[] = $br->gemport;
 		$row[] = $br->keterangan;
 	//add html for action
 		$row[] = "<div class=\"btn-group\">
@@ -50,6 +53,18 @@ class Paket extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	public function get_tcont()
+	{
+		$text = "";
+		$data = $this->prov->getTcont();
+
+		foreach ($data as $key) {
+			$text .= "<option value='tcont $key->type profile $key->profile_name'>tcont $key->type profile $key->profile_name</option>";
+		}
+
+		echo $text;
+	}
+
 	public function save_paket()
 	{
 		$this->_validate();
@@ -58,6 +73,8 @@ class Paket extends CI_Controller {
 			'mikrotik_profile' => $this->input->post('mikrotik_profile'),
 			// 'speed_max' => $this->input->post('speed_max'),
 			'tarif' => $this->input->post('tarif'),
+			'tcont' => $this->input->post('tcont'),
+			'gemport' => $this->input->post('gemport'),
 			'keterangan' => $this->input->post('keterangan'),
 		);
 		$insert = $this->paket->save($data);
@@ -72,6 +89,8 @@ class Paket extends CI_Controller {
 			'mikrotik_profile' => $this->input->post('mikrotik_profile'),
 			// 'speed_max' => $this->input->post('speed_max'),
 			'tarif' => $this->input->post('tarif'),
+			'tcont' => $this->input->post('tcont'),
+			'gemport' => $this->input->post('gemport'),
 			'keterangan' => $this->input->post('keterangan'),
 		);
 		$this->paket->update(array('id_paket' => $this->input->post('id_paket')), $data);
@@ -109,6 +128,16 @@ class Paket extends CI_Controller {
 		}
 		if($this->input->post('tarif') == '') {
 			$data['inputerror'][] = 'tarif';
+			$data['error_string'][] = 'Enter this field!';
+			$data['status'] = FALSE;
+		}
+		if($this->input->post('tcont') == '') {
+			$data['inputerror'][] = 'tcont';
+			$data['error_string'][] = 'Enter this field!';
+			$data['status'] = FALSE;
+		}
+		if($this->input->post('gemport') == '') {
+			$data['inputerror'][] = 'gemport';
 			$data['error_string'][] = 'Enter this field!';
 			$data['status'] = FALSE;
 		}

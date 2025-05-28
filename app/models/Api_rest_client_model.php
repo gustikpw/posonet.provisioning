@@ -66,6 +66,8 @@ class Api_rest_client_model extends CI_Model
         'access_mode' => $data['access_mode'],
         'vlan_profile' => $data['vlan_profile'],
         'cvlan' => $data['cvlan'],
+        'tcont' => $data['tcont'],
+        'gemport' => $data['gemport'],
       ]
     ]);
 
@@ -77,7 +79,10 @@ class Api_rest_client_model extends CI_Model
 
   public function reconfig_onu($data){
       $response = $this->_client->request('POST', 'reconfig_onu', [
-        'form_params' => [
+        'form_params' => (array) $data
+      ]);
+
+      /*  [
           'gpon_olt' => $data['gpon_olt'],
           'onu_index' => $data['onu_index'],
           'onu_type' => $data['onu_type'],
@@ -89,8 +94,9 @@ class Api_rest_client_model extends CI_Model
           'password' => $data['password'],
           'vlan_profile' => $data['vlan_profile'],
           'cvlan' => $data['cvlan'],
-        ]
-      ]);
+          'tcont' => $data['tcont'],
+          'gemport' => $data['gemport'],
+        ] */
 
       return json_decode($response->getBody());
   }

@@ -113,6 +113,7 @@ class Api_rest_client extends CI_Controller
 						</div>";
 			$row[] = $br->gpon_onu;
 			$row[] = $br->no_pelanggan.". ". $br->nama_pelanggan;
+			$row[] = $br->expired;
 			$row[] = $br->ont_phase_state;
 			
 			$odpLocation = ($br->odp_location == '' || $br->odp_location == null) ? "javascript:void(0)" : urldecode($br->odp_location);
@@ -243,13 +244,17 @@ class Api_rest_client extends CI_Controller
 	}
 
 	public function check_onu($gpon_olt_baru, $sn){
-		$cekdb = $this->db->query("SELECT no_pelanggan, nama_pelanggan, serial_number, name, gpon_onu, onu_type, description, username, password, mikrotik_profile, nama_paket, vlan_profile, cvlan
+		$cekdb = $this->db->query("SELECT no_pelanggan, nama_pelanggan, serial_number, name, gpon_onu, onu_type, description, username, password, mikrotik_profile, nama_paket, vlan_profile, cvlan, id_paket
 				FROM v_pelanggan
 				WHERE serial_number = '$sn'");
 
 		//jika ditemukan sn yang sama
 		if($cekdb->num_rows() > 0) {
 			$data = $cekdb->row();
+
+			//get tcont and gemport from paket
+			$tcont =  $this->db->query("SELECT tcont, gemport FROM paket WHERE id_paket=$data->id_paket")->row();
+
 			//interface sama atau tidak?
 			$gpon_olt_lama = preg_split('/:/', $data->gpon_onu)[0];
 
@@ -261,26 +266,30 @@ class Api_rest_client extends CI_Controller
 				$mode = 'pindah-port';
 			}
 
-			return (object) [
+			$output = (object) [
 				'caption' 	=> $caption, 
 				'mode' 		=> $mode,
 				'onutype' 	=> $data->onu_type,
 				'paket' 	=> $data->nama_paket,
 				'name' 		=> $data->no_pelanggan.'. '.$data->nama_pelanggan,
 				'button' 	=> 'disabled',
-				'db_data'	=> $data
+				'db_data'	=> $data,
+				'tcont'		=> $tcont,
 			];
 		} else {
-			return (object) [
+			$output = (object) [
 				'caption' 	=> 'Config', 
 				'mode' 		=> 'new-config',
 				'onutype' 	=> '---',
 				'paket' 	=> '---',
 				'name' 		=> '---',
 				'button' 	=> '',
-				'db_data'	=> null
+				'db_data'	=> null,
+				'tcont'		=> null,
 			];
 		}
+
+		return $output;
 	}
 
 	public function reconfig(){
@@ -288,13 +297,16 @@ class Api_rest_client extends CI_Controller
 
 		$alldata = array();
 		$countReconfig = $countPindahPort = 0;
+		$info = '';
 
 		foreach ($uncfg->data as $key) {
 			// check if interface
 			$cek = $this->check_onu($key->interface, $key->sn);
+			$data = $cek->db_data;
+			$tcont = $cek->tcont;
 			
 			if ($cek->mode == 'reconfig') {
-				$data = $cek->db_data;
+
 				$gpon_olt_old = preg_split('/:/', $data->gpon_onu)[0];
 				$onu_index_old = preg_split('/:/', $data->gpon_onu)[1];
 
@@ -313,10 +325,15 @@ class Api_rest_client extends CI_Controller
 					'password' 		=> $secret->password,
 					'vlan_profile' 	=> $data->vlan_profile,
 					'cvlan' 		=> $data->cvlan,
+					'tcont' 		=> $tcont->tcont,
+					'gemport' 		=> $tcont->gemport,
 					'mode_config'	=> $cek->mode,
 				);
 
-				if ($this->api->reconfig_onu($configData)) {
+				$recon = $this->api->reconfig_onu($configData);
+				
+				if ($recon->status) {
+					$info = $recon->data;
 					// make secret mikrotik
         			if ($this->ros['ROS_VERSION'] == 6) {
 						$remove_old_secret = $this->routermodel->remove_secret("$data->username");
@@ -336,7 +353,7 @@ class Api_rest_client extends CI_Controller
 					}
 					//update gpon_onu di database
 					$query 	= "UPDATE pelanggan 
-						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
+						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$info->gpon_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
 						WHERE serial_number='$key->sn'";
 					$update = $this->db->query($query);
 
@@ -346,7 +363,6 @@ class Api_rest_client extends CI_Controller
 			}
 
 			elseif ($cek->mode == 'pindah-port') {
-				$data = $cek->db_data;
 				//pindah port
 				$newGponOnu = $this->getNewOnuIndex($key->interface);
 				$secret 	= $this->_make_ppp_secret($data->no_pelanggan, $data->nama_pelanggan, $data->serial_number);
@@ -363,10 +379,16 @@ class Api_rest_client extends CI_Controller
 					'password' 		=> $secret->password,
 					'vlan_profile' 	=> $data->vlan_profile,
 					'cvlan' 		=> $data->cvlan,
+					'tcont' 		=> $tcont->tcont,
+					'gemport' 		=> $tcont->gemport,
 					'mode_config'	=> $cek->mode,
 				);
 				//reconfig first
-				if($this->api->reconfig_onu($configData)){
+				$recon = $this->api->reconfig_onu($configData);
+
+
+				if($recon->status){
+					$info = $recon->data;
 					//remove old config
 					$gpon_olt_old = preg_split('/:/', $data->gpon_onu)[0];
 					$onu_index_old = preg_split('/:/', $data->gpon_onu)[1];
@@ -392,7 +414,7 @@ class Api_rest_client extends CI_Controller
 
 					//update gpon_onu di database
 					$this->db->query("UPDATE pelanggan 
-						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$newGponOnu->registration_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
+						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$info->gpon_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
 						WHERE serial_number='$key->sn'");
 					
 					$countPindahPort++;
@@ -406,11 +428,12 @@ class Api_rest_client extends CI_Controller
 
 		echo json_encode([
 			'message' => "$countPindahPort Onu berhasil pindah port. <br>$countReconfig Onu berhasih Reconfig",
-			'status' => true
+			'status' => true,
+			'info' => $info
 		]);
 	}
 
-	public function getNewOnuIndex($gpon_olt=""){
+	public function getNewOnuIndex($gpon_olt=false){
 
 		if ($gpon_olt == "") {
 			return 0;
@@ -458,6 +481,11 @@ class Api_rest_client extends CI_Controller
 				'registration_onu' 	=> "$gpon_olt:$new_index",
 			];
 
+			// echo json_encode( (object) [
+			// 	'new_index' 		=> $new_index,
+			// 	'registration_onu' 	=> "$gpon_olt:$new_index",
+			// ]);
+
 		}
 	}
 
@@ -492,25 +520,43 @@ class Api_rest_client extends CI_Controller
 		$gpon_onu = $this->input->post('gpon_onu');
 		$permanent = $this->input->post('permanent');
 		//ambil username pppoe utk delete secret di mikrotik
-		$username = $this->db->query("SELECT username from pelanggan WHERE gpon_onu = '$gpon_onu'")->row()->username;
+		$qry = $this->db->query("SELECT username, name from pelanggan WHERE gpon_onu = '$gpon_onu'")->row();
 		//delete onu di olt
-		$delete_onu = $this->api->delete_onu($gpon_onu, $username);
+		$delete_onu = $this->api->delete_onu($gpon_onu, $qry->username);
 		//delete onu di mikrotik
 		if ($this->ros['ROS_VERSION'] == 6) {
-			$delete_secret = $this->routermodel->remove_secret("$username");
+			$delete_secret = $this->routermodel->remove_secret("$qry->username");
 		}
 		elseif ($this->ros['ROS_VERSION'] == 7) {
-			$delete_secret = $this->routermodel->deleteRestSecret((object) array('name' => $username));
+			$delete_secret = $this->routermodel->deleteRestSecret((object) array('name' => $qry->username));
 		}
 		//delete onu di database sql
 		if ($permanent == 'yes'){
 			$delete_cust = $this->db->query("DELETE FROM pelanggan WHERE gpon_onu = '$gpon_onu'");
+			
 		} else {
 			$updateOntPhase = $this->db->query("UPDATE pelanggan SET ont_phase_state='Unconfigured', remote_web_state='disabled' WHERE gpon_onu = '$gpon_onu'");
 		}
+		/**
+		 * KIRIM PESAN KE TELEGRAM
+		 */
+
+		$template = "*DELETE ONU*
+gpon-onu_%s
+Name : %s
+Tgl Delete : %s
+
+_handled by %s_";
+
+		$teletext = sprintf($template, $gpon_onu, $qry->name, date('Y-m-d H:i:s'), $this->session->username);
+
+		// $sendToTelegram = "";
+		$sendToTelegram = $this->telegrambot->sendToAdmin($teletext);
+
 		echo json_encode([
-			"data" => $this->input->post('gpon_onu') . '  & ' . $username,
-			"message" => $delete_onu->message,
+			"data" => $gpon_onu . '  & ' . $qry->username,
+			"message" => $teletext,
+			// "message" => $delete_onu->message,
 			"status" => true,
 		]);
 	}
@@ -983,10 +1029,12 @@ class Api_rest_client extends CI_Controller
 		$onu_type = html_escape($this->input->post('rep_onutype'));
 		$new_sn = html_escape($this->input->post('rep_new_sn'));
 
-		$old_secret = $this->db->query("SELECT no_pelanggan, nama_pelanggan, username, mikrotik_profile, description, vlan_profile, cvlan FROM v_pelanggan WHERE gpon_onu='$gpon_onu'")->row();
+		$old_secret = $this->db->query("SELECT no_pelanggan, nama_pelanggan, username, mikrotik_profile, description, vlan_profile, cvlan, id_paket FROM v_pelanggan WHERE gpon_onu='$gpon_onu'")->row();
 		
 		$new_secret = $this->_make_ppp_secret($old_secret->no_pelanggan, $old_secret->nama_pelanggan, $new_sn);
 
+		$tcont =  $this->db->query("SELECT tcont, gemport FROM paket WHERE id_paket=$old_secret->id_paket")->row();
+		
 		$data = array(
 			'gpon_olt' => preg_split('/:/', $gpon_onu)[0],
 			'onu_index' => preg_split('/:/', $gpon_onu)[1],
@@ -1000,6 +1048,8 @@ class Api_rest_client extends CI_Controller
 			'mikrotik_profile' => $old_secret->mikrotik_profile,
 			'vlan_profile' => $old_secret->vlan_profile,
 			'cvlan' => $old_secret->cvlan,
+			'tcont' => $tcont->tcont,
+			'gemport' => $tcont->gemport,
 		);
 
 		// sebelum replace ont, onu lama akan dihapus di olt

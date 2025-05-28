@@ -81,10 +81,20 @@ function adds()
     save_method = 'add';
     $('#form')[0].reset(); // reset form on modals
     $('[name="id_paket"]').val('');
+    getTcont();
     $('#myModal').modal('show'); // show bootstrap modal
     $('.help-block').empty();
     $('.fokus').focus();
     $('.modal-title').text('Add <?php echo ucwords(str_replace('_',' ',$active)); ?>'); // Set Title to Bootstrap modal title
+}
+
+function getTcont()
+{
+ $.get("<?= site_url('paket/get_tcont') ?>", function(data, status) {
+      if (status) {
+        $('#tcont').html(data);
+      }
+    });
 }
 
 function save()
@@ -145,6 +155,8 @@ function edits(id)
         $('[name="mikrotik_profile"]').val(data.mikrotik_profile);
         // $('[name="speed_max"]').val(data.speed_max);
         $('[name="tarif"]').val(data.tarif);
+        $('[name="tcont"]').val(data.tcont);
+        $('[name="gemport"]').val(data.gemport);
         $('[name="keterangan"]').val(data.keterangan);
         $('#myModal').modal('show');
         $('.modal-title').text('Edit <?php echo ucwords(str_replace('_',' ',$active)); ?>');

@@ -3,7 +3,7 @@
 class Paket_model extends CI_Model {
 
   var $table = 'paket';
-  var $column = array('id_paket','nama_paket','speed_max','tarif','keterangan');
+  var $column = array('id_paket','nama_paket','tcont','gemport','tarif','keterangan');
   var $order = array('id_paket'=>'DESC');
 
   function __construct()

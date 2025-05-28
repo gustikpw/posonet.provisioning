@@ -63,8 +63,6 @@ class Pelanggan extends CI_Controller
 							<li><a href=\"javascript:void(0)\" onclick=\"changeSsid('$br->gpon_onu')\"><span class=\"fa fa-wifi\"></span> Change SSID</a></li>
 							<li role=\"separator\" class=\"divider\"></li>
 							<li><a href=\"javascript:void(0)\" onclick=\"restore_factory('$br->gpon_onu')\"><span class=\"fa fa-undo\"></span> Restore Factory</a></li>
-							<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','no')\"><span class=\"fa fa-trash\"></span> Delete Manual</a></li>
-							<li><a href=\"javascript:void(0)\" onclick=\"delonu('$br->gpon_onu','yes')\"><span class=\"fa fa-trash\"></span> Delete Permanent</a></li>
 							<li><a href=\"javascript:void(0)\" onclick=\"getReplaceOnt('$br->gpon_onu')\"><span class=\"fa fa-exchange\"></span> Replace ONT</a></li>";
 
 				$editButton = "";
@@ -210,8 +208,14 @@ class Pelanggan extends CI_Controller
 			'input_by' => $this->session->username
 		);
 
+		
 		//insert to db
 		if($insert = $this->pelanggan->save($data)){
+			//get tcont from table paket
+			$idpaket = $data['id_paket'];
+			$qry = $this->db->query("SELECT tcont, gemport FROM paket WHERE id_paket=$idpaket")->row();
+			$data['tcont'] = $qry->tcont;
+			$data['gemport'] = $qry->gemport;
 			//regist ont
 			$onu = $this->olt->create_onu($data);
 		}

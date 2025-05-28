@@ -24,6 +24,8 @@
                                         <th>Nama Paket</th>
                                         <th>PPP Profile</th>
                                         <th>Tarif</th>
+                                        <th>TCONT</th>
+                                        <th>GEMPORT</th>
                                         <th>Keterangan</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -59,12 +61,21 @@
                                         <div class="col-md-10"><input type="text" name="mikrotik_profile" placeholder="Mikrotik PPP > Profiles Name" class="form-control"> <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
-                                    <!-- <div class="form-group"><label class="col-md-2 control-label ">Speed Max</label>
-                                        <div class="col-md-10"><input type="number" name="speed_max" placeholder="Speed Max" class="form-control"> <span class="help-block m-b-none"></span>
-                                        </div>
-                                    </div> -->
                                     <div class="form-group"><label class="col-md-2 control-label ">Tarif</label>
                                         <div class="col-md-10"><input type="number" name="tarif" placeholder="Tarif" class="form-control"> <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group"><label class="col-md-2 control-label ">TCONT</label>
+                                        <div class="col-md-10">
+                                            <!-- <input type="text" name="tcont" placeholder="TCONT" class="form-control">  -->
+                                             <select class="form-control" name="tcont" id="tcont" >
+
+                                             </select>
+                                            <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group"><label class="col-md-2 control-label">GEMPORT</label>
+                                        <div class="col-md-10"><input type="text" name="gemport" placeholder="GEMPORT" class="form-control"> <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
                                     <div class="form-group"><label class="col-md-2 control-label">Keterangan</label>

@@ -67,7 +67,7 @@
                             
                         </div>
                         
-                        <div class="xtable-responsive" id="unconfig" style="display:none">
+                        <div class="table-responsive" id="unconfig" style="display:none">
                             <table class="table table-condensed table-hover" id="tb-unconfig">
                                 <thead class="bg-info">
                                     <tr>
@@ -85,7 +85,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="xtable-responsive" id="los" style="display:none">
+                        <div class="table-responsive" id="los" style="display:none">
                             <table class="table table-condensed table-hover" id="tb-los">
                                 <thead>
                                     <tr>
@@ -93,6 +93,7 @@
                                         <th>Interface</th>
                                         <th>Name</th>
                                         <th>Cause</th>
+                                        <th>Expired</th>
                                         <th>ODP</th>
                                         <th>ONT</th>
                                     </tr>
@@ -103,7 +104,7 @@
                             </table>
                         </div>
 
-                        <div class="xtable-responsive " id="expired" style="display:none">
+                        <div class="table-responsive " id="expired" style="display:none">
                             <table class="table table-condensed table-hover" id="tb-expired">
                                 <thead>
                                     <tr>
@@ -119,16 +120,16 @@
                             </table>
                         </div>
 
-                        <div class="xtable-responsive" id="step4">
+                        <div class="table-responsive" id="step4">
                             <table class="table table-condensed table-hover" id="table">
                                 <thead>
                                     <tr>
-                                        <th>Action</th>
-                                        <th>Interface</th>
-                                        <th>Nama</th>
+                                        <th data-priority="1">Action</th>
+                                        <th data-priority="2">Interface</th>
+                                        <th data-priority="3">Nama</th>
                                         <th>Tgl Instalasi</th>
-                                        <th>ontPhase</th>
-                                        <th>dBm</th>
+                                        <th data-priority="4">ontPhase</th>
+                                        <th data-priority="5">dBm</th>
                                         <th>meter</th>
                                         <th>Paket</th>
                                         <th>Expire</th>

@@ -70,6 +70,7 @@
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
+      responsive: true,
       // Load data for the table's content from an Ajax source
       ajax: {
         url: "<?= site_url('pelanggan/ajax_list') ?>",
@@ -85,7 +86,8 @@
       // paging:         false,
       // fixedColumns:   true,
       //Set column definition initialisation properties.
-      columnDefs: [{
+      columnDefs: [
+        {
           visible: false,
           targets: [3], //last column
           // orderable: false, //set not orderable
@@ -840,7 +842,7 @@
         if (status) {
           $('[name="tic_gpon_onu"]').val(gpon_onu);
           $('[name="tic_scripts"]').val(data.teks);
-          navigator.clipboard.writeText(data.teks);
+          // navigator.clipboard.writeText(data.teks);
           $('#ticketsModal').modal('show');
           // $('#ticketsModal').modal('hide');
           // notif(data.message, 'Tickets successfull', 'success');
@@ -862,7 +864,7 @@
       function(data, status) {
         if (status) {
           $('[name="tic_scripts"]').text(data.teks);
-          navigator.clipboard.writeText(data.teks);
+          // navigator.clipboard.writeText(data.teks);
           // $('#ticketsModal').modal('hide');
           // notif(data.message, 'Tickets successfull', 'success');
           $("#btnSaveTickets").text('Make Ticket');
