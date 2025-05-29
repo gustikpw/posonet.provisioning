@@ -18,6 +18,7 @@
   <link href="<?= base_url('assets/inspinia271/font-awesome/css/font-awesome.css') ?>" rel="stylesheet">
   <link href="<?= base_url('assets/inspinia271/css/animate.css') ?>" rel="stylesheet">
   <link href="<?= base_url('assets/inspinia271/css/style.css') ?>" rel="stylesheet">
+  
 
   <?php if ($active == 'pembayaran') : ?>
     <link href="<?php echo base_url('assets/inspinia271/css/plugins/ladda/ladda-themeless.min.css') ?>" rel="stylesheet">
@@ -41,7 +42,7 @@
     <script type="text/javascript" src="<?php echo base_url('assets/instascan/download/instascan.min.js') ?>"></script>
   <?php endif; ?>
 
-  <?php if ($active == 'pelanggan' || $active == 'kwitansi' || $active == 'master_setoran' || $active == 'kolektor' || $active == 'detail_setoran' || $active == 'wa_notif') : ?>
+  <?php if ($active == 'pelanggan' || $active == 'kwitansi' || $active == 'master_setoran' || $active == 'kolektor' || $active == 'detail_setoran' || $active == 'wa_notif' || $active == 'settings') : ?>
     <link href="<?= base_url('assets/inspinia271/css/plugins/select2/select2.min.css') ?>" rel="stylesheet">
     <style media="screen">
       .select2-close-mask {

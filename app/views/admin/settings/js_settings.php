@@ -1,12 +1,21 @@
 <script src="<?php echo base_url('assets/inspinia271/js/plugins/dataTables/datatables.min.js') ?>"></script>
+<script src="<?php echo base_url('assets/inspinia271/js/plugins/select2/select2.full.min.js') ?>"></script>
 
 
 <script>
+    var wilayah = $('.multiSelect').select2({
+        placeholder: "Pilih Wilayah",
+        width: "100%",
+        // dropdownParent : $('#myModal')
+    });
+
+
     $(document).ready(function() {
         getRekening();
 
         $('[name="level"]').load("<?= site_url('getselect/get_enum_values/users/level') ?>");
         $('[name="id_karyawan"]').load("<?= site_url('getselect/pilih_mul/karyawan/id_karyawan/nama_lengkap') ?>");
+        $('.multiSelect').load("<?= site_url('getselect/pilih_mul_dua/wilayah/id_wilayah/kode_wilayah/wilayah') ?>");
 
 
         tableUsers = $('#tableUsers').DataTable({
@@ -47,7 +56,7 @@
     var save_method;
 
     function reload_table(){
-    table.ajax.reload(null,false); //reload datatable ajax
+        tableUsers.ajax.reload(null,false); //reload datatable ajax
     }
 
     function adds()
@@ -60,7 +69,7 @@
         $('.fokus').focus();
         $('.modal-title').text('Tambah User'); // Set Title to Bootstrap modal title
         $("#btnSaveUsers").text('Saved').attr('disabled',false);
-
+        wilayah.val('').trigger('change');
     }
 
     function getRekening(){
@@ -106,6 +115,9 @@
                 'json')
             }
             if(settings == 'users'){
+
+                $("#btnSaveUsers").text('Updating').attr('disabled',true);
+
                 if($('[name="password"]').val() == '') {
                     alert('Masukan password baru!');
                     return;
@@ -126,7 +138,7 @@
                         if (data.status) {
                             console.log(data.message);
                             alert(data.message);
-                            $("#btnSaveUsers").text('Saved').attr('disabled',true);
+                            $("#btnSaveUsers").text('Save').attr('disabled',false);
                             reload_table();
                             $('#myModalUser').modal('hide'); // hide bootstrap modal
 
@@ -173,7 +185,7 @@
                 $('[name="id_karyawan"]').val(data.id_karyawan);
                 $('[name="level"]').val(data.level);
                 $('[name="aktif"]').val(data.aktif);
-
+                wilayah.val(data.akses_wilayah).trigger('change');
                 $('#myModalUser').modal('show');
                 $('.modal-title').text('Edit User');
             },

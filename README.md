@@ -113,3 +113,9 @@ OR v.ont_phase_state = 'syncMib' OR v.ont_phase_state = 'logging'
 
 # (2025-05-17) add line before 'v.ont_phase_state' on v_onu_los
 v.expired,
+
+# (2025-05-29) add column akses_wilayah after id_api in table users
+`akses_wilayah` TEXT NULL DEFAULT NULL
+
+# (2025-05-29) add line in 'v_users' before 'FROM'
+, u.akses_wilayah

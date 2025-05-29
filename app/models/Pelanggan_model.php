@@ -38,6 +38,8 @@ class Pelanggan_model extends CI_Model
 
         if (count($this->column) - 1 == $i) //last loop
           $this->db->group_end(); //close bracket
+          // //TAMBAH MANUAL BY KETUT
+          // $this->db->where('id_wilayah !=','81');
       }
       $column[$i] = $item; // set column array variable to order processing
       $i++;
@@ -49,6 +51,31 @@ class Pelanggan_model extends CI_Model
     } else if (isset($this->order)) {
       $order = $this->order;
       $this->db->order_by(key($order), $order[key($order)]);
+    }
+    /**
+     * TAMBAH MANUAL BY KETUT 
+     * fungsi dibawah ini untuk akses pelanggan berdasarkan akses_wilayah yang berada di tabel user
+     * */
+    if($this->hakAksesToWilayah()->status) {
+      $idW = $this->hakAksesToWilayah()->data;
+      $this->db->where_not_in('id_wilayah', $idW);
+    }
+  }
+
+  function hakAksesToWilayah()
+  {
+    $username = $this->session->username;
+    $hakAksesWilayah = $this->db->query("SELECT * FROM users WHERE username = '$username' ")->row();
+    if ($hakAksesWilayah->akses_wilayah == null) {
+      return $data = (object) array(
+        'status' => false,
+        'data' => [],
+      );
+    } else {
+      return $data = (object) array(
+        'status' => true,
+        'data' => json_decode($hakAksesWilayah->akses_wilayah),
+      );
     }
   }
 

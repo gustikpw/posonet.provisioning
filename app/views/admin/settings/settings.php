@@ -176,6 +176,12 @@
                                                                                 </select> <span class="help-block m-b-none"></span>
                                                                             </div>
                                                                         </div>
+                                                                        <div class="form-group"><label class="col-md-2 control-label">Block Wilayah</label>
+                                                                            <div class="col-md-10">
+                                                                                <select name="akses_wilayah[]" class="multiSelect" multiple="multiple"></select>
+                                                                            <span class="has-error">Pilih wilayah yang disembunyikan!</span>
+                                                                            </div>
+                                                                        </div>
                                                                         
                                                                     </div>
 

@@ -67,7 +67,7 @@
                             
                         </div>
                         
-                        <div class="table-responsive" id="unconfig" style="display:none">
+                        <div class="xtable-responsive" id="unconfig" style="display:none">
                             <table class="table table-condensed table-hover" id="tb-unconfig">
                                 <thead class="bg-info">
                                     <tr>
@@ -85,7 +85,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="table-responsive" id="los" style="display:none">
+                        <div class="xtable-responsive" id="los" style="display:none">
                             <table class="table table-condensed table-hover" id="tb-los">
                                 <thead>
                                     <tr>
@@ -104,7 +104,7 @@
                             </table>
                         </div>
 
-                        <div class="table-responsive " id="expired" style="display:none">
+                        <div class="xtable-responsive " id="expired" style="display:none">
                             <table class="table table-condensed table-hover" id="tb-expired">
                                 <thead>
                                     <tr>
@@ -120,7 +120,7 @@
                             </table>
                         </div>
 
-                        <div class="table-responsive" id="step4">
+                        <div class="xtable-responsive" id="step4">
                             <table class="table table-condensed table-hover" id="table">
                                 <thead>
                                     <tr>

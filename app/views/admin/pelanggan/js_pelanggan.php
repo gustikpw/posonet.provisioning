@@ -1,5 +1,4 @@
 <script src="<?= base_url('assets/inspinia271/js/plugins/dataTables/datatables.min.js') ?>"></script>
-<script src="<?= base_url('assets/inspinia271/js/plugins/bootstrapTour/bootstrap-tour.min.js') ?>"></script>
 <script src="<?= base_url('assets/inspinia271/js/plugins/datapicker/bootstrap-datepicker.js') ?>"></script>
 <script src="<?= base_url('assets/inspinia271/js/plugins/select2/select2.full.min.js') ?>"></script>
 <!-- <script src="</?php //echo base_url('assets/inspinia271/js/plugins/chosen/chosen.jquery.js') ?>"></script> -->
@@ -70,7 +69,7 @@
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
-      responsive: true,
+      // responsive: true,
       // Load data for the table's content from an Ajax source
       ajax: {
         url: "<?= site_url('pelanggan/ajax_list') ?>",

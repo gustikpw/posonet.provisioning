@@ -21,6 +21,14 @@ class Getselect_model extends CI_Model
     {
       $this->db->select('*');
   		$this->db->from($tabel);
+      
+      if ($tabel == 'wilayah') {
+        if($this->hakAksesToWilayah()->status) {
+          $idW = $this->hakAksesToWilayah()->data;
+          $this->db->where_not_in('id_wilayah', $idW);
+        }
+      }
+
   		$query = $this->db->get();
   		return $query->result();
     }
@@ -56,6 +64,23 @@ class Getselect_model extends CI_Model
       preg_match("/^enum\(\'(.*)\'\)$/", $type, $matches);
       $enum = explode("','", $matches[1]);
       return $enum;
+    }
+
+    function hakAksesToWilayah()
+    {
+      $username = $this->session->username;
+      $hakAksesWilayah = $this->db->query("SELECT * FROM users WHERE username = '$username' ")->row();
+      if ($hakAksesWilayah->akses_wilayah == null) {
+        return $data = (object) array(
+          'status' => false,
+          'data' => [],
+        );
+      } else {
+        return $data = (object) array(
+          'status' => true,
+          'data' => json_decode($hakAksesWilayah->akses_wilayah),
+        );
+      }
     }
 
 	}

@@ -136,6 +136,7 @@ class Settings extends CI_Controller {
 			'level' => $this->input->post('level'),
 			'aktif' => $this->input->post('aktif'),
 			'rules' => 'webapp',
+			'akses_wilayah' => json_encode($this->input->post('akses_wilayah[]')),
 		);
 		$insert = $this->users->save($data);
 		echo json_encode(array("status" => TRUE, "message" => "Berhasil menambah User"));
@@ -150,6 +151,7 @@ class Settings extends CI_Controller {
 			'level' => $this->input->post('level'),
 			'aktif' => $this->input->post('aktif'),
 			'rules' => 'webapp',
+			'akses_wilayah' => json_encode($this->input->post('akses_wilayah[]')),
 		);
 		$this->users->update(array('id_users' => $this->input->post('id_users')), $data);
 		echo json_encode(array("status" => TRUE, "message" => "Berhasil Update User"));
@@ -163,7 +165,16 @@ class Settings extends CI_Controller {
 
 	public function get_edit_user($id_users=FALSE)
 	{
-		$data= $this->users->get_by_id($id_users);
+		$q= $this->users->get_by_id($id_users);
+		$data = array(
+			'id_users' => $q->id_users,
+			'username' => $q->username,
+			'level' => $q->level,
+			'aktif' => $q->aktif,
+			'id_karyawan' => $q->id_karyawan,
+			'rules' => $q->rules,
+			'akses_wilayah' => json_decode($q->akses_wilayah),
+		);
 		echo json_encode($data);
 	}
 
