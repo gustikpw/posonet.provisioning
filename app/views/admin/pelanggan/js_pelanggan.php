@@ -118,7 +118,7 @@
       //   });
       // },
 
-      pageLength: 25,
+      pageLength: 10,
       // responsive: true,
       dom: '<"html5buttons"B>lTfgitp',
       buttons: [{
@@ -818,6 +818,7 @@
       "<?= site_url('api_rest_client/replaceOnt') ?>", {
         gpon_onu: $('[name="rep_gpon_onu"]').val(),
         rep_onutype: $('[name="rep_onutype"]').val(),
+        rep_old_sn: $('[name="rep_old_sn"]').val(),
         rep_new_sn: $('[name="rep_new_sn"]').val(),
       },
       function(data, status) {

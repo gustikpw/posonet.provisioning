@@ -108,15 +108,19 @@ class Pelanggan extends CI_Controller
 			$row[] = $br->wilayah;
 			
 			if ($br->ont_phase_state == 'working') {
-				$phase = '<span class="label label-primary">' . $br->ont_phase_state . '</span> ';
+				$phase = '<button class="btn btn-outline btn-primary btn-xs">' . $br->ont_phase_state . '</button> ';
 			} else if ($br->ont_phase_state == 'offline' || $br->ont_phase_state == 'DyingGasp' || $br->ont_phase_state == 'syncMib' || $br->ont_phase_state == 'logging') {
-				$phase = '<span class="label">' . $br->ont_phase_state . '</span> ';
+				$phase = '<button class="btn btn-outline btn-default btn-xs">' . $br->ont_phase_state . '</button> ';
 			} else if ($br->ont_phase_state == 'LOS') {
-				$phase = '<span class="label label-danger">' . $br->ont_phase_state . '</span> ';
+				$phase = '<button class="btn btn-outline btn-danger btn-xs">' . $br->ont_phase_state . '</button> ';
 			} else if ($br->ont_phase_state == 'Unconfigured'){
-				$phase = '<span class="label"> Unconfigured </span>';
+				$phase = '<button class="btn btn-outline btn-warning btn-xs"> Unconfigured </button>';
 			} else {
-				$phase = '<span class="label label-info"> Registering </span>';
+				$phase = '<div class="progress progress-striped active">
+                                <div style="width: 90%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="90" role="progressbar" class="progress-bar progress-bar-warning">
+                                    <span class="xsr-only">Registering</span>
+                                </div>
+                            </div>';
 			}
 			$row[] = $phase;
 			

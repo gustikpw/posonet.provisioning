@@ -353,7 +353,7 @@ class Api_rest_client extends CI_Controller
 					}
 					//update gpon_onu di database
 					$query 	= "UPDATE pelanggan 
-						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$info->gpon_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
+						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$info->gpon_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled', ont_phase_state='Registering'  
 						WHERE serial_number='$key->sn'";
 					$update = $this->db->query($query);
 
@@ -414,7 +414,7 @@ class Api_rest_client extends CI_Controller
 
 					//update gpon_onu di database
 					$this->db->query("UPDATE pelanggan 
-						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$info->gpon_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled' 
+						SET name='$secret->name', gpon_olt='$key->interface', gpon_onu='$info->gpon_onu', username='$secret->username', password='$secret->password', remote_web_state='disabled', ont_phase_state='Registering' 
 						WHERE serial_number='$key->sn'");
 					
 					$countPindahPort++;
@@ -1027,6 +1027,7 @@ _handled by %s_";
 		// $onu_type = 'ZTE-F660';
 		$gpon_onu = html_escape($this->input->post('gpon_onu'));
 		$onu_type = html_escape($this->input->post('rep_onutype'));
+		$old_sn = html_escape($this->input->post('rep_old_sn'));
 		$new_sn = html_escape($this->input->post('rep_new_sn'));
 
 		$old_secret = $this->db->query("SELECT no_pelanggan, nama_pelanggan, username, mikrotik_profile, description, vlan_profile, cvlan, id_paket FROM v_pelanggan WHERE gpon_onu='$gpon_onu'")->row();
@@ -1088,6 +1089,9 @@ _handled by %s_";
 			WHERE gpon_onu='$gpon_onu'";
 
 			$this->db->query($query);
+
+			//save to Log
+			$this->api->saveLogEvent('Replace ONT', "Success! OLD-SN=" . $old_sn ." to NEW-SN=". $new_sn . " by " . $this->session->username);
 
 			echo json_encode($reconfig_onu);
 		} else {
@@ -1255,12 +1259,22 @@ Ket	: ";
 					</tr>
 					</thead>
 					<tbody>";
+		$btn = '';
 		foreach ($q as $d) {
+			if ($d->topic == 'PSB') {
+				$btn = "<button type=\"button\" class=\"btn btn-xs btn-outline btn-success\">$d->topic</button>";
+			}
+			if ($d->topic == 'Payment') {
+				$btn = "<button type=\"button\" class=\"btn btn-xs btn-outline btn-default\">$d->topic</button>";
+			}
+			if ($d->topic == 'Replace ONT') {
+				$btn = "<button type=\"button\" class=\"btn btn-xs btn-outline btn-warning\">$d->topic</button>";
+			}
 			$row .= 
 			"<tr>
 				<td>$number</td>
 				<td>$d->time</td>
-				<td>$d->topic</td>
+				<td>$btn</td>
 				<td>$d->message</td>
 			</tr>";
 			$number++;
