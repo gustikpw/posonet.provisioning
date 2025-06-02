@@ -169,8 +169,8 @@
                                         <th class="text-info">OFFLINE</th>
                                         <th>Interface</th>
                                         <th>Name</th>
-                                        <th>Cause</th>
                                         <th>Expired</th>
+                                        <th>Cause</th>
                                     </tr>
                                 </thead>
                                 <tbody>
