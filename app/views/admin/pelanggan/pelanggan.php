@@ -92,8 +92,8 @@
                                         <th class="text-danger">LOS</th>
                                         <th>Interface</th>
                                         <th>Name</th>
-                                        <th>Cause</th>
                                         <th>Expired</th>
+                                        <th>Cause</th>
                                         <th>ODP</th>
                                         <th>ONT</th>
                                     </tr>
@@ -169,8 +169,8 @@
                                         <th class="text-info">OFFLINE</th>
                                         <th>Interface</th>
                                         <th>Name</th>
-                                        <th>Expired</th>
                                         <th>Cause</th>
+                                        <th>Expired</th>
                                     </tr>
                                 </thead>
                                 <tbody>
