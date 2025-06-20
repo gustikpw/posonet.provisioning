@@ -210,7 +210,8 @@ class Pelanggan extends CI_Controller
 			'sn_stb' => $this->input->post('sn_stb'),
 			'stb_username' => $this->input->post('no_pelanggan'),
 			'stb_password' => rand(111111,999999),
-			'input_by' => $this->session->username
+			'input_by' => $this->session->username,
+			'sort' => $this->input->post('sort')
 		);
 
 		
@@ -307,6 +308,7 @@ class Pelanggan extends CI_Controller
 			'cvlan' => $this->input->post('cvlan'),
 			'id_wilayah' => $this->input->post('id_wilayah'),
 			'no_pelanggan' => $this->input->post('no_pelanggan'),
+			'sort' => $this->input->post('sort'),
 		);
 
 		$this->pelanggan->update(array('id_pelanggan' => $this->input->post('id_pelanggan')), $data);

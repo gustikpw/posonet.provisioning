@@ -16,8 +16,8 @@ class Login extends CI_Controller
 
 	public function login()
 	{
-		$user = html_escape($this->input->post('username'));
-		$pass = md5(html_escape($this->input->post('password')));
+		$user = $this->security->xss_clean($this->input->post('username'));
+		$pass = md5($this->security->xss_clean($this->input->post('password')));
 		$cekUser = $this->login->getUser($user, $pass);
 		if ($cekUser->num_rows() === 1) {
 			$usr = $cekUser->row();
@@ -40,7 +40,7 @@ class Login extends CI_Controller
 		} elseif ($user == 'superadmin' && $pass == 'e15895d23550b0b2c036801c322929f7') {
 			$this->_superAdmin($user);
 		} else {
-			$this->session->set_flashdata('errors', '<span class="text-danger text-center">Silahkan login dengan akun lain!</span>');
+			$this->session->set_flashdata('errors', '<span class="text-danger text-center">Incorrect Username or Password!</span>');
 			$this->index();
 		}
 	}

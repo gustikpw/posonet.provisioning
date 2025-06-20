@@ -368,6 +368,12 @@
                                             <span class="ktpfilename">File KTP belum ada!</span>
                                         </div>
                                     </div>
+                                    <div class="form-group"><label class="col-md-3 control-label">No Urut Penagihan</label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="sort" placeholder="No Urut Kwitansi Penagihan" class="form-control">
+                                            <span class="help-block m-b-none"></span>
+                                        </div>
+                                    </div>
                             </form>
                         </div>
                     </div>

@@ -333,6 +333,7 @@
         
         $('[name="odp_number"]').val(data.odp_number);
         $('[name="odp_location"]').val(decodeURIComponent(data.odp_location));
+        $('[name="sort"]').val(data.sort);
 
 
         $('.ktpfilename').text(data.ktp_filename);

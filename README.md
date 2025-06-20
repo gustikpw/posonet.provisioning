@@ -8,8 +8,24 @@
  1. composer update
  2. edit config.php
  3. edit database.php
- 4. 
+ ====================================
+ 4. hot fix
 
+open vendor/irazasyed/telegram-bot-sdk/src/HttpClients/GuzzleHttpClient.php
+
+change
+
+   public function __destruct()
+    {
+        Promise\unwrap (self::$promises);
+    }
+to
+
+   public function __destruct()
+    {
+        Promise\Utils::unwrap (self::$promises);
+    }
+=====================================
 ALTER TABLE pelanggan
 ADD cvlan VARCHAR(10);
 ADD stb_username VARCHAR(50);

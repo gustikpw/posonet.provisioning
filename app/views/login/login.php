@@ -27,14 +27,15 @@
     <div class="loginColumns animated fadeInDown">
         <div class="row">
 
-            <div class="col-md-6">
+            <div class="col-md-6 text-center">
                 <!-- <h2 class="font-bold">Welcome to POSO TV App</h2> -->
                 <br>
-                <img src="<?= base_url('assets/posonet/img/poso_net_fit.png') ?>" class="m-t-lg m-r-lg" height="80px" width="auto" alt="Logo POSO Net">
-
+                <img src="<?= base_url('assets/posonet/img/primahomelogo3.png') ?>" class="m-t-lg m-r-lg" height="50px" alt="Logo POSO Net">
+                <br><br>
             </div>
-            <div class="col-md-6">
+            <div class="m-t col-md-6">
                 <div class="ibox-content">
+                    <h3 class="font-bold">Login to your account</h3>
                     <form class="m-t" role="form" action="<?php echo site_url('login/login?_rdr=' . urlencode($this->input->get('_rdr'))) ?>" method="post">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Username" name="username" required="" autocomplete="off">
@@ -42,24 +43,20 @@
                         <div class="form-group">
                             <input type="password" class="form-control" placeholder="Password" name="password" required="">
                         </div>
-                        <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-outline block full-width m-b">Login</button>
                     </form>
                     <p class="m-t">
-                        <small><span><?php if (!isset($_SESSION['errors'])) {
-                                            echo "Inspinia we app framework base on Bootstrap 3 &copy; 2014";
-                                        } else {
-                                            echo $_SESSION['errors'];
-                                        } ?></span></small>
+                        <small><span><?= (!isset($_SESSION['errors'])) ? "" : $_SESSION['errors'] ?></span></small>
                     </p>
                 </div>
             </div>
         </div>
         <hr />
-        <div class="row">
+        <div class="row text-center">
             <div class="col-md-6">
                 Copyright PT. POSO MEDIA VISION - POSO NET
             </div>
-            <div class="col-md-6 text-right">
+            <div class="col-md-6">
                 <small>© 2020-<?php echo date('Y') ?></small>
             </div>
         </div>
