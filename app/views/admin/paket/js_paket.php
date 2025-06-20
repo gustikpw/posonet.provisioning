@@ -143,6 +143,7 @@ function save()
 
 function edits(id)
 {
+  getTcont();
   save_method = 'update';
   $('#form')[0].reset(); // reset form on modals
   $.ajax({
