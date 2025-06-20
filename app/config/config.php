@@ -42,6 +42,10 @@ $config['mikrotik'] = [
 	'REST_URL' => 'http://192.168.50.1:8090/rest/'
 ];
 
+$config['public_api'] = [
+	'token' => 'POSONET-EP-SW5pS29kZVJhaGFzaWE=',
+];
+
 
 /*
 |--------------------------------------------------------------------------
