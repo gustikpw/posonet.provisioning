@@ -135,3 +135,5 @@ v.expired,
 
 # (2025-05-29) add line in 'v_users' before 'FROM'
 , u.akses_wilayah
+
+# (2025-06-22) add colum 'sort' in 'pelanggan' after 'input_by'
