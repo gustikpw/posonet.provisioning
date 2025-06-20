@@ -120,33 +120,33 @@
 
       pageLength: 10,
       // responsive: true,
-      dom: '<"html5buttons"B>lTfgitp',
-      buttons: [{
-          // text: '<span class="text-success" id="step1"><i class="fa fa-plus"></i> Tambah</span>',
-          // action: function(e, dt, node, config) {
-          //   adds();
-          // }
-          text: 'DyingGasp',
-          action: function(e, dt, node, config) {
-            table.search('DyingGasp').draw();
-          }
-        },
+      // dom: '<"html5buttons"B>lTfgitp',
+      // buttons: [{
+      //     // text: '<span class="text-success" id="step1"><i class="fa fa-plus"></i> Tambah</span>',
+      //     // action: function(e, dt, node, config) {
+      //     //   adds();
+      //     // }
+      //     text: 'DyingGasp',
+      //     action: function(e, dt, node, config) {
+      //       table.search('DyingGasp').draw();
+      //     }
+      //   },
 
-        {
-          extend: 'print',
-          exportOptions: {
-            columns: [1, 2, 3, 4, 5, 6, 7]
-          },
-          customize: function(win) {
-            $(win.document.body).addClass('white-bg');
-            $(win.document.body).css('font-size', '10px');
+      //   {
+      //     extend: 'print',
+      //     exportOptions: {
+      //       columns: [1, 2, 3, 4, 5, 6, 7]
+      //     },
+      //     customize: function(win) {
+      //       $(win.document.body).addClass('white-bg');
+      //       $(win.document.body).css('font-size', '10px');
 
-            $(win.document.body).find('table')
-              .addClass('compact')
-              .css('font-size', 'inherit');
-          }
-        }
-      ]
+      //       $(win.document.body).find('table')
+      //         .addClass('compact')
+      //         .css('font-size', 'inherit');
+      //     }
+      //   }
+      // ]
 
     });
 

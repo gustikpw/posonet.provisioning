@@ -104,7 +104,7 @@ class Pelanggan extends CI_Controller
 			} else {
 				$nm_pelanggan = "<span class='font-bold'>$br->no_pelanggan. $br->nama_pelanggan</span>";
 			}
-			$row[] = $nm_pelanggan;
+			$row[] = $nm_pelanggan . "<span class='btn btn-xs btn-outline'><small class='text-muted'>$br->onu_type</small></span>";
 			
 			$row[] = $br->wilayah;
 			
