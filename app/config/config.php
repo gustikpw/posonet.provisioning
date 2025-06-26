@@ -39,7 +39,8 @@ $config['mikrotik'] = [
 	'PORT' => 8728,
 	'USERNAME' => 'flaskendpoint',
 	'PASSWORD' => '.flask!',
-	'REST_URL' => 'http://192.168.50.1:8090/rest/'
+	'REST_URL' => 'http://192.168.50.1:8090/rest/',
+	'PORT_REMOTEWEB' => 8095,
 ];
 
 $config['public_api'] = [

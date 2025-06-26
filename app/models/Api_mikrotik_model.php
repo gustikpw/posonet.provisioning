@@ -350,7 +350,7 @@ class Api_mikrotik_model extends CI_Model
    }
    
    function pppCloseConnection($data) {
-
+     
     /**
      * $data = $data->username;
      * 
@@ -373,6 +373,70 @@ class Api_mikrotik_model extends CI_Model
 
     }
 
+   }
+
+   function getRemoteNAT($comment='REMOTEONT') {
+    //  http://192.168.50.1:8090/rest/ip/firewal/nat?comment=REMOTEONT-dontdelete
+
+    $query = ($comment == '') ? "" : "?comment=$comment";
+   
+    $response = $this->_restClient->get("ip/firewal/nat$query",
+    [
+      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']]
+    ]);
+   
+    return $response->getBody();
+   }
+
+   function patchRemoteNATById($id, $data) {
+    /* 
+    $data = (object) array(
+      'to-addresses' => '10.50.10.100'
+    ); 
+    */
+
+    $response = $this->_restClient->patch("ip/firewal/nat/$id",
+    [
+      'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']],
+      'headers' => ['Content-type: application/json'],
+      'body' => json_encode($data),
+    ]);
+
+    return $response->getBody();
+   }
+
+   public function setPublicRemoteOnt($data,$dst) {
+    /**
+     * $data = (object) array(
+     *   'to-addresses' => '10.50.10.100'
+     **/
+    foreach (json_decode($this->getRemoteNAT(),true) as $key) {
+      $id = $key['.id'];
+    }
+
+    if ($id != '') {
+      return $this->patchRemoteNATById($id, $data);
+    } else {
+      // create new remote nat
+      $putData = [
+        'action' => 'dst-nat',
+        'chain' => 'dstnat',
+        'dst-address' => $this->mikrotik['HOST'],
+        'dst-port' => $this->mikrotik['PORT_REMOTEWEB'],
+        'protocol' => 'tcp',
+        'to-addresses' => $dst,
+        'to-ports' => '80',
+        'comment' => 'REMOTEONT',
+      ];
+
+      $response = $this->_restClient->put("ip/firewal/nat",
+      [
+        'auth' => [$this->mikrotik['USERNAME'], $this->mikrotik['PASSWORD']],
+        'headers' => ['Content-type: application/json'],
+        'body' => json_encode($putData),
+      ]);
+      return $response->getBody();
+    }
    }
 
 }

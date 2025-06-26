@@ -26,33 +26,39 @@ class Api extends CI_Controller {
 
     public function getInvoice()
     {
-        get_auth_bearer();
+        // activate the following line if you need to check authentication
+        // get_auth_bearer();
 
         // Get query parameter 'no_internet'
         $noInternet = $this->input->get('no_internet');
 
         // Prepare response
-        $response = $this->db->query("SELECT v.no_pelanggan, v.nama_pelanggan, v.wilayah, v.nama_paket,v.tarif,(v.tarif + v.no_pelanggan) AS trx_amount, v.expired AS new_expired,t.expired,IF(v.expired < CURDATE(),'ISOLIR','AKTIF') AS status_berlangganan, v.telp , IF(v.expired>=t.expired, 'BELUM ADA TAGIHAN/LUNAS', 'BELUM BAYAR') AS payment_status, t.kode_invoice
+        $data = $this->db->query("SELECT v.no_pelanggan, v.nama_pelanggan, v.wilayah, v.nama_paket,v.tarif,(v.tarif + v.no_pelanggan) AS trx_amount, v.expired AS new_expired,t.expired,IF(v.expired < CURDATE(),'ISOLIR','AKTIF') AS status_berlangganan, v.telp , IF(v.expired>=t.expired, 'BELUM ADA TAGIHAN/LUNAS', 'BELUM BAYAR') AS payment_status, t.kode_invoice
 FROM v_pelanggan v 
 LEFT JOIN temp_invoice t 
 ON v.no_pelanggan=t.no_pelanggan
 WHERE v.no_pelanggan=?
 ORDER BY id_trx DESC
-LIMIT 1", [$noInternet])->row();
+LIMIT 1", [$noInternet]);
+
+        if ($data->num_rows() > 0) {
+            $res = array(
+                'data' => $data->row(),
+                'status' => true,
+                'message' => 'Invoice found(s)',
+            );
+        } else {
+            $res = array(
+                'data' => null,
+                'status' => false,
+                'message' => 'No invoice found(s)',
+            );
+        }
 
         $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($response));
+                ->set_status_header(200)
+                ->set_content_type('application/json')
+                ->set_output(json_encode($res));
     }
 
-    // Example method
-    public function example_get()
-    {
-        $data = [
-            'message' => 'This is an example GET endpoint'
-        ];
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($data));
-    }
 }

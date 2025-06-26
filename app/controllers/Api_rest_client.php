@@ -780,11 +780,43 @@ _handled by %s_";
 		SET ip_address='$request->ip_address', remote_web_state='$state'
 		WHERE gpon_onu='$gpon_onu'");
 
+		if ($remote_state == 'enable' && $this->_is_public_ip_access()['public_access']) {
+			$link = 'http://'. $this->_is_public_ip_access()['remote_ip'] . ":8095";
+			$this->routermodel->setPublicRemoteOnt(
+				(object) [
+					'to-addresses' => $ipRemote,
+				],$ipRemote
+			);
+		} else {
+			$link = "http://$ipRemote";
+		}
+
 		echo json_encode([
 			"message" => $request->message,
-			"link" => "http://$ipRemote",
+			"link" => $link,
 			"status" => true,
 		]);
+	}
+
+	private function _is_public_ip_access()
+	{
+		$server_ip = $_SERVER['SERVER_ADDR'] ?? gethostbyname(gethostname());
+		$remote_ip = $_SERVER['HTTP_HOST'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
+
+		// If accessed from the same IP, it's local
+		if ($server_ip == $_SERVER['REMOTE_ADDR']) {
+			return ['public_access' => false, 'message' => 'Accessed locally', 'server_ip' => $server_ip, 'remote_ip' => $remote_ip];
+		}
+		// Remove port from remote_ip if present
+		if (strpos($remote_ip, ':') !== false) {
+			$remote_ip = explode(':', $remote_ip)[0];
+		}
+		// Check if remote IP is private
+		if (filter_var($remote_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+			return ['public_access' => true, 'message' => "Accessed via public IP",'server_ip' => $server_ip, 'remote_ip' => $remote_ip];
+		} else {
+			return ['public_access' => false, 'message' => "Accessed via private IP",'server_ip' => $server_ip, 'remote_ip' => $remote_ip];
+		}
 	}
 
 
