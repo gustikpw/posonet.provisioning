@@ -18,3 +18,6 @@ app/config/database.php
 assets/backup/*
 assets/invoice/*
 assets/tempQr/img/*
+app/config/config.php
+app/config/database.php
+composer.lock
