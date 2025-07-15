@@ -131,7 +131,8 @@ class Pelanggan extends CI_Controller
 			$row[] = $br->nama_paket;
 			$statusMap = (strlen($br->lokasi_map) <= 4) ? '<span class="label label-danger" title="Lokasi belum di-set"><i class="fa fa-map-marker"></i></span>' : '<span class="label label-primary"><i class="fa fa-map-marker"></i></span>';
 			$linkMap = (strlen($br->lokasi_map) <= 4) ? "<a href=\"#\">Lokasi Kosong</a>" : "<a href=\"" . urldecode($br->lokasi_map) . "\" target=\"_blank\">Lihat Lokasi</a>";
-			$email = (strlen($br->email) <= 4) ? ' <span class="label label-danger" title="Email kosong">@</span>' : ' <span class="label label-primary">@</span>';
+			// $email = (strlen($br->email) <= 4) ? ' <span class="label label-danger" title="Email kosong">@</span>' : ' <span class="label label-primary">@</span>';
+			$odp = (strlen($br->odp_number) <= 4) ? ' <span class="label label-danger" title="ODP kosong">ODP</span>' : ' <span class="label label-primary">'.$br->odp_number.'</span>';
 			// $ktp = (strlen($br->no_ktp) <= 4) ? ' <span class="label label-danger" title="KTP kosong">KTP</span>' : ' <span class="label label-primary">KTP</span>';
 			
 			if ($br->expired < date('Y-m-d')) {
@@ -149,7 +150,7 @@ class Pelanggan extends CI_Controller
 
 
 			// Status Pelanggan
-			$status = ($br->status == 'AKTIF') ? '<span class="label label-primary">' . $br->status . '</span> ' . $statusMap . $email : $status = '<span class="label label-danger">' . $br->status . '</span> ' . $statusMap . $email;
+			$status = ($br->status == 'AKTIF') ? '<span class="label label-primary">' . $br->status . '</span> ' . $statusMap . $odp : $status = '<span class="label label-danger">' . $br->status . '</span> ' . $statusMap . $odp;
 
 			$row[] = ribuan($br->tarif);
 			$row[] = $status;
