@@ -5,7 +5,7 @@ class Pelanggan_model extends CI_Model
 
   var $table = 'pelanggan';
   var $vtable = 'v_pelanggan';
-  var $column = array('no_pelanggan', 'nama_pelanggan','expired', 'serial_number', 'status','gpon_onu', 'ont_phase_state');
+  var $column = array('no_pelanggan', 'nama_pelanggan','expired', 'serial_number', 'status','gpon_onu', 'ont_phase_state','odp_number');
   var $order = array(
     'id_pelanggan' => 'DESC'
   );

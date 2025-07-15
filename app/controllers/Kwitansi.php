@@ -199,6 +199,7 @@ class Kwitansi extends CI_Controller
 				//pemisah angka ribuan
 				$row['tarif_rp'] = "Rp. " . ribuan($dt->tarif) . ",-";
 				$row['tarif_rp_trx'] = "Rp. " . ribuan($dt->tarif + $dataInvoice->no_pelanggan) . ",-";
+				$row['sort'] = $dt->sort;
 				// Pengaturan nama file, dll
 				$kodewil = 'WIL';
 				if (strlen($dt->no_pelanggan) == 5) {

@@ -76,7 +76,7 @@ class kwitansi_model extends CI_Model
   {
     $kondisi = ($sort == 'ASC' || $sort == 'DESC') ? "ORDER BY sort $sort" : 'ORDER BY no_pelanggan ASC';
 
-    $query = $this->db->query("SELECT no_pelanggan,nama_pelanggan,wilayah,alamat,nama_paket,tarif,serial_number,tgl_instalasi,expired,keterangan,lokasi_map,telp,status,kode_wilayah FROM v_pelanggan WHERE id_wilayah = '$wilayah' $kondisi");
+    $query = $this->db->query("SELECT no_pelanggan,nama_pelanggan,wilayah,alamat,nama_paket,tarif,serial_number,tgl_instalasi,expired,keterangan,lokasi_map,telp,status,kode_wilayah,sort FROM v_pelanggan WHERE id_wilayah = '$wilayah' $kondisi");
     return $query->result();
   }
 

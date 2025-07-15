@@ -99,19 +99,19 @@ class PDF extends FPDF
     $this->Rotate(0);
   }
 
-  function Underscore($x, $y)
+  function Underscore($x, $y, $text=false)
   {
     $this->SetFont('Arial', '', 8);
     $this->SetTextColor(0, 0, 0);
     $this->Rotate(0, $x, $y);
-    $this->Text($x, $y + 5, '____________');
+    $this->Text($x, $y + 5,  ($text ? ' ' . $text : '') . '____________');
     $this->Rotate(0);
   }
 
   function Keterangan($x, $y, $keterangan)
   {
     $this->SetFont('Arial', 'B', 10);
-    $this->SetTextColor(255, 0, 0);
+    $this->SetTextColor(0, 0, 0);
     $this->Rotate(0, $x, $y);
     $this->Text($x, $y + 5, $keterangan);
     $this->Rotate(0);
@@ -183,7 +183,7 @@ class PDF extends FPDF
 
       $this->Penerima(43, $yg1 + 5);
       $this->Underscore(43, $yg1 + 17);
-      $this->Underscore(190, $yg1 + 35);
+      $this->Underscore(190, $yg1 + 35, $plgn['sort']);
       $this->Keterangan(76, $yg1 + 12, $plgn['keterangan']);
 
       $this->setFont('Arial', '', 10);
