@@ -129,10 +129,13 @@ class Pelanggan extends CI_Controller
 			$row[] = $br->distance;
 			// paket Pelanggan
 			$row[] = $br->nama_paket;
-			$statusMap = (strlen($br->lokasi_map) <= 4) ? '<span class="label label-danger" title="Lokasi belum di-set"><i class="fa fa-map-marker"></i></span>' : '<span class="label label-primary"><i class="fa fa-map-marker"></i></span>';
-			$linkMap = (strlen($br->lokasi_map) <= 4) ? "<a href=\"#\">Lokasi Kosong</a>" : "<a href=\"" . urldecode($br->lokasi_map) . "\" target=\"_blank\">Lihat Lokasi</a>";
+			// $statusMap = (strlen($br->lokasi_map) <= 4) ? '<span class="label label-danger" title="Lokasi belum di-set"><i class="fa fa-map-marker"></i></span>' : '<a href="' . urldecode($br->lokasi_map) . '" target=\"_blank\"><span class="label label-primary"><i class="fa fa-map-marker"></i></span></a>';
+			$statusMap = ($br->lokasi_map == null || empty($br->lokasi_map)) ? '<a href="#" class="btn btn-xs btn-outline btn-danger" title="Lokasi belum di-set"><i class="fa fa-map-marker"></i></a>' : '<a href="' . urldecode($br->lokasi_map) . '" class="btn btn-xs btn-outline btn-primary" target=\"_blank\" title="Klik untuk melihat lokasi pelanggan"><small><i class="fa fa-map-marker"></i></small></a>';
+			$linkMap = ($br->lokasi_map == null || empty($br->lokasi_map)) ? "<a href=\"#\">Lokasi Kosong</a>" : "<a href=\"" . urldecode($br->lokasi_map) . "\" target=\"_blank\">Lihat Lokasi</a>";
 			// $email = (strlen($br->email) <= 4) ? ' <span class="label label-danger" title="Email kosong">@</span>' : ' <span class="label label-primary">@</span>';
-			$odp = (strlen($br->odp_number) <= 4) ? ' <span class="label label-danger" title="ODP kosong">ODP</span>' : ' <span class="label label-primary">'.$br->odp_number.'</span>';
+			// <!-- $odp = (strlen($br->odp_number) <= 4) ? ' <span class="label label-danger" title="ODP kosong">ODP</span>' : ' <span class="label label-primary">'.$br->odp_number.'</span>'; -->
+			$odp_name = (empty($br->odp_number) || $br->odp_number == null) ? 'ODP' : "$br->odp_number";
+			$odp = (empty($br->odp_location) || $br->odp_location == null) ? ' <a href="#" class="btn btn-xs btn-outline btn-danger" title="ODP kosong"><small>ODP</small></a>' : ' <a href="https://www.google.com/maps/?q=' . $br->odp_location . '" class="btn btn-xs btn-outline btn-primary" target="_blank" title="Klik untuk melihat lokasi ODP"><small>' .$odp_name . '</small></a>';
 			// $ktp = (strlen($br->no_ktp) <= 4) ? ' <span class="label label-danger" title="KTP kosong">KTP</span>' : ' <span class="label label-primary">KTP</span>';
 			
 			if ($br->expired < date('Y-m-d')) {
@@ -150,7 +153,13 @@ class Pelanggan extends CI_Controller
 
 
 			// Status Pelanggan
-			$status = ($br->status == 'AKTIF') ? '<span class="label label-primary">' . $br->status . '</span> ' . $statusMap . $odp : $status = '<span class="label label-danger">' . $br->status . '</span> ' . $statusMap . $odp;
+			$statusB = ($br->status == 'AKTIF') ? '<a href="#" class="btn btn-xs btn-outline btn-primary" title="Status Pelanggan AKTIF"><small>A</small></a> ' : '<a href="#" class="btn btn-xs btn-danger" title="Status Pelanggan NON-AKTIF"><small>NA</small></a>';
+			// BUTTON GROUP
+			$status = "<div class=\"btn-group\">
+                            $statusB
+                            $statusMap
+							$odp
+                        </div>";
 
 			$row[] = ribuan($br->tarif);
 			$row[] = $status;
@@ -206,7 +215,7 @@ class Pelanggan extends CI_Controller
 			'ktp_filename' => $ktp_filename,
 			
 			'odp_number' => $this->input->post('odp_number'),
-			'odp_location' => urlencode($this->input->post('odp_location')),
+			'odp_location' => str_replace(' ','',$this->input->post('odp_location')),
 
 			'sn_stb' => $this->input->post('sn_stb'),
 			'stb_username' => $this->input->post('no_pelanggan'),
@@ -301,7 +310,7 @@ class Pelanggan extends CI_Controller
 			'ktp_filename' => $ktp_filename,
 			
 			'odp_number' => $this->input->post('odp_number'),
-			'odp_location' => urlencode($this->input->post('odp_location')),
+			'odp_location' => str_replace(' ','',$this->input->post('odp_location')),
 
 			'onu_type' => $this->input->post('onutype'),
 			'access_mode' => $this->input->post('service_mode'),

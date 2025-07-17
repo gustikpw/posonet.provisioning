@@ -274,8 +274,8 @@
                                         <div class="col-md-9"><input type="text" name="odp_number" placeholder="ODP-PDL-001" class="form-control"> <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
-                                    <div class="form-group"><label class="col-md-3 control-label">ODP Location</label>
-                                        <div class="col-md-9"><input type="text" name="odp_location" placeholder="ODP Map Location" class="form-control"> <span class="help-block m-b-none"></span>
+                                    <div class="form-group"><label class="col-md-3 control-label">ODP Lat,Long</label>
+                                        <div class="col-md-9"><input type="text" name="odp_location" placeholder="Contoh: -2.15205, 120.73167" class="form-control"> <span class="help-block m-b-none"></span>
                                         </div>
                                     </div>
                                 </div>

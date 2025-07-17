@@ -139,4 +139,5 @@ v.expired,
 # (2025-06-22) add column 'sort' in 'pelanggan' after 'input_by' DATATYPE 'INT'
 # (2025-07-15) add column ', p.sort' in 'v_pelanggan' before 'FROM'
 # (2025-07-15) add column ', p.sort' in 'v_temp_invoice' before 'FROM'
+# (2025-07-17) change DATATYPE on 'odp_location' to VARCHAR in table 'pelanggan'
 
