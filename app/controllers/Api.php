@@ -129,13 +129,13 @@ LIMIT 1", [$noInternet]);
                 $this->output
                     ->set_status_header(200)
                     ->set_content_type('application/json')
-                    ->set_output(json_encode((object) ['status' => true, 'message' => 'Invoice Order_ID updated successfully']));
+                    ->set_output(json_encode(['status' => true, 'message' => 'Invoice Order_ID updated successfully']));
                 return;
             } else {
                 $this->output
                     ->set_status_header(200)
                     ->set_content_type('application/json')
-                    ->set_output(json_encode((object) ['status' => false, 'message' => 'Invoice not found']));
+                    ->set_output(json_encode(['status' => false, 'message' => 'Invoice not found']));
                 return;
             }
         } catch (Exception $e) {
@@ -143,6 +143,11 @@ LIMIT 1", [$noInternet]);
                 'status' => false,
                 'message' => 'Error updating invoice status: ' . $e->getMessage(),
             );
+            $this->output
+                    ->set_status_header(200)
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode($res));
+            return;
         }
 
     }
