@@ -67,4 +67,84 @@ LIMIT 1", [$noInternet]);
                 ->set_output(json_encode($res));
     }
 
+    public function updateInvoiceStatus(){
+        $noInternet = $this->input->post('no_internet');
+        $kodeInvoice = $this->input->post('kode_invoice');
+        $status = ($this->input->post('status') == 'settlement') ? 'LUNAS' : 'BELUM BAYAR';
+        $orderId = $this->input->post('order_id');
+
+        // Validate input
+        if (empty($noInternet) || empty($kodeInvoice) || empty($status) || empty($orderId)) {
+            $this->output
+                ->set_status_header(400)
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['status' => false, 'message' => 'Invalid input']));
+            return;
+        }
+        // Call the model method to update invoice status
+        try {
+            $cek = $this->db->query("SELECT * FROM temp_invoice WHERE order_id = ?", [$order_id]);
+            if ($cek->num_rows() > 0) {
+                $this->db->query("UPDATE temp_invoice SET status = ?, transaction_status = ? WHERE order_id = ?", [$order_id, $this->input->post('status')]);
+                // Update the order_id in the database
+                $this->output
+                    ->set_status_header(200)
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['status' => true, 'message' => 'Invoice status updated successfully']));
+                return;
+            } else {
+                $this->output
+                    ->set_status_header(404)
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['status' => false, 'message' => 'Invoice not found']));
+                return;
+            }
+        } catch (Exception $e) {
+            $res = array(
+                'status' => false,
+                'message' => 'Error updating invoice status: ' . $e->getMessage(),
+            );
+        }
+
+    }
+
+    public function updateInvoiceOrderId(){
+        $kodeInvoice = $this->input->post('kode_invoice');
+        $orderId = $this->input->post('order_id');
+
+        // Validate input
+        if (empty($kodeInvoice) || empty($orderId)) {
+            $this->output
+                ->set_status_header(400)
+                ->set_content_type('application/json')
+                ->set_output(json_encode((object) ['status' => false, 'message' => 'Invalid input']));
+            return;
+        }
+        // Call the model method to update invoice status
+        try {
+            $cek = $this->db->query("SELECT * FROM temp_invoice WHERE kode_invoice = ?", [$kodeInvoice]);
+            if ($cek->num_rows() > 0) {
+                $this->db->query("UPDATE temp_invoice SET order_id = ? WHERE kode_invoice = ?", [$order_id, $kodeInvoice]);
+                // Update the order_id in the database
+                $this->output
+                    ->set_status_header(200)
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode((object) ['status' => true, 'message' => 'Invoice Order_ID updated successfully']));
+                return;
+            } else {
+                $this->output
+                    ->set_status_header(404)
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode((object) ['status' => false, 'message' => 'Invoice not found']));
+                return;
+            }
+        } catch (Exception $e) {
+            $res = array(
+                'status' => false,
+                'message' => 'Error updating invoice status: ' . $e->getMessage(),
+            );
+        }
+
+    }
+
 }
