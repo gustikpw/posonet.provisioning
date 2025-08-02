@@ -34,8 +34,11 @@ class Api extends CI_Controller {
 
         // Prepare response
         $data = $this->db->query("SELECT v.no_pelanggan, v.nama_pelanggan, v.wilayah, v.nama_paket,v.tarif,(v.tarif + v.no_pelanggan) AS trx_amount, 
-v.expired AS p_expired,t.expired AS inv_expired,IF(v.expired < CURDATE(),'ISOLIR','AKTIF') AS status_berlangganan, 
-v.telp , IF(v.expired>=CURDATE(), 'BELUM ADA TAGIHAN/LUNAS', 'BELUM BAYAR') AS payment_status, t.kode_invoice
+v.expired AS expired_date,t.expired AS next_expired,
+IF(v.expired < CURDATE(),'ISOLIR','AKTIF') AS status_berlangganan, 
+v.telp , 
+IF(v.expired>=CURDATE(), 'BELUM ADA TAGIHAN/LUNAS', 'BELUM BAYAR') AS payment_status, 
+t.kode_invoice
 
 FROM v_pelanggan v 
 LEFT JOIN temp_invoice t 

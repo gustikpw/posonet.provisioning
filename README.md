@@ -141,3 +141,22 @@ v.expired,
 # (2025-07-15) add column ', p.sort' in 'v_temp_invoice' before 'FROM'
 # (2025-07-17) change DATATYPE on 'odp_location' to VARCHAR in table 'pelanggan'
 
+# (2025-07-20) add table 'odp'
+CREATE TABLE `odp` (
+	`id_odp` INT(11) NOT NULL AUTO_INCREMENT,
+	`odp_name` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`latlong` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`description` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	PRIMARY KEY (`id_odp`) USING BTREE
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=0
+;
+
+# (2025-07-20) add column 'id_odp' after 'odp_location' in table pelanggan
+`id_odp` INT(11) NULL DEFAULT NULL,
+
+INDEX `FK_pelanggan_odp` (`id_odp`) USING BTREE,
+CONSTRAINT `FK_pelanggan_odp` FOREIGN KEY (`id_odp`) REFERENCES `odp` (`id_odp`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+
