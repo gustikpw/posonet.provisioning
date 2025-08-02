@@ -94,7 +94,7 @@ LIMIT 1", [$noInternet]);
                 return;
             } else {
                 $this->output
-                    ->set_status_header(404)
+                    ->set_status_header(200)
                     ->set_content_type('application/json')
                     ->set_output(json_encode(['status' => false, 'message' => 'Invoice not found']));
                 return;
@@ -133,7 +133,7 @@ LIMIT 1", [$noInternet]);
                 return;
             } else {
                 $this->output
-                    ->set_status_header(404)
+                    ->set_status_header(200)
                     ->set_content_type('application/json')
                     ->set_output(json_encode((object) ['status' => false, 'message' => 'Invoice not found']));
                 return;
